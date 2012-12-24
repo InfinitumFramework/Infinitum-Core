@@ -43,6 +43,7 @@ import com.clarionmedia.infinitum.di.BeanPostProcessor;
 import com.clarionmedia.infinitum.di.annotation.Bean;
 import com.clarionmedia.infinitum.di.annotation.Component;
 import com.clarionmedia.infinitum.di.annotation.Scope;
+import com.clarionmedia.infinitum.di.impl.AutowiredBeanPostProcessor;
 import com.clarionmedia.infinitum.di.impl.GenericBeanDefinitionBuilder;
 import com.clarionmedia.infinitum.exception.InfinitumRuntimeException;
 import com.clarionmedia.infinitum.internal.StringUtil;
@@ -134,11 +135,12 @@ public abstract class AbstractContext implements InfinitumContext {
 		// Register XML beans
 		registerFrameworkComponents();
 		List<BeanComponent> beans = getBeans();
-		mBeanFactory.registerBeans(beans); // also registers aspects implicitly
+		mBeanFactory.registerBeans(beans); // Also registers aspects implicitly
 
 		// Get XML components
 		Set<Class<?>> xmlAspects = new HashSet<Class<?>>();
-		Set<Class<BeanPostProcessor>> xmlBeanPostProcessors = new HashSet<Class<BeanPostProcessor>>();
+		Set<Class<? extends BeanPostProcessor>> xmlBeanPostProcessors = new HashSet<Class<? extends BeanPostProcessor>>();
+		xmlBeanPostProcessors.add(AutowiredBeanPostProcessor.class); // Takes care of autowiring
 		Set<Class<BeanFactoryPostProcessor>> xmlBeanFactoryPostProcessors = new HashSet<Class<BeanFactoryPostProcessor>>();
 		for (BeanComponent bean : beans) {
 			Class<?> clazz = reflector.getClass(bean.getClassName());
@@ -157,7 +159,7 @@ public abstract class AbstractContext implements InfinitumContext {
 
 		// Categorize the components while filtering down the original Set
 		Set<Class<?>> aspects = getAndRemoveAspects(components);
-		Set<Class<BeanPostProcessor>> beanPostProcessors = getAndRemoveBeanPostProcessors(components);
+		Set<Class<? extends BeanPostProcessor>> beanPostProcessors = getAndRemoveBeanPostProcessors(components);
 		beanPostProcessors.addAll(xmlBeanPostProcessors);
 		Set<Class<BeanFactoryPostProcessor>> beanFactoryPostProcessors = getAndRemoveBeanFactoryPostProcessors(components);
 		beanFactoryPostProcessors.addAll(xmlBeanFactoryPostProcessors);
@@ -290,8 +292,8 @@ public abstract class AbstractContext implements InfinitumContext {
 	}
 
 	@SuppressWarnings("unchecked")
-	private Set<Class<BeanPostProcessor>> getAndRemoveBeanPostProcessors(Collection<Class<?>> components) {
-		Set<Class<BeanPostProcessor>> postProcessors = new HashSet<Class<BeanPostProcessor>>();
+	private Set<Class<? extends BeanPostProcessor>> getAndRemoveBeanPostProcessors(Collection<Class<?>> components) {
+		Set<Class<? extends BeanPostProcessor>> postProcessors = new HashSet<Class<? extends BeanPostProcessor>>();
 		Iterator<Class<?>> iter = components.iterator();
 		while (iter.hasNext()) {
 			Class<?> component = iter.next();
@@ -303,8 +305,8 @@ public abstract class AbstractContext implements InfinitumContext {
 		return postProcessors;
 	}
 
-	private void executeBeanPostProcessors(Collection<Class<BeanPostProcessor>> postProcessors) {
-		for (Class<BeanPostProcessor> postProcessor : postProcessors) {
+	private void executeBeanPostProcessors(Collection<Class<? extends BeanPostProcessor>> postProcessors) {
+		for (Class<? extends BeanPostProcessor> postProcessor : postProcessors) {
 			try {
 				BeanPostProcessor postProcessorInstance = postProcessor.newInstance();
 				for (Entry<String, AbstractBeanDefinition> bean : mBeanFactory.getBeanDefinitions().entrySet()) {

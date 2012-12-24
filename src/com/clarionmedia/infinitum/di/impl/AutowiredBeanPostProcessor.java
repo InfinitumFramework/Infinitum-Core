@@ -17,7 +17,7 @@
  * along with Infinitum Framework.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.clarionmedia.infinitum.internal;
+package com.clarionmedia.infinitum.di.impl;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -29,7 +29,6 @@ import com.clarionmedia.infinitum.di.BeanFactory;
 import com.clarionmedia.infinitum.di.BeanPostProcessor;
 import com.clarionmedia.infinitum.di.BeanUtils;
 import com.clarionmedia.infinitum.di.annotation.Autowired;
-import com.clarionmedia.infinitum.di.annotation.Component;
 import com.clarionmedia.infinitum.exception.InfinitumRuntimeException;
 import com.clarionmedia.infinitum.reflection.ClassReflector;
 import com.clarionmedia.infinitum.reflection.impl.DefaultClassReflector;
@@ -44,7 +43,6 @@ import com.clarionmedia.infinitum.reflection.impl.DefaultClassReflector;
  * @version 1.0 07/05/12
  * @since 1.0
  */
-@Component
 public class AutowiredBeanPostProcessor implements BeanPostProcessor {
 
 	private ClassReflector mClassReflector;
