@@ -1,0 +1,71 @@
+<!--
+ Copyright (c) 2012 Tyler Treat
+ 
+ This file is part of Infinitum Framework.
+
+ Infinitum Framework is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ Infinitum Framework is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with Infinitum Framework.  If not, see <http://www.gnu.org/licenses/>. 
+ 
+ <!DOCTYPE infinitum-configuration PUBLIC
+	"-//Infinitum/Infinitum Configuration DTD 1.0//EN"
+	"http://www.clarionmedia.com/infinitum/dtd/infinitum-configuration-1.0.dtd">
+ 
+-->
+
+<!ELEMENT infinitum-configuration (application? , sqlite? , rest? , domain? , beans?)>
+
+<!ELEMENT application (property*)>
+<!ELEMENT sqlite (property+)>
+<!ELEMENT domain (model*)>
+<!ELEMENT beans (component-scan , bean* , aspect*)>
+<!ELEMENT rest (property+ , authentication?)>
+<!ATTLIST rest ref CDATA #IMPLIED>
+
+<!ELEMENT property (#PCDATA)>
+<!ATTLIST property name CDATA #REQUIRED>
+<!ATTLIST property ref CDATA #IMPLIED>
+<!ATTLIST property value CDATA #IMPLIED>
+
+<!ELEMENT model (#PCDATA)>
+<!ATTLIST model resource CDATA #REQUIRED>
+
+<!ELEMENT bean (property*)>
+<!ATTLIST bean id CDATA #REQUIRED>
+<!ATTLIST bean src CDATA #REQUIRED>
+<!ATTLIST bean scope CDATA #IMPLIED>
+
+<!ELEMENT aspect (property* , advice*)>
+<!ATTLIST aspect id CDATA #REQUIRED>
+<!ATTLIST aspect src CDATA #REQUIRED>
+<!ATTLIST aspect scope CDATA #IMPLIED>
+
+<!ELEMENT advice (#PCDATA)>
+<!ATTLIST advice id CDATA #REQUIRED>
+<!ATTLIST advice type CDATA #REQUIRED>
+<!ATTLIST advice pointcut CDATA #REQUIRED>
+<!ATTLIST advice value CDATA #REQUIRED>
+<!ATTLIST advice order CDATA #IMPLIED>
+
+<!ELEMENT component-scan (#PCDATA)>
+<!ATTLIST component-scan enabled CDATA #IMPLIED>
+<!ATTLIST component-scan base-package CDATA #IMPLIED>
+
+<!ELEMENT resource (#PCDATA)>
+<!ATTLIST resource name CDATA #REQUIRED>
+
+<!ELEMENT authentication (property*)>
+<!ATTLIST authentication strategy CDATA #IMPLIED>
+<!ATTLIST authentication ref CDATA #IMPLIED>
+<!ATTLIST authentication enabled CDATA #IMPLIED>
+<!ATTLIST authentication generator CDATA #IMPLIED>
+<!ATTLIST authentication header CDATA #IMPLIED>
