@@ -26,11 +26,8 @@ import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementMap;
 import org.simpleframework.xml.Root;
 
-import com.clarionmedia.infinitum.context.AuthenticationStrategy;
 import com.clarionmedia.infinitum.context.InfinitumContext;
 import com.clarionmedia.infinitum.context.RestfulContext;
-import com.clarionmedia.infinitum.context.SharedSecretAuthentication;
-import com.clarionmedia.infinitum.context.TokenGenerator;
 import com.clarionmedia.infinitum.context.exception.InfinitumConfigurationException;
 
 /**
@@ -53,7 +50,7 @@ public class XmlRestfulContext implements RestfulContext {
 
 	@Element(name = "authentication", required = false)
 	private Authentication mAuthentication;
-	
+
 	private InfinitumContext mParentContext;
 
 	@Override
@@ -94,45 +91,6 @@ public class XmlRestfulContext implements RestfulContext {
 	}
 
 	@Override
-	public void setAuthStrategy(String strategy) throws InfinitumConfigurationException {
-		if (mAuthentication == null)
-			mAuthentication = new Authentication();
-		if ("token".equalsIgnoreCase(strategy))
-			mAuthentication.mStrategy = "token";
-		else
-			throw new InfinitumConfigurationException("Unrecognized authentication strategy '" + strategy + "'.");
-	}
-
-	@Override
-	public <T extends AuthenticationStrategy> void setAuthStrategy(T strategy) {
-		if (mAuthentication == null)
-			mAuthentication = new Authentication();
-		setAuthStrategy(strategy.getClass().getSimpleName());
-	}
-
-	@Override
-	public AuthenticationStrategy getAuthStrategy() {
-		if (mAuthentication == null)
-			return null;
-		if (mAuthentication.mAuthBean != null) {
-			return mParentContext.getBean(mAuthentication.mAuthBean, AuthenticationStrategy.class);
-		}
-		String strategy = mAuthentication.mStrategy;
-		if ("token".equalsIgnoreCase(strategy)) {
-			SharedSecretAuthentication auth = new SharedSecretAuthentication();
-			auth.setHeader(mAuthentication.mHeader);
-			if (mAuthentication.mAuthProperties.containsKey("tokenName"))
-				auth.setTokenName(mAuthentication.mAuthProperties.get("tokenName"));
-			if (mAuthentication.mAuthProperties.containsKey("token"))
-				auth.setToken(mAuthentication.mAuthProperties.get("token"));
-			if (mAuthentication.mGenerator != null)
-				auth.setTokenGenerator(mParentContext.getBean(mAuthentication.mGenerator, TokenGenerator.class));
-			return auth;
-		} else
-			throw new InfinitumConfigurationException("Unrecognized authentication strategy '" + strategy + "'.");
-	}
-
-	@Override
 	public int getConnectionTimeout() {
 		String timeout = mProperties.get("connectionTimeout");
 		if (timeout == null)
@@ -167,7 +125,15 @@ public class XmlRestfulContext implements RestfulContext {
 	public void setClientBean(String clientBean) {
 		mClientBean = clientBean;
 	}
-	
+
+	public Authentication getAuthentication() {
+		return mAuthentication;
+	}
+
+	public void setAuthentication(Authentication authentication) {
+		mAuthentication = authentication;
+	}
+
 	@Override
 	public MessageType getMessageType() {
 		String messageType = mProperties.get("messageType");
@@ -198,7 +164,7 @@ public class XmlRestfulContext implements RestfulContext {
 	}
 
 	@Root
-	private static class Authentication {
+	public static class Authentication {
 
 		@Attribute(name = "enabled", required = false)
 		private boolean mIsEnabled = true;
@@ -208,15 +174,63 @@ public class XmlRestfulContext implements RestfulContext {
 
 		@Attribute(name = "strategy", required = false)
 		private String mStrategy;
-		
+
 		@Attribute(name = "header", required = false)
 		private boolean mHeader;
-		
+
 		@Attribute(name = "generator", required = false)
 		private String mGenerator;
 
 		@ElementMap(required = false, entry = "property", key = "name", attribute = true, inline = true)
 		private Map<String, String> mAuthProperties;
+
+		public boolean isEnabled() {
+			return mIsEnabled;
+		}
+
+		public void setEnabled(boolean isEnabled) {
+			mIsEnabled = isEnabled;
+		}
+
+		public String getAuthBean() {
+			return mAuthBean;
+		}
+
+		public void setAuthBean(String authBean) {
+			mAuthBean = authBean;
+		}
+
+		public String getStrategy() {
+			return mStrategy;
+		}
+
+		public void setStrategy(String strategy) {
+			mStrategy = strategy;
+		}
+
+		public boolean isHeader() {
+			return mHeader;
+		}
+
+		public void setHeader(boolean header) {
+			mHeader = header;
+		}
+
+		public String getGenerator() {
+			return mGenerator;
+		}
+
+		public void setGenerator(String generator) {
+			mGenerator = generator;
+		}
+
+		public Map<String, String> getAuthProperties() {
+			return mAuthProperties;
+		}
+
+		public void setAuthProperties(Map<String, String> authProperties) {
+			mAuthProperties = authProperties;
+		}
 
 	}
 

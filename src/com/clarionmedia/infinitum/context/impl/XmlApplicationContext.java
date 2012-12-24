@@ -36,7 +36,6 @@ import org.simpleframework.xml.Root;
 import com.clarionmedia.infinitum.aop.AspectComponent;
 import com.clarionmedia.infinitum.context.AbstractContext;
 import com.clarionmedia.infinitum.context.InfinitumContext;
-import com.clarionmedia.infinitum.context.RestfulContext;
 import com.clarionmedia.infinitum.di.BeanComponent;
 import com.clarionmedia.infinitum.di.impl.ConfigurableBeanFactory;
 
@@ -64,7 +63,7 @@ public class XmlApplicationContext extends AbstractContext {
 	protected List<Model> mModels;
 
 	@Element(name = "rest", required = false, type = XmlRestfulContext.class)
-	protected RestfulContext mRestConfig;
+	protected XmlRestfulContext mRestConfig;
 
 	@Element(name = "beans", required = false)
 	protected BeanContainer mBeanContainer;
@@ -100,7 +99,7 @@ public class XmlApplicationContext extends AbstractContext {
 	}
 
 	@Override
-	public RestfulContext getRestContext() {
+	public XmlRestfulContext getRestContext() {
 		return mRestConfig;
 	}
 	

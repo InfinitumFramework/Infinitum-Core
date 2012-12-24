@@ -19,7 +19,6 @@
 
 package com.clarionmedia.infinitum.context;
 
-import com.clarionmedia.infinitum.context.exception.InfinitumConfigurationException;
 
 /**
  * <p>
@@ -84,36 +83,6 @@ public interface RestfulContext {
 	 * @return {@code true} if authentication is required, {@code false} if not
 	 */
 	boolean isRestAuthenticated();
-
-	/**
-	 * Sets the {@link AuthenticationStrategy} for this
-	 * {@code RestfulConfiguration} based on one of the framework-defined
-	 * strategies, such as {@code token}.
-	 * 
-	 * @param strategy
-	 *            the framework-defined strategy to use
-	 * @throws InfinitumConfigurationException
-	 *             if the given strategy does not exist
-	 */
-	void setAuthStrategy(String strategy)
-			throws InfinitumConfigurationException;
-
-	/**
-	 * Sets the {@link AuthenticationStrategy} for this
-	 * {@code RestfulConfiguration}.
-	 * 
-	 * @param strategy
-	 *            the {@code AuthenticationStrategy} to use
-	 */
-	<T extends AuthenticationStrategy> void setAuthStrategy(T strategy);
-
-	/**
-	 * Retrieves the configured {@link AuthenticationStrategy} for this
-	 * {@code RestfulConfiguration}.
-	 * 
-	 * @return the {@code AuthenticationStrategy}
-	 */
-	AuthenticationStrategy getAuthStrategy();
 
 	/**
 	 * Retrieves the configured connection timeout in milliseconds. This is the
