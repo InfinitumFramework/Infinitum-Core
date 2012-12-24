@@ -23,27 +23,14 @@ import java.util.List;
 
 import android.content.Context;
 
-import com.clarionmedia.infinitum.context.impl.XmlContextFactory;
 import com.clarionmedia.infinitum.di.BeanFactory;
 
 /**
  * <p>
  * Acts as a container for framework-wide context information. This should not
- * be instantiated directly but rather obtained through the
- * {@link XmlContextFactory}, which creates an instance of this from
- * {@code infinitum.cfg.xml}. {@code InfinitumContext} describes an
- * application's domain model and how it should be persisted. Entity persistence
- * can be configured using one of two policies: XML map files or annotations.
+ * be instantiated directly but rather obtained through a {@link ContextFactory}
+ * , which creates an instance of this from {@code infinitum.cfg.xml}.
  * </p>
- * <p>
- * {@code InfinitumContext} is used to retrieve {@link Session} instances for
- * configured data sources. For example, a SQLite {@code Session} would be
- * retrieved by doing the following:
- * </p>
- * 
- * <pre>
- * Session session = context.getSession(DataSource.SQLITE);
- * </pre>
  * 
  * @author Tyler Treat
  * @version 1.0 05/18/12

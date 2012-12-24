@@ -133,7 +133,7 @@ public class XmlContextFactory extends ContextFactory {
 			Class<?> ormContextClass = null;
 			try {
 				ormContextClass = Thread.currentThread().getContextClassLoader()
-						.loadClass("com.clarionmedia.infinitum.orm.context.impl.OrmContextImpl");
+						.loadClass("com.clarionmedia.infinitum.orm.context.impl.XmlInfinitumOrmContext");
 				List<Constructor<?>> ctors = reflector.getAllConstructors(ormContextClass);
 				if (ctors.size() == 0)
 					Log.e(getClass().getSimpleName(), "Unable to load Infinitum ORM context.");
