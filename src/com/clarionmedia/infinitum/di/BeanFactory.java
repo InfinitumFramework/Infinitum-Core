@@ -22,17 +22,16 @@ package com.clarionmedia.infinitum.di;
 import java.util.List;
 import java.util.Map;
 
-import com.clarionmedia.infinitum.aop.annotation.Aspect;
 import com.clarionmedia.infinitum.context.InfinitumContext;
 import com.clarionmedia.infinitum.context.exception.InfinitumConfigurationException;
 import com.clarionmedia.infinitum.di.annotation.Bean;
 
 /**
  * <p>
- * Stores beans that have been configured in {@code infinitum.cfg.xml}. The
- * {@code BeanProvider} acts as a service locator for {@link InfinitumContext}.
- * Beans are retrieved by their name and registered by providing a name, class,
- * and field values.
+ * Stores beans that have been configured in {@code infinitum.cfg.xml} or
+ * through annotations. The {@code BeanFactory} acts as a service locator for
+ * {@link InfinitumContext}. Beans are retrieved by their name and registered by
+ * providing a name, class, and field values.
  * </p>
  * <p>
  * {@code BeanFactory} is responsible for maintaining a bean registry,
@@ -41,8 +40,8 @@ import com.clarionmedia.infinitum.di.annotation.Bean;
  * </p>
  * 
  * @author Tyler Treat
- * @version 1.0
- * @since 05/18/12
+ * @version 1.0 05/18/12
+ * @since 1.0
  */
 public interface BeanFactory {
 
@@ -59,17 +58,6 @@ public interface BeanFactory {
 	Object loadBean(String name) throws InfinitumConfigurationException;
 
 	/**
-	 * Retrieves an instance of the {@link Aspect} bean with the given name. The
-	 * name is configured in {@code infinitum.cfg.xml} or the {@link Aspect}
-	 * annotation.
-	 * 
-	 * @param name
-	 * @return
-	 * @throws InfinitumConfigurationException
-	 */
-	Object loadAspect(String name) throws InfinitumConfigurationException;
-
-	/**
 	 * Retrieves an instance of the bean with the given name and {@link Class}.
 	 * The name is configured in {@code infinitum.cfg.xml} or the {@link Bean}
 	 * annotation.
@@ -83,8 +71,7 @@ public interface BeanFactory {
 	 *             if the bean does not exist, could not be constructed, or is
 	 *             of the wrong type
 	 */
-	<T> T loadBean(String name, Class<T> clazz)
-			throws InfinitumConfigurationException;
+	<T> T loadBean(String name, Class<T> clazz) throws InfinitumConfigurationException;
 
 	/**
 	 * Retrieves the {@link AbstractBeanDefinition} for the bean with the given
@@ -111,7 +98,7 @@ public interface BeanFactory {
 	 * @param beans
 	 *            the {@code Beans} to register
 	 */
-	void registerBeans(List<BeanComponent> beans);
+	void registerBeans(List<XmlBean> beans);
 
 	/**
 	 * Registers the bean with the {@code BeanFactory}.
@@ -121,15 +108,6 @@ public interface BeanFactory {
 	 * 
 	 */
 	void registerBean(AbstractBeanDefinition beanDefinition);
-
-	/**
-	 * Registers the aspect with the {@code BeanFactory}.
-	 * 
-	 * @param beanDefinition
-	 *            the {@link AbstractBeanDefinition} to register
-	 * 
-	 */
-	void registerAspect(AbstractBeanDefinition beanDefinition);
 
 	/**
 	 * Retrieves the bean {@link Map} for this {@code BeanFactory}.

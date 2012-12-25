@@ -19,6 +19,7 @@
 
 package com.clarionmedia.infinitum.context;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -29,13 +30,9 @@ import java.util.Set;
 
 import android.content.Context;
 
-import com.clarionmedia.infinitum.aop.AspectComponent;
-import com.clarionmedia.infinitum.aop.annotation.Aspect;
-import com.clarionmedia.infinitum.aop.impl.AnnotationsAspectWeaver;
-import com.clarionmedia.infinitum.aop.impl.XmlAspectWeaver;
 import com.clarionmedia.infinitum.context.impl.XmlApplicationContext;
 import com.clarionmedia.infinitum.di.AbstractBeanDefinition;
-import com.clarionmedia.infinitum.di.BeanComponent;
+import com.clarionmedia.infinitum.di.XmlBean;
 import com.clarionmedia.infinitum.di.BeanDefinitionBuilder;
 import com.clarionmedia.infinitum.di.BeanFactory;
 import com.clarionmedia.infinitum.di.BeanFactoryPostProcessor;
@@ -46,6 +43,9 @@ import com.clarionmedia.infinitum.di.annotation.Scope;
 import com.clarionmedia.infinitum.di.impl.AutowiredBeanPostProcessor;
 import com.clarionmedia.infinitum.di.impl.GenericBeanDefinitionBuilder;
 import com.clarionmedia.infinitum.exception.InfinitumRuntimeException;
+import com.clarionmedia.infinitum.internal.Invocable;
+import com.clarionmedia.infinitum.internal.ModuleUtils;
+import com.clarionmedia.infinitum.internal.ModuleUtils.Module;
 import com.clarionmedia.infinitum.internal.StringUtil;
 import com.clarionmedia.infinitum.reflection.PackageReflector;
 import com.clarionmedia.infinitum.reflection.impl.DefaultClassReflector;
@@ -66,22 +66,17 @@ public abstract class AbstractContext implements InfinitumContext {
 	protected Context mContext;
 	protected List<InfinitumContext> mChildContexts;
 	protected InfinitumContext mParentContext;
+	protected Set<Class<?>> mScannedComponents;
+	protected Set<XmlBean> mXmlComponents;
+	protected Invocable mDeferredPostProcessor;
 
 	/**
-	 * Returns a {@link List} of {@link BeanComponent} instances that were
+	 * Returns a {@link List} of {@link XmlBean} instances that were
 	 * registered with the context through the Infinitum XML configuration.
 	 * 
 	 * @return {@code List} of {@code BeanComponents}
 	 */
-	protected abstract List<BeanComponent> getBeans();
-
-	/**
-	 * Returns a {@link List} of {@link AspectComponent} instances that were
-	 * registered with the context through the Infinitum XML configuration.
-	 * 
-	 * @return {@code List} of {@code AspectComponents}
-	 */
-	protected abstract List<AspectComponent> getAspects();
+	protected abstract List<XmlBean> getBeans();
 
 	/**
 	 * Returns the {@link RestfulContext} that was registered with the context
@@ -103,29 +98,13 @@ public abstract class AbstractContext implements InfinitumContext {
 	 */
 	public AbstractContext() {
 		mChildContexts = new ArrayList<InfinitumContext>();
-	}
-
-	/**
-	 * Constructs a new {@code AbstractContext} instance as a child of the given
-	 * parent context.
-	 * 
-	 * @param parentContext
-	 *            the parent context
-	 */
-	public AbstractContext(InfinitumContext parentContext) {
-		mChildContexts = new ArrayList<InfinitumContext>();
-		mParentContext = parentContext;
+		mScannedComponents = new HashSet<Class<?>>();
+		mXmlComponents = new HashSet<XmlBean>();
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public void postProcess(Context context) {
-		
-		// Post process child contexts
-		for (InfinitumContext childContext : getChildContexts()) {
-			childContext.postProcess(context);
-		}
-
 		mContext = context;
 		PackageReflector reflector = new DefaultPackageReflector();
 		RestfulContext restContext = getRestContext();
@@ -134,53 +113,39 @@ public abstract class AbstractContext implements InfinitumContext {
 
 		// Register XML beans
 		registerFrameworkComponents();
-		List<BeanComponent> beans = getBeans();
-		mBeanFactory.registerBeans(beans); // Also registers aspects implicitly
+		List<XmlBean> beans = getBeans();
+		mBeanFactory.registerBeans(beans);
 
 		// Get XML components
-		Set<Class<?>> xmlAspects = new HashSet<Class<?>>();
 		Set<Class<? extends BeanPostProcessor>> xmlBeanPostProcessors = new HashSet<Class<? extends BeanPostProcessor>>();
-		xmlBeanPostProcessors.add(AutowiredBeanPostProcessor.class); // Takes care of autowiring
+		xmlBeanPostProcessors.add(AutowiredBeanPostProcessor.class); // Takes
+																		// care
+																		// of
+																		// autowiring
 		Set<Class<BeanFactoryPostProcessor>> xmlBeanFactoryPostProcessors = new HashSet<Class<BeanFactoryPostProcessor>>();
-		for (BeanComponent bean : beans) {
+		for (XmlBean bean : beans) {
 			Class<?> clazz = reflector.getClass(bean.getClassName());
-			if (AspectComponent.class.equals(clazz))
-				xmlAspects.add(clazz);
-			else if (BeanPostProcessor.class.isAssignableFrom(clazz))
+			if (BeanPostProcessor.class.isAssignableFrom(clazz))
 				xmlBeanPostProcessors.add((Class<BeanPostProcessor>) clazz);
 			else if (BeanFactoryPostProcessor.class.isAssignableFrom(clazz))
 				xmlBeanFactoryPostProcessors.add((Class<BeanFactoryPostProcessor>) clazz);
+			else
+				mXmlComponents.add(bean);
 		}
 
 		// Scan for annotated components
-		Set<Class<?>> components = new HashSet<Class<?>>();
 		if (isComponentScanEnabled())
-			components.addAll(getClasspathComponents());
+			mScannedComponents.addAll(getClasspathComponents());
 
 		// Categorize the components while filtering down the original Set
-		Set<Class<?>> aspects = getAndRemoveAspects(components);
-		Set<Class<? extends BeanPostProcessor>> beanPostProcessors = getAndRemoveBeanPostProcessors(components);
+		final Set<Class<? extends BeanPostProcessor>> beanPostProcessors = getAndRemoveBeanPostProcessors(mScannedComponents);
 		beanPostProcessors.addAll(xmlBeanPostProcessors);
-		Set<Class<BeanFactoryPostProcessor>> beanFactoryPostProcessors = getAndRemoveBeanFactoryPostProcessors(components);
+		final Set<Class<BeanFactoryPostProcessor>> beanFactoryPostProcessors = getAndRemoveBeanFactoryPostProcessors(mScannedComponents);
 		beanFactoryPostProcessors.addAll(xmlBeanFactoryPostProcessors);
 
-		// Register scanned aspects
-		BeanDefinitionBuilder beanDefinitionBuilder = new GenericBeanDefinitionBuilder(mBeanFactory);
-		for (Class<?> aspectClass : aspects) {
-			Aspect aspect = aspectClass.getAnnotation(Aspect.class);
-			String beanName = aspect.value().trim().equals("") ? StringUtil.toCamelCase(aspectClass.getSimpleName()) : aspect.value()
-					.trim();
-			Scope scope = aspectClass.getAnnotation(Scope.class);
-			String scopeVal = "singleton";
-			if (scope != null)
-				scopeVal = scope.value();
-			AbstractBeanDefinition beanDefinition = beanDefinitionBuilder.setName(beanName).setType(aspectClass).setProperties(null)
-					.setScope(scopeVal).build();
-			mBeanFactory.registerAspect(beanDefinition);
-		}
-
 		// Register scanned bean candidates
-		for (Class<?> candidate : components) {
+		BeanDefinitionBuilder beanDefinitionBuilder = new GenericBeanDefinitionBuilder(mBeanFactory);
+		for (Class<?> candidate : mScannedComponents) {
 			if (candidate.isAnnotationPresent(Bean.class)) {
 				Bean bean = candidate.getAnnotation(Bean.class);
 				String beanName = bean.value().trim().equals("") ? StringUtil.toCamelCase(candidate.getSimpleName()) : bean.value().trim();
@@ -194,17 +159,25 @@ public abstract class AbstractContext implements InfinitumContext {
 			}
 		}
 
-		// Process aspects
-		// Currently not supporting use of XML and annotation aspects in
-		// conjunction, only one or the other right now...
-		if (isComponentScanEnabled())
-			new AnnotationsAspectWeaver(this).weave(mContext, aspects);
-		else
-			new XmlAspectWeaver(this, getAspects()).weave(mContext, null);
+		// Defer post processor execution because we need to process child
+		// contexts first
+		mDeferredPostProcessor = new Invocable() {
+			public void invoke() {
+				// Execute post processors
+				executeBeanPostProcessors(beanPostProcessors);
+				executeBeanFactoryPostProcessors(beanFactoryPostProcessors);
+			}
+		};
 
-		// Execute post processors
-		executeBeanPostProcessors(beanPostProcessors);
-		executeBeanFactoryPostProcessors(beanFactoryPostProcessors);
+		// Post process child contexts
+		for (InfinitumContext childContext : getChildContexts()) {
+			childContext.postProcess(context);
+		}
+	}
+
+	public void executeDeferredPostProcessing() {
+		if (mDeferredPostProcessor != null)
+			mDeferredPostProcessor.invoke();
 	}
 
 	@Override
@@ -242,6 +215,14 @@ public abstract class AbstractContext implements InfinitumContext {
 		return mContext;
 	}
 
+	public Set<Class<?>> getScannedComponents() {
+		return mScannedComponents;
+	}
+
+	public Set<XmlBean> getXmlComponents() {
+		return mXmlComponents;
+	}
+
 	/**
 	 * Returns a {@link Set} of all {@link Class} instances containing the
 	 * {@link Component} annotation from the classpath.
@@ -256,25 +237,22 @@ public abstract class AbstractContext implements InfinitumContext {
 		PackageReflector reflector = new DefaultPackageReflector();
 		String[] packageArr = new String[packages.size()];
 		Set<Class<?>> classes = reflector.getPackageClasses(mContext, packages.toArray(packageArr));
-		for (Class<?> clazz : classes) {
-			if (clazz.isAnnotationPresent(Component.class) || clazz.isAnnotationPresent(Bean.class)
-					|| clazz.isAnnotationPresent(Aspect.class))
-				components.add(clazz);
-		}
+		addQualifyingComponents(classes, components);
 		return components;
 	}
 
-	private Set<Class<?>> getAndRemoveAspects(Collection<Class<?>> components) {
-		Set<Class<?>> aspects = new HashSet<Class<?>>();
-		Iterator<Class<?>> iter = components.iterator();
-		while (iter.hasNext()) {
-			Class<?> component = iter.next();
-			if (component.isAnnotationPresent(Aspect.class)) {
-				aspects.add(component);
-				iter.remove();
-			}
+	@SuppressWarnings("unchecked")
+	private void addQualifyingComponents(Set<Class<?>> classes, Set<Class<?>> components) {
+		PackageReflector reflector = new DefaultPackageReflector();
+		boolean isAopEnabled = ModuleUtils.hasModule(Module.AOP);
+		Class<? extends Annotation> aspectAnnotation = null;
+		if (isAopEnabled)
+			aspectAnnotation = (Class<? extends Annotation>) reflector.getClass("com.clarionmedia.infinitum.aop.annotation.Aspect");
+		for (Class<?> clazz : classes) {
+			if (clazz.isAnnotationPresent(Component.class) || clazz.isAnnotationPresent(Bean.class)
+					|| clazz.isAnnotationPresent(aspectAnnotation))
+				components.add(clazz);
 		}
-		return aspects;
 	}
 
 	@SuppressWarnings("unchecked")

@@ -17,14 +17,13 @@
  * along with Infinitum Framework.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.clarionmedia.infinitum.aop;
+package com.clarionmedia.infinitum.di;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 
 import android.content.Context;
 
-import com.clarionmedia.infinitum.aop.impl.AdvisedDexMakerProxy;
 import com.clarionmedia.infinitum.exception.InfinitumRuntimeException;
 import com.clarionmedia.infinitum.internal.Preconditions;
 import com.clarionmedia.infinitum.internal.caching.DexCaching;

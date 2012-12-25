@@ -19,10 +19,10 @@
 
 package com.clarionmedia.infinitum.di.impl;
 
-import com.clarionmedia.infinitum.aop.AopProxy;
 import com.clarionmedia.infinitum.context.ContextFactory;
 import com.clarionmedia.infinitum.context.InfinitumContext;
 import com.clarionmedia.infinitum.di.AbstractBeanDefinition;
+import com.clarionmedia.infinitum.di.AopProxy;
 import com.clarionmedia.infinitum.di.BeanFactory;
 
 /**

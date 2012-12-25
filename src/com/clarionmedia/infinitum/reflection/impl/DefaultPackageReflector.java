@@ -22,6 +22,7 @@ package com.clarionmedia.infinitum.reflection.impl;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 import android.content.Context;
@@ -47,7 +48,7 @@ public class DefaultPackageReflector implements PackageReflector {
 	public Class<?> getClass(String className) {
 		Class<?> clazz;
 		try {
-			clazz = Class.forName(className);
+			clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
 		} catch (ClassNotFoundException e) {
 			throw new InfinitumRuntimeException("Class '" + className + "' could not be resolved.");
 		}
@@ -63,7 +64,7 @@ public class DefaultPackageReflector implements PackageReflector {
 			while (entries.hasMoreElements()) {
 				String entry = entries.nextElement();
 				for (String packageName : packageNames) {
-					if (entry.toLowerCase().startsWith(packageName.toLowerCase())) {
+					if (entry.toLowerCase(Locale.getDefault()).startsWith(packageName.toLowerCase())) {
 						classes.add(getClass(entry));
 						break;
 					}

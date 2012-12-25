@@ -36,6 +36,7 @@ import com.clarionmedia.infinitum.context.ContextFactory;
 import com.clarionmedia.infinitum.context.InfinitumContext;
 import com.clarionmedia.infinitum.context.exception.InfinitumConfigurationException;
 import com.clarionmedia.infinitum.internal.ModuleUtils;
+import com.clarionmedia.infinitum.internal.ModuleUtils.Module;
 import com.clarionmedia.infinitum.reflection.ClassReflector;
 import com.clarionmedia.infinitum.reflection.impl.DefaultClassReflector;
 
@@ -117,6 +118,7 @@ public class XmlContextFactory extends ContextFactory {
 				throw new InfinitumConfigurationException("Unable to initialize Infinitum configuration.");
 			addChildContexts(ret);
 			ret.postProcess(context);
+			ret.executeDeferredPostProcessing();
 			return ret;
 		} catch (Exception e) {
 			throw new InfinitumConfigurationException("Unable to initialize Infinitum configuration.", e);
@@ -126,22 +128,28 @@ public class XmlContextFactory extends ContextFactory {
 		}
 	}
 
+	/**
+	 * This loads all of the non-core module contexts as children of the root
+	 * context.
+	 */
 	private void addChildContexts(XmlApplicationContext context) {
-		if (ModuleUtils.hasOrm()) {
-			// Add the ORM child context
-			ClassReflector reflector = new DefaultClassReflector();
-			Class<?> ormContextClass = null;
-			try {
-				ormContextClass = Thread.currentThread().getContextClassLoader()
-						.loadClass("com.clarionmedia.infinitum.orm.context.impl.XmlInfinitumOrmContext");
-				List<Constructor<?>> ctors = reflector.getAllConstructors(ormContextClass);
-				if (ctors.size() == 0)
-					Log.e(getClass().getSimpleName(), "Unable to load Infinitum ORM context.");
-				context.addChildContext((InfinitumContext) reflector.getClassInstance(ctors.get(0), context));
-			} catch (ClassNotFoundException e) {
-				Log.e(getClass().getSimpleName(), "Unable to load Infinitum ORM context.", e);
-			}
-			
+		for (Module module : Module.values()) {
+			if (ModuleUtils.hasModule(module))
+				context.addChildContext(loadModuleContext(module, context));
+		}
+	}
+
+	private InfinitumContext loadModuleContext(Module module, XmlApplicationContext parent) {
+		ClassReflector reflector = new DefaultClassReflector();
+		try {
+			Class<?> contextClass = Thread.currentThread().getContextClassLoader().loadClass(module.getContextClass());
+			List<Constructor<?>> ctors = reflector.getAllConstructors(contextClass);
+			if (ctors.size() == 0)
+				Log.e(getClass().getSimpleName(), "Unable to load Infinitum context for module " + module.name() + ".");
+			return (InfinitumContext) reflector.getClassInstance(ctors.get(0), parent);
+		} catch (ClassNotFoundException e) {
+			Log.e(getClass().getSimpleName(), "Unable to load Infinitum context for module " + module.name() + ",", e);
+			return null;
 		}
 	}
 

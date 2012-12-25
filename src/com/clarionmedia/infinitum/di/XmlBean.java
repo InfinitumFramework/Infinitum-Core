@@ -29,32 +29,32 @@ import java.lang.reflect.Field;
 /**
  * <p>
  * Encapsulates the notion of a "bean", which consists of a name or ID, a class,
- * and optional properties.
+ * and optional properties, as defined in XML.
  * </p>
  * 
  * @author Tyler Treat
  * @version 1.0 06/26/12
- * @since 06/26/12
+ * @since 1.0
  */
 @Root
-public class BeanComponent {
+public class XmlBean {
 
 	@Attribute(name = "id")
 	private String mId;
 
 	@Attribute(name = "src")
 	private String mClass;
-	
+
 	@Attribute(name = "scope", required = false)
 	private String mScope;
 
 	@ElementList(required = false, entry = "property", inline = true)
 	private List<Property> mProperties;
 
-	public BeanComponent() {
+	public XmlBean() {
 		mProperties = new ArrayList<Property>();
 	}
-	
+
 	public void setId(String id) {
 		mId = id;
 	}
@@ -62,7 +62,7 @@ public class BeanComponent {
 	public String getId() {
 		return mId;
 	}
-	
+
 	public void setClassName(String className) {
 		mClass = className;
 	}
@@ -70,7 +70,7 @@ public class BeanComponent {
 	public String getClassName() {
 		return mClass;
 	}
-	
+
 	public void setProperties(List<Property> properties) {
 		mProperties = properties;
 	}
@@ -112,7 +112,7 @@ public class BeanComponent {
 		public String getName() {
 			return mName;
 		}
-		
+
 		public void setName(String name) {
 			mName = name;
 		}
@@ -120,7 +120,7 @@ public class BeanComponent {
 		public String getValue() {
 			return mValue;
 		}
-		
+
 		public void setValue(String value) {
 			mValue = value;
 		}
@@ -128,7 +128,7 @@ public class BeanComponent {
 		public String getRef() {
 			return mRef;
 		}
-		
+
 		public void setRef(String ref) {
 			mRef = ref;
 		}

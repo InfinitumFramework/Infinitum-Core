@@ -27,7 +27,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import com.clarionmedia.infinitum.aop.AopProxy;
+
+import com.clarionmedia.infinitum.di.AopProxy;
 import com.clarionmedia.infinitum.exception.InfinitumRuntimeException;
 import com.clarionmedia.infinitum.reflection.ClassReflector;
 

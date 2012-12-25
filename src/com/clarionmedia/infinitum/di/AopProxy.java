@@ -17,10 +17,9 @@
  * along with Infinitum Framework.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.clarionmedia.infinitum.aop;
+package com.clarionmedia.infinitum.di;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 
 /**
  * <p>
@@ -154,37 +153,6 @@ public abstract class AopProxy implements InvocationHandler {
 	 */
 	public void setTarget(Object target) {
 		mTarget = target;
-	}
-
-	/**
-	 * Indicates if the given {@link JoinPoint} applies to the given
-	 * {@link Method}.
-	 * 
-	 * @param joinPoint
-	 *            the {@code JoinPoint} to check
-	 * @param method
-	 *            the {@code Method} to check
-	 * @return {@code true} if it applies, {@code false} if not
-	 */
-	protected boolean applies(JoinPoint joinPoint, Method method) {
-		if (joinPoint.isClassScope())
-			return true;
-		Method joinPointMethod = joinPoint.getMethod();
-		if (joinPointMethod == null)
-			return false;
-		if (!joinPointMethod.getName().equals(method.getName()))
-			return false;
-		String t1 = "";
-		for (Class<?> c : joinPointMethod.getParameterTypes()) {
-			t1 += c.getName() + "/";
-		}
-		String t2 = "";
-		for (Class<?> c : method.getParameterTypes()) {
-			t2 += c.getName() + "/";
-		}
-		if (!t1.equals(t2))
-			return false;
-		return true;
 	}
 
 }

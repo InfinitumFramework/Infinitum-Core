@@ -33,10 +33,9 @@ import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.ElementMap;
 import org.simpleframework.xml.Root;
 
-import com.clarionmedia.infinitum.aop.AspectComponent;
 import com.clarionmedia.infinitum.context.AbstractContext;
 import com.clarionmedia.infinitum.context.InfinitumContext;
-import com.clarionmedia.infinitum.di.BeanComponent;
+import com.clarionmedia.infinitum.di.XmlBean;
 import com.clarionmedia.infinitum.di.impl.ConfigurableBeanFactory;
 
 /**
@@ -81,18 +80,10 @@ public class XmlApplicationContext extends AbstractContext {
 	}
 
 	@Override
-	protected List<BeanComponent> getBeans() {
-		List<BeanComponent> ret = new ArrayList<BeanComponent>();
+	protected List<XmlBean> getBeans() {
+		List<XmlBean> ret = new ArrayList<XmlBean>();
 		if (mBeanContainer.mBeans != null)
 			ret.addAll(mBeanContainer.mBeans);
-		if (mBeanContainer.mAspects != null)
-			ret.addAll(mBeanContainer.mAspects);
-		return ret;
-	}
-
-	@Override
-	protected List<AspectComponent> getAspects() {
-		List<AspectComponent> ret = new ArrayList<AspectComponent>();
 		if (mBeanContainer.mAspects != null)
 			ret.addAll(mBeanContainer.mAspects);
 		return ret;
@@ -145,10 +136,10 @@ public class XmlApplicationContext extends AbstractContext {
 	private static class BeanContainer {
 
 		@ElementList(entry = "bean", inline = true, required = false)
-		private List<BeanComponent> mBeans;
+		private List<XmlBean> mBeans;
 
 		@ElementList(entry = "aspect", inline = true, required = false)
-		private List<AspectComponent> mAspects;
+		private List<XmlAspect> mAspects;
 
 		@Element(name = "component-scan", required = false)
 		private ComponentScan mComponentScan;

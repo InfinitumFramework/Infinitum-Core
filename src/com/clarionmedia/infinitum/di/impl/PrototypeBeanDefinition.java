@@ -19,8 +19,8 @@
 
 package com.clarionmedia.infinitum.di.impl;
 
-import com.clarionmedia.infinitum.aop.AopProxy;
 import com.clarionmedia.infinitum.di.AbstractBeanDefinition;
+import com.clarionmedia.infinitum.di.AopProxy;
 import com.clarionmedia.infinitum.di.BeanFactory;
 
 /**

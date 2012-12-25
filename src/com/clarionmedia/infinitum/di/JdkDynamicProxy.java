@@ -17,12 +17,11 @@
  * along with Infinitum Framework.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.clarionmedia.infinitum.aop;
+package com.clarionmedia.infinitum.di;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 
-import com.clarionmedia.infinitum.aop.impl.AdvisedJdkDynamicProxy;
 import com.clarionmedia.infinitum.internal.Preconditions;
 
 /**

@@ -23,11 +23,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.clarionmedia.infinitum.aop.AspectComponent;
 import com.clarionmedia.infinitum.context.InfinitumContext;
 import com.clarionmedia.infinitum.context.exception.InfinitumConfigurationException;
 import com.clarionmedia.infinitum.di.AbstractBeanDefinition;
-import com.clarionmedia.infinitum.di.BeanComponent;
+import com.clarionmedia.infinitum.di.XmlBean;
 import com.clarionmedia.infinitum.di.BeanFactory;
 import com.clarionmedia.infinitum.reflection.PackageReflector;
 import com.clarionmedia.infinitum.reflection.impl.DefaultPackageReflector;
@@ -47,7 +46,6 @@ public class ConfigurableBeanFactory implements BeanFactory {
 
 	private PackageReflector mPackageReflector;
 	private Map<String, AbstractBeanDefinition> mBeanDefinitions;
-	private Map<String, AbstractBeanDefinition> mAspectDefinitions;
 	private InfinitumContext mContext;
 
 	/**
@@ -60,24 +58,13 @@ public class ConfigurableBeanFactory implements BeanFactory {
 		mContext = context;
 		mPackageReflector = new DefaultPackageReflector();
 		mBeanDefinitions = new HashMap<String, AbstractBeanDefinition>();
-		mAspectDefinitions = new HashMap<String, AbstractBeanDefinition>();
 	}
 
 	@Override
 	public Object loadBean(String name) throws InfinitumConfigurationException {
 		if (!mBeanDefinitions.containsKey(name))
-			throw new InfinitumConfigurationException("Bean '" + name
-					+ "' could not be resolved");
+			throw new InfinitumConfigurationException("Bean '" + name + "' could not be resolved");
 		return mBeanDefinitions.get(name).getBeanInstance();
-	}
-
-	@Override
-	public Object loadAspect(String name)
-			throws InfinitumConfigurationException {
-		if (!mAspectDefinitions.containsKey(name))
-			throw new InfinitumConfigurationException("Aspect '" + name
-					+ "' could not be resolved");
-		return mAspectDefinitions.get(name).getBeanInstance();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -85,8 +72,7 @@ public class ConfigurableBeanFactory implements BeanFactory {
 	public <T> T loadBean(String name, Class<T> clazz) throws InfinitumConfigurationException {
 		Object bean = loadBean(name);
 		if (!clazz.isInstance(bean))
-			throw new InfinitumConfigurationException("Bean '" + name
-					+ "' was not of type '" + clazz.getName() + "'.");
+			throw new InfinitumConfigurationException("Bean '" + name + "' was not of type '" + clazz.getName() + "'.");
 		return (T) bean;
 	}
 
@@ -96,12 +82,12 @@ public class ConfigurableBeanFactory implements BeanFactory {
 	}
 
 	@Override
-	public void registerBeans(List<BeanComponent> beans) {
+	public void registerBeans(List<XmlBean> beans) {
 		if (beans == null)
 			return;
-		for (BeanComponent bean : beans) {
+		for (XmlBean bean : beans) {
 			Map<String, Object> propertiesMap = new HashMap<String, Object>();
-			for (BeanComponent.Property property : bean.getProperties()) {
+			for (XmlBean.Property property : bean.getProperties()) {
 				String name = property.getName();
 				String ref = property.getRef();
 				if (ref != null) {
@@ -112,23 +98,14 @@ public class ConfigurableBeanFactory implements BeanFactory {
 				}
 			}
 			Class<?> clazz = mPackageReflector.getClass(bean.getClassName());
-			AbstractBeanDefinition beanDefinition = new GenericBeanDefinitionBuilder(this).setName(bean.getId()).setType(clazz).setProperties(propertiesMap).setScope(bean.getScope()).build();
-			// Aspects are registered both as beans and aspects
-			if (bean.getClass().equals(AspectComponent.class))
-				registerAspect(beanDefinition);
-			else
-			    registerBean(beanDefinition);
+			AbstractBeanDefinition beanDefinition = new GenericBeanDefinitionBuilder(this).setName(bean.getId()).setType(clazz)
+					.setProperties(propertiesMap).setScope(bean.getScope()).build();
+			registerBean(beanDefinition);
 		}
 	}
 
 	@Override
 	public void registerBean(AbstractBeanDefinition beanDefinition) {
-		mBeanDefinitions.put(beanDefinition.getName(), beanDefinition);
-	}
-
-	@Override
-	public void registerAspect(AbstractBeanDefinition beanDefinition) {
-		mAspectDefinitions.put(beanDefinition.getName(), beanDefinition);
 		mBeanDefinitions.put(beanDefinition.getName(), beanDefinition);
 	}
 

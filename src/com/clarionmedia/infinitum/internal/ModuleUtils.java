@@ -31,14 +31,51 @@ package com.clarionmedia.infinitum.internal;
 public class ModuleUtils {
 
 	private static final String ORM_MARKER_CLASS = "com.clarionmedia.infinitum.orm.context.InfinitumOrmContext";
+	private static final String ORM_CONTEXT_CLASS = "com.clarionmedia.infinitum.orm.context.impl.XmlInfinitumOrmContext";
+	private static final String AOP_MARKER_CLASS = "com.clarionmedia.infinitum.aop.context.InfinitumAopContext";
+	private static final String AOP_CONTEXT_CLASS = "com.clarionmedia.infinitum.aop.context.impl.XmlInfinitumAopContext";
 
 	/**
-	 * Indicates if the ORM module is available.
-	 * 
-	 * @return {@code true} if the ORM module is available, {@code false} if not
+	 * Module enum containing information for the various framework modules.
 	 */
-	public static boolean hasOrm() {
-		return hasClass(ORM_MARKER_CLASS);
+	public enum Module {
+		ORM(ORM_MARKER_CLASS, ORM_CONTEXT_CLASS), AOP(AOP_MARKER_CLASS, AOP_CONTEXT_CLASS);
+
+		private String mMarker;
+		private String mContext;
+
+		Module(String marker, String context) {
+			mMarker = marker;
+			mContext = context;
+		}
+
+		/**
+		 * Returns the marker class name for this {@code Module}. The marker
+		 * class is used to determine if the {@code Module} is on the classpath.
+		 * 
+		 * @return marker class name
+		 */
+		public String getMarkerClass() {
+			return mMarker;
+		}
+
+		/**
+		 * Returns the context class name for this {@code Module}.
+		 * 
+		 * @return context class name
+		 */
+		public String getContextClass() {
+			return mContext;
+		}
+	};
+
+	/**
+	 * Indicates if the given module is available.
+	 * 
+	 * @return {@code true} if the module is available, {@code false} if not
+	 */
+	public static boolean hasModule(Module module) {
+		return hasClass(module.getMarkerClass());
 	}
 
 	private static boolean hasClass(String name) {

@@ -17,7 +17,7 @@
  * along with Infinitum Framework.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.clarionmedia.infinitum.aop;
+package com.clarionmedia.infinitum.context.impl;
 
 import java.util.List;
 
@@ -25,23 +25,20 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
-import com.clarionmedia.infinitum.aop.JoinPoint.AdviceLocation;
-import com.clarionmedia.infinitum.aop.JoinPoint.PointcutType;
-import com.clarionmedia.infinitum.context.exception.InfinitumConfigurationException;
-import com.clarionmedia.infinitum.di.BeanComponent;
+import com.clarionmedia.infinitum.di.XmlBean;
 
 /**
  * <p>
  * Encapsulates the notion of an "aspect", which consists of a name or ID, a
- * class, and optional properties.
+ * class, and optional properties, as defined in XML.
  * </p>
  * 
  * @author Tyler Treat
  * @version 1.0 07/18/12
- * @since 07/18/12
+ * @since 1.0
  */
 @Root
-public class AspectComponent extends BeanComponent {
+public class XmlAspect extends XmlBean {
 
 	@ElementList(required = false, entry = "advice", inline = true)
 	private List<Advice> mAdvice;
@@ -206,43 +203,6 @@ public class AspectComponent extends BeanComponent {
 		 */
 		public String[] getSeparatedValues() {
 			return mValue.split(";");
-		}
-
-		/**
-		 * Indicates if the {@code Advice} is an {@code around} type.
-		 * 
-		 * @return {@code true} if it is {@code around}, {@code false} if not
-		 */
-		public boolean isAround() {
-			return mType.equalsIgnoreCase(AdviceLocation.Around.name());
-		}
-
-		/**
-		 * Returns the {@link AdviceLocation} for this {@code Advice}.
-		 * 
-		 * @return {@code AdviceLocation}
-		 */
-		public AdviceLocation getLocation() {
-			if (mType.equalsIgnoreCase(AdviceLocation.Around.name()))
-				return AdviceLocation.Around;
-			if (mType.equalsIgnoreCase(AdviceLocation.Before.name()))
-				return AdviceLocation.Before;
-			if (mType.equalsIgnoreCase(AdviceLocation.After.name()))
-				return AdviceLocation.After;
-			throw new InfinitumConfigurationException("Unknown advice type '" + mType + "'.");
-		}
-
-		/**
-		 * Returns the {@link PointcutType} for this {@code Advice}.
-		 * 
-		 * @return {@code PointcutType}
-		 */
-		public PointcutType getPointcutType() {
-			if (mPointcut.equalsIgnoreCase(PointcutType.Beans.name()))
-				return PointcutType.Beans;
-			if (mPointcut.equalsIgnoreCase(PointcutType.Within.name()))
-				return PointcutType.Within;
-			throw new InfinitumConfigurationException("Unknown pointcut type '" + mPointcut + "'.");
 		}
 
 	}
