@@ -84,7 +84,7 @@ public abstract class AbstractContext implements InfinitumContext {
 	 * 
 	 * @return {@code RestfulContext} or {@code null} if none was registered
 	 */
-	protected abstract RestfulContext getRestContext();
+	public abstract RestfulContext getRestContext();
 
 	/**
 	 * Returns a {@link List} of packages to scan for components.
@@ -319,8 +319,6 @@ public abstract class AbstractContext implements InfinitumContext {
 		BeanDefinitionBuilder beanDefinitionBuilder = new GenericBeanDefinitionBuilder(mBeanFactory);
 		AbstractBeanDefinition beanDefinition = beanDefinitionBuilder.setName("$InfinitumContext").setType(XmlApplicationContext.class)
 				.build();
-		mBeanFactory.registerBean(beanDefinition);
-		beanDefinition = beanDefinitionBuilder.setName("$RestContext").setType(RestfulContext.class).build();
 		mBeanFactory.registerBean(beanDefinition);
 		beanDefinition = beanDefinitionBuilder.setName("$ClassReflector").setType(DefaultClassReflector.class).build();
 		mBeanFactory.registerBean(beanDefinition);

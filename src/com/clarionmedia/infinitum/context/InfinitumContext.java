@@ -126,5 +126,14 @@ public interface InfinitumContext {
 	 * @return parent context
 	 */
 	InfinitumContext getParentContext();
+	
+	/**
+	 * Retrieves the {@link RestfulContext} for this {@code InfinitumContext}.
+	 * The {@code RestfulConfiguration} contains configuration settings for the
+	 * RESTful client.
+	 * 
+	 * @return {@code RestfulContext}
+	 */
+	RestfulContext getRestContext();
 
 }
