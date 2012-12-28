@@ -19,6 +19,15 @@
 
 package com.clarionmedia.infinitum.internal;
 
+import java.lang.reflect.Constructor;
+import java.util.List;
+
+import android.util.Log;
+
+import com.clarionmedia.infinitum.context.InfinitumContext;
+import com.clarionmedia.infinitum.reflection.ClassReflector;
+import com.clarionmedia.infinitum.reflection.impl.DefaultClassReflector;
+
 /**
  * <p>
  * Static utility methods for dealing with Infinitum Framework modules.
@@ -45,10 +54,12 @@ public class ModuleUtils {
 
 		private String mMarker;
 		private String mContext;
+		private ClassReflector mReflector;
 
 		Module(String marker, String context) {
 			mMarker = marker;
 			mContext = context;
+			mReflector = new DefaultClassReflector();
 		}
 
 		/**
@@ -68,6 +79,27 @@ public class ModuleUtils {
 		 */
 		public String getContextClass() {
 			return mContext;
+		}
+
+		/**
+		 * Initializes a new instance of the {@link InfinitumContext} for this
+		 * {@code Module}.
+		 * 
+		 * @param parent
+		 *            the parent context
+		 * @return module context
+		 */
+		public InfinitumContext initialize(InfinitumContext parent) {
+			try {
+				Class<?> contextClass = Thread.currentThread().getContextClassLoader().loadClass(mContext);
+				List<Constructor<?>> ctors = mReflector.getAllConstructors(contextClass);
+				if (ctors.size() == 0)
+					Log.e(getClass().getSimpleName(), "Unable to load Infinitum context for module " + name() + ".");
+				return (InfinitumContext) mReflector.getClassInstance(ctors.get(0), parent);
+			} catch (ClassNotFoundException e) {
+				Log.e(getClass().getSimpleName(), "Unable to load Infinitum context for module " + name() + ",", e);
+				return null;
+			}
 		}
 	};
 
