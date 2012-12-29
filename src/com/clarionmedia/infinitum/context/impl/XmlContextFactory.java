@@ -63,12 +63,12 @@ public class XmlContextFactory extends ContextFactory {
 	public InfinitumContext configure(Context context) throws InfinitumConfigurationException {
 		if (sInfinitumContext != null)
 			return sInfinitumContext;
-		mContext = context;
-		Resources res = context.getResources();
-		int id = res.getIdentifier("infinitum", "raw", context.getPackageName());
+		mContext = context.getApplicationContext();
+		Resources res = mContext.getResources();
+		int id = res.getIdentifier("infinitum", "raw", mContext.getPackageName());
 		if (id == 0)
 			throw new InfinitumConfigurationException("Configuration infinitum.cfg.xml could not be found.");
-		sInfinitumContext = configureFromXml(context, id);
+		sInfinitumContext = configureFromXml(id);
 		return sInfinitumContext;
 	}
 
@@ -76,8 +76,8 @@ public class XmlContextFactory extends ContextFactory {
 	public InfinitumContext configure(Context context, int configId) throws InfinitumConfigurationException {
 		if (sInfinitumContext != null)
 			return sInfinitumContext;
-		mContext = context;
-		sInfinitumContext = configureFromXml(context, configId);
+		mContext = context.getApplicationContext();
+		sInfinitumContext = configureFromXml(configId);
 		return sInfinitumContext;
 	}
 
@@ -102,7 +102,7 @@ public class XmlContextFactory extends ContextFactory {
 		throw new InfinitumConfigurationException("Configuration of type '" + contextType.getClass().getName() + "' could not be found.");
 	}
 
-	private XmlApplicationContext configureFromXml(Context context, int configId) {
+	private XmlApplicationContext configureFromXml(int configId) {
 		long start = Calendar.getInstance().getTimeInMillis();
 		Resources resources = mContext.getResources();
 		Serializer serializer = new Persister();
@@ -113,7 +113,7 @@ public class XmlContextFactory extends ContextFactory {
 			if (ret == null)
 				throw new InfinitumConfigurationException("Unable to initialize Infinitum configuration.");
 			addChildContexts(ret);
-			ret.postProcess(context);
+			ret.postProcess(mContext);
 			ret.executeDeferredPostProcessing();
 			return ret;
 		} catch (Exception e) {

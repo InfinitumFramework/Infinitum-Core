@@ -19,8 +19,8 @@
 
 package com.clarionmedia.infinitum.di.impl;
 
-import com.clarionmedia.infinitum.context.ContextFactory;
 import com.clarionmedia.infinitum.context.InfinitumContext;
+import com.clarionmedia.infinitum.context.impl.InfinitumContextProxy;
 import com.clarionmedia.infinitum.di.AbstractBeanDefinition;
 import com.clarionmedia.infinitum.di.AopProxy;
 import com.clarionmedia.infinitum.di.BeanFactory;
@@ -54,7 +54,7 @@ public class SingletonBeanDefinition extends AbstractBeanDefinition {
 	@Override
 	public Object getBeanInstance() {
 		if (InfinitumContext.class.isAssignableFrom(mType))
-			return ContextFactory.newInstance().getContext((Class<InfinitumContext>) mType);
+			return new InfinitumContextProxy((Class<? extends InfinitumContext>) mType).getProxy();
 		if (mProxiedBean != null)
 			return mProxiedBean;
 		if (mBeanProxy != null) {
@@ -71,10 +71,11 @@ public class SingletonBeanDefinition extends AbstractBeanDefinition {
 		return mBean;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object getNonProxiedBeanInstance() {
 		if (InfinitumContext.class.isAssignableFrom(mType))
-			return ContextFactory.newInstance().getContext();
+			return new InfinitumContextProxy((Class<? extends InfinitumContext>) mType).getProxy();
 		if (mBean != null)
 			return mBean;
 		mBean = createBean();

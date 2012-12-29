@@ -22,7 +22,10 @@ package com.clarionmedia.infinitum.di;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 
+import com.clarionmedia.infinitum.context.InfinitumContext;
 import com.clarionmedia.infinitum.internal.Preconditions;
+import com.clarionmedia.infinitum.reflection.ClassReflector;
+import com.clarionmedia.infinitum.reflection.impl.DefaultClassReflector;
 
 /**
  * <p>
@@ -50,23 +53,44 @@ public abstract class JdkDynamicProxy extends AopProxy {
 	public JdkDynamicProxy(Object target, Class<?>[] interfaces) {
 		super(target);
 		Preconditions.checkNotNull(interfaces);
-		mInterfaces = interfaces;
+		ClassReflector reflector = new DefaultClassReflector();
+		Class<?>[] realInterfaces = new Class<?>[interfaces.length];
+		for (int i = 0; i < interfaces.length; i++) {
+			Class<?> realInterface;
+			Class<?> clazz = interfaces[i];
+			if (!clazz.isInterface()) {
+				if (InfinitumContext.class.isAssignableFrom(clazz)) {
+					realInterface = reflector.getSuperInterface(clazz, InfinitumContext.class);
+					if (realInterface == null)
+						throw new IllegalArgumentException("'" + clazz.getName() + "' is not an interface.");
+				} else {
+					realInterface = reflector.getSuperInterface(clazz);
+					if (realInterface == null)
+						throw new IllegalArgumentException("'" + clazz.getName()
+								+ "' is not an interface and does not implement an interface.");
+				}
+			} else {
+				realInterface = clazz;
+			}
+			realInterfaces[i] = realInterface;
+		}
+		mInterfaces = realInterfaces;
 	}
-	
+
 	/**
 	 * Retrieves a {@code JdkDynamicProxy} instance for the given proxy.
 	 * 
 	 * @param object
 	 *            the {@link Object} to retrieve a proxy instance for
-	 * @return {@code JdkDynamicProxy} or {@code null} if {@code object} is not a
-	 *         proxy
+	 * @return {@code JdkDynamicProxy} or {@code null} if {@code object} is not
+	 *         a proxy
 	 */
 	public static JdkDynamicProxy getProxy(Object object) {
 		if (!Proxy.isProxyClass(object.getClass()))
 			return null;
 		return (JdkDynamicProxy) Proxy.getInvocationHandler(object);
 	}
-	
+
 	/**
 	 * Indicates if the given {@link Object} is an {@link AopProxy}.
 	 * 
@@ -85,8 +109,7 @@ public abstract class JdkDynamicProxy extends AopProxy {
 
 	@Override
 	public final Object getProxy() {
-		return Proxy.newProxyInstance(Thread.currentThread()
-				.getContextClassLoader(), mInterfaces, this);
+		return Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), mInterfaces, this);
 	}
 
 	@Override

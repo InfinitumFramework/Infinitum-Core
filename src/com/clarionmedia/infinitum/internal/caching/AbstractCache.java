@@ -11,8 +11,10 @@ import java.util.concurrent.ConcurrentMap;
 
 import android.content.Context;
 import android.os.Environment;
+import android.util.Log;
 
-import com.clarionmedia.infinitum.context.ContextFactory;
+import com.clarionmedia.infinitum.context.InfinitumContext;
+import com.clarionmedia.infinitum.context.impl.InfinitumContextProxy;
 import com.clarionmedia.infinitum.logging.Logger;
 
 /**
@@ -52,7 +54,7 @@ public abstract class AbstractCache<K, V> implements Map<K, V> {
 	 * Used to cache data in the application's dedicated cache directory.
 	 */
 	public static final int DISK_CACHE_INTERNAL = 0;
-	
+
 	/**
 	 * Used to cache data on the device's SD card.
 	 */
@@ -65,7 +67,7 @@ public abstract class AbstractCache<K, V> implements Map<K, V> {
 	private long mDefaultExpirationTimeout;
 	private ConcurrentMap<String, Long> mDiskTimeoutCache;
 	private Logger mLogger;
-	
+
 	/**
 	 * Creates a new cache instance.
 	 * 
@@ -76,7 +78,7 @@ public abstract class AbstractCache<K, V> implements Map<K, V> {
 	public AbstractCache(String name) {
 		this(name, ExpirableCache.DEFAULT_EXPIRATION_TIMEOUT);
 	}
-	
+
 	/**
 	 * Creates a new cache instance.
 	 * 
@@ -91,7 +93,8 @@ public abstract class AbstractCache<K, V> implements Map<K, V> {
 		mDefaultExpirationTimeout = defaultExpiration;
 		mCache = new ExpirableCache<K, V>(mDefaultExpirationTimeout);
 		mDiskTimeoutCache = new ConcurrentHashMap<String, Long>();
-		mLogger = Logger.getInstance(ContextFactory.newInstance().getContext(), getClass().getSimpleName());
+		mLogger = Logger.getInstance((InfinitumContext) new InfinitumContextProxy(InfinitumContext.class).getProxy(), getClass()
+				.getSimpleName());
 	}
 
 	/**
@@ -126,14 +129,10 @@ public abstract class AbstractCache<K, V> implements Map<K, V> {
 		Context appContext = context.getApplicationContext();
 
 		String rootDir = null;
-		if (storageDevice == DISK_CACHE_SDCARD
-				&& Environment.MEDIA_MOUNTED.equals(Environment
-						.getExternalStorageState())) {
+		if (storageDevice == DISK_CACHE_SDCARD && Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
 			// SD-card available
-			rootDir = Environment.getExternalStorageDirectory()
-					.getAbsolutePath()
-					+ "/Android/data/"
-					+ appContext.getPackageName() + "/cache";
+			rootDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/" + appContext.getPackageName()
+					+ "/cache";
 		} else {
 			File internalCacheDir = appContext.getCacheDir();
 			// apparently on some configurations this can come back as null
@@ -151,16 +150,16 @@ public abstract class AbstractCache<K, V> implements Map<K, V> {
 			try {
 				nomedia.createNewFile();
 			} catch (IOException e) {
-				mLogger.error("Failed creating .nomedia file");
+				Log.e(getClass().getName(), "Failed creating .nomedia file");
 			}
 		}
 
 		mIsDiskCacheEnabled = outFile.exists();
 
 		if (!mIsDiskCacheEnabled) {
-			mLogger.warn("Failed creating disk cache directory " + mDiskCacheDirectory);
+			Log.w(getClass().getName(), "Failed creating disk cache directory " + mDiskCacheDirectory);
 		} else {
-			mLogger.debug("Enabled write-through to " + mDiskCacheDirectory);
+			Log.d(getClass().getName(), "Enabled write-through to " + mDiskCacheDirectory);
 			sanitizeDiskCache();
 		}
 
@@ -168,8 +167,7 @@ public abstract class AbstractCache<K, V> implements Map<K, V> {
 	}
 
 	private void setRootDir(String rootDir) {
-		this.mDiskCacheDirectory = rootDir + "/infinitum/"
-				+ mName.replaceAll("\\s", "");
+		this.mDiskCacheDirectory = rootDir + "/infinitum/" + mName.replaceAll("\\s", "");
 	}
 
 	/**
@@ -214,8 +212,7 @@ public abstract class AbstractCache<K, V> implements Map<K, V> {
 	 *            the {@link Object} to cache
 	 * @throws IOException
 	 */
-	protected abstract void writeValueToDisk(File file, V value)
-			throws IOException;
+	protected abstract void writeValueToDisk(File file, V value) throws IOException;
 
 	/**
 	 * Caches the given value to disk and returns the absolute path to the cache
@@ -345,8 +342,7 @@ public abstract class AbstractCache<K, V> implements Map<K, V> {
 	@SuppressWarnings("unchecked")
 	@Override
 	public synchronized boolean containsKey(Object key) {
-		return mCache.containsKey(key)
-				|| (mIsDiskCacheEnabled && getFileForKey((K) key).exists());
+		return mCache.containsKey(key) || (mIsDiskCacheEnabled && getFileForKey((K) key).exists());
 	}
 
 	/**
@@ -436,7 +432,7 @@ public abstract class AbstractCache<K, V> implements Map<K, V> {
 				return;
 			for (File file : cachedFiles) {
 				if (!file.getName().endsWith(".nomedia"))
-				    file.delete();
+					file.delete();
 			}
 		}
 		mLogger.debug("Cache cleared");
@@ -452,13 +448,13 @@ public abstract class AbstractCache<K, V> implements Map<K, V> {
 	 * expiration timeouts.
 	 */
 	private void sanitizeDiskCache() {
-		mLogger.debug("Sanitizing disk cache");
+		Log.d(getClass().getName(), "Sanitizing disk cache");
 		File[] cachedFiles = new File(mDiskCacheDirectory).listFiles();
 		if (cachedFiles == null)
 			return;
 		for (File file : cachedFiles) {
 			if (!file.getName().endsWith(".nomedia"))
-			    checkAndRemoveFile(file);
+				checkAndRemoveFile(file);
 		}
 	}
 

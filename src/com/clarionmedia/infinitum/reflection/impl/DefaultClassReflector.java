@@ -226,4 +226,32 @@ public class DefaultClassReflector implements ClassReflector {
 		}
 	}
 
+	@Override
+	public Class<?> getSuperInterface(Class<?> clazz, Class<?> interfaceType) {
+		if (clazz.isInterface() && interfaceType.isAssignableFrom(clazz))
+			return clazz;
+		Class<?>[] interfaces = clazz.getInterfaces();
+		for (Class<?> c : interfaces) {
+			if (interfaceType.isAssignableFrom(c))
+				return c;
+		}
+		Class<?> superClass = clazz.getSuperclass();
+		if (superClass == null)
+			return null;
+		return getSuperInterface(superClass, interfaceType);
+	}
+
+	@Override
+	public Class<?> getSuperInterface(Class<?> clazz) {
+		if (clazz.isInterface())
+			return clazz;
+		Class<?>[] interfaces = clazz.getInterfaces();
+		if (interfaces.length > 0)
+			return interfaces[0];
+		Class<?> superClass = clazz.getSuperclass();
+		if (superClass == null)
+			return null;
+		return getSuperInterface(superClass);
+	}
+
 }

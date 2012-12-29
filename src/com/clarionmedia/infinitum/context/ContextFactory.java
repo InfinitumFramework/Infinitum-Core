@@ -54,6 +54,16 @@ public abstract class ContextFactory {
 	public static ContextFactory newInstance() {
 		return new XmlContextFactory();
 	}
+	
+	/**
+	 * Retrieves the Android {@link Context} registered with the configured
+	 * {@link InfinitumContext}.
+	 *
+	 * @return {@code Context}
+	 */
+	public Context getAndroidContext() {
+		return mContext;
+	}
 
 	/**
 	 * Configures Infinitum with the implicit configuration file

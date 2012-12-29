@@ -32,18 +32,17 @@ import android.content.Context;
 
 import com.clarionmedia.infinitum.context.impl.XmlApplicationContext;
 import com.clarionmedia.infinitum.di.AbstractBeanDefinition;
-import com.clarionmedia.infinitum.di.XmlBean;
 import com.clarionmedia.infinitum.di.BeanDefinitionBuilder;
 import com.clarionmedia.infinitum.di.BeanFactory;
 import com.clarionmedia.infinitum.di.BeanFactoryPostProcessor;
 import com.clarionmedia.infinitum.di.BeanPostProcessor;
+import com.clarionmedia.infinitum.di.XmlBean;
 import com.clarionmedia.infinitum.di.annotation.Bean;
 import com.clarionmedia.infinitum.di.annotation.Component;
 import com.clarionmedia.infinitum.di.annotation.Scope;
 import com.clarionmedia.infinitum.di.impl.AutowiredBeanPostProcessor;
 import com.clarionmedia.infinitum.di.impl.GenericBeanDefinitionBuilder;
 import com.clarionmedia.infinitum.exception.InfinitumRuntimeException;
-import com.clarionmedia.infinitum.internal.Invocable;
 import com.clarionmedia.infinitum.internal.ModuleUtils;
 import com.clarionmedia.infinitum.internal.ModuleUtils.Module;
 import com.clarionmedia.infinitum.internal.StringUtil;
@@ -68,11 +67,11 @@ public abstract class AbstractContext implements InfinitumContext {
 	protected InfinitumContext mParentContext;
 	protected Set<Class<?>> mScannedComponents;
 	protected Set<XmlBean> mXmlComponents;
-	protected Invocable mDeferredPostProcessor;
+	protected boolean mIsProcessed;
 
 	/**
-	 * Returns a {@link List} of {@link XmlBean} instances that were
-	 * registered with the context through the Infinitum XML configuration.
+	 * Returns a {@link List} of {@link XmlBean} instances that were registered
+	 * with the context through the Infinitum XML configuration.
 	 * 
 	 * @return {@code List} of {@code BeanComponents}
 	 */
@@ -104,7 +103,9 @@ public abstract class AbstractContext implements InfinitumContext {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public void postProcess(Context context) {
+	public void postProcess(final Context context) {
+		if (mIsProcessed)
+			return;
 		mContext = context;
 		PackageReflector reflector = new DefaultPackageReflector();
 		RestfulContext restContext = getRestContext();
@@ -118,10 +119,7 @@ public abstract class AbstractContext implements InfinitumContext {
 
 		// Get XML components
 		Set<Class<? extends BeanPostProcessor>> xmlBeanPostProcessors = new HashSet<Class<? extends BeanPostProcessor>>();
-		xmlBeanPostProcessors.add(AutowiredBeanPostProcessor.class); // Takes
-																		// care
-																		// of
-																		// autowiring
+		xmlBeanPostProcessors.add(AutowiredBeanPostProcessor.class);
 		Set<Class<BeanFactoryPostProcessor>> xmlBeanFactoryPostProcessors = new HashSet<Class<BeanFactoryPostProcessor>>();
 		for (XmlBean bean : beans) {
 			Class<?> clazz = reflector.getClass(bean.getClassName());
@@ -159,25 +157,22 @@ public abstract class AbstractContext implements InfinitumContext {
 			}
 		}
 
-		// Defer post processor execution because we need to process child
-		// contexts first
-		mDeferredPostProcessor = new Invocable() {
-			public void invoke() {
-				// Execute post processors
-				executeBeanPostProcessors(beanPostProcessors);
-				executeBeanFactoryPostProcessors(beanFactoryPostProcessors);
-			}
-		};
-
 		// Post process child contexts
 		for (InfinitumContext childContext : getChildContexts()) {
+			if (!childContext.getClass().getName().equals(Module.AOP.getContextClass()))
+				childContext.postProcess(context);
+		}
+		
+		// Execute post processors
+		executeBeanPostProcessors(beanPostProcessors);
+		executeBeanFactoryPostProcessors(beanFactoryPostProcessors);
+		for (InfinitumContext childContext : getChildContexts()) {
+			if (!childContext.getClass().getName().equals(Module.AOP.getContextClass()))
+				continue;
 			childContext.postProcess(context);
 		}
-	}
 
-	public void executeDeferredPostProcessing() {
-		if (mDeferredPostProcessor != null)
-			mDeferredPostProcessor.invoke();
+		mIsProcessed = true;
 	}
 
 	@Override

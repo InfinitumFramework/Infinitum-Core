@@ -195,4 +195,29 @@ public interface ClassReflector {
 	 */
 	void copyFields(Object from, Object to);
 
+	/**
+	 * Returns the first interface extending the given type in the class
+	 * hierarchy for the given {@link Class}. If the {@code Class} itself is a
+	 * qualifying interface, it will return itself.
+	 * 
+	 * @param clazz
+	 *            the {@code Class} to retrieve an interface for
+	 * @param interfaceType
+	 *            the interface type the interface to retrieve must be
+	 *            assignable from
+	 * @return super interface or {@code null} if none exists
+	 */
+	Class<?> getSuperInterface(Class<?> clazz, Class<?> interfaceType);
+
+	/**
+	 * Returns the first interface in the class hierarchy for the given
+	 * {@link Class}. If the {@code Class} itself is an interface, it will
+	 * return itself.
+	 * 
+	 * @param clazz
+	 *            the {@code Class} to retrieve an interface for
+	 * @return super interface or {@code null} if none exists
+	 */
+	Class<?> getSuperInterface(Class<?> clazz);
+
 }
