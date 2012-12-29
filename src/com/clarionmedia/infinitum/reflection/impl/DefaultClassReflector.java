@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.clarionmedia.infinitum.di.AopProxy;
+import com.clarionmedia.infinitum.di.AbstractProxy;
 import com.clarionmedia.infinitum.exception.InfinitumRuntimeException;
 import com.clarionmedia.infinitum.reflection.ClassReflector;
 
@@ -48,8 +48,8 @@ public class DefaultClassReflector implements ClassReflector {
 	public boolean isNull(Object object) {
 		if (object == null)
 			return true;
-		if (AopProxy.isAopProxy(object)) {
-			AopProxy proxy = AopProxy.getProxy(object);
+		if (AbstractProxy.isAopProxy(object)) {
+			AbstractProxy proxy = AbstractProxy.getProxy(object);
 			return proxy.getTarget() == null;
 		}
 		return false;

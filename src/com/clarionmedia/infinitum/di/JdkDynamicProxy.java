@@ -29,7 +29,7 @@ import com.clarionmedia.infinitum.reflection.impl.DefaultClassReflector;
 
 /**
  * <p>
- * Abstract implementation of {@link AopProxy} that relies on the JDK-provided
+ * Abstract implementation of {@link AbstractProxy} that relies on the JDK-provided
  * {@link Proxy} in order to proxy interfaces.
  * </p>
  * 
@@ -38,7 +38,7 @@ import com.clarionmedia.infinitum.reflection.impl.DefaultClassReflector;
  * @since 1.0
  * @see AdvisedJdkDynamicProxy
  */
-public abstract class JdkDynamicProxy extends AopProxy {
+public abstract class JdkDynamicProxy extends AbstractProxy {
 
 	protected final Class<?>[] mInterfaces;
 
@@ -92,7 +92,7 @@ public abstract class JdkDynamicProxy extends AopProxy {
 	}
 
 	/**
-	 * Indicates if the given {@link Object} is an {@link AopProxy}.
+	 * Indicates if the given {@link Object} is an {@link AbstractProxy}.
 	 * 
 	 * @param object
 	 *            the {@code Object} to check

@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
 
 import com.clarionmedia.infinitum.context.ContextFactory;
 import com.clarionmedia.infinitum.context.InfinitumContext;
-import com.clarionmedia.infinitum.di.AopProxy;
+import com.clarionmedia.infinitum.di.AbstractProxy;
 import com.clarionmedia.infinitum.di.JdkDynamicProxy;
 
 /**
@@ -62,7 +62,7 @@ public class InfinitumContextProxy extends JdkDynamicProxy {
 	}
 
 	@Override
-	public AopProxy clone() {
+	public AbstractProxy clone() {
 		throw new UnsupportedOperationException("Clone is not supported for InfinitumContextProxy!");
 	}
 

@@ -31,7 +31,7 @@ import com.google.dexmaker.stock.ProxyBuilder;
 
 /**
  * <p>
- * Abstract implementation of {@link AopProxy} that relies on DexMaker in order
+ * Abstract implementation of {@link AbstractProxy} that relies on DexMaker in order
  * to proxy non-final classes in addition to interfaces.
  * </p>
  * 
@@ -41,7 +41,7 @@ import com.google.dexmaker.stock.ProxyBuilder;
  * @see AdvisedDexMakerProxy
  * @see LazyLoadDexMakerProxy
  */
-public abstract class DexMakerProxy extends AopProxy {
+public abstract class DexMakerProxy extends AbstractProxy {
 
 	protected Context mContext;
 
@@ -74,7 +74,7 @@ public abstract class DexMakerProxy extends AopProxy {
 	}
 
 	/**
-	 * Indicates if the given {@link Object} is an {@link AopProxy}.
+	 * Indicates if the given {@link Object} is an {@link AbstractProxy}.
 	 * 
 	 * @param object
 	 *            the {@code Object} to check

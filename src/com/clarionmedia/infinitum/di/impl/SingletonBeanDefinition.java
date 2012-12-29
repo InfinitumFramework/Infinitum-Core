@@ -22,7 +22,7 @@ package com.clarionmedia.infinitum.di.impl;
 import com.clarionmedia.infinitum.context.InfinitumContext;
 import com.clarionmedia.infinitum.context.impl.InfinitumContextProxy;
 import com.clarionmedia.infinitum.di.AbstractBeanDefinition;
-import com.clarionmedia.infinitum.di.AopProxy;
+import com.clarionmedia.infinitum.di.AbstractProxy;
 import com.clarionmedia.infinitum.di.BeanFactory;
 
 /**
@@ -59,7 +59,7 @@ public class SingletonBeanDefinition extends AbstractBeanDefinition {
 			return mProxiedBean;
 		if (mBeanProxy != null) {
 			mProxiedBean = mBeanProxy.getProxy();
-			inject(AopProxy.getTarget(mProxiedBean));
+			inject(AbstractProxy.getTarget(mProxiedBean));
 			return mProxiedBean;
 		}
 		if (mBean != null)

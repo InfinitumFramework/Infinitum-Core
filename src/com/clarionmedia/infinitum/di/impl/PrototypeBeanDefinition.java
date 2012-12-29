@@ -20,7 +20,7 @@
 package com.clarionmedia.infinitum.di.impl;
 
 import com.clarionmedia.infinitum.di.AbstractBeanDefinition;
-import com.clarionmedia.infinitum.di.AopProxy;
+import com.clarionmedia.infinitum.di.AbstractProxy;
 import com.clarionmedia.infinitum.di.BeanFactory;
 
 /**
@@ -52,7 +52,7 @@ public class PrototypeBeanDefinition extends AbstractBeanDefinition {
 		setFields(bean);
 		postConstruct(bean);
 		if (mBeanProxy != null) {
-			AopProxy proxy = mBeanProxy.clone();
+			AbstractProxy proxy = mBeanProxy.clone();
 			proxy.setTarget(bean);
 			return proxy.getProxy();
 		}

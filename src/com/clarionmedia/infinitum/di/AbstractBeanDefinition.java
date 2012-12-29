@@ -58,7 +58,7 @@ public abstract class AbstractBeanDefinition {
 	protected Map<Method, AbstractBeanDefinition> mSetterInjections;
 	protected ClassReflector mClassReflector;
 	protected BeanFactory mBeanFactory;
-	protected AopProxy mBeanProxy;
+	protected AbstractProxy mBeanProxy;
 
 	/**
 	 * Creates a new {@code AbstractBeanDefinition}.
@@ -150,7 +150,7 @@ public abstract class AbstractBeanDefinition {
 	 * 
 	 * @return bean proxy or {@code null} if there is none
 	 */
-	public AopProxy getBeanProxy() {
+	public AbstractProxy getBeanProxy() {
 		return mBeanProxy;
 	}
 
@@ -160,7 +160,7 @@ public abstract class AbstractBeanDefinition {
 	 * @param beanProxy
 	 *            the bean proxy to set
 	 */
-	public void setBeanProxy(AopProxy beanProxy) {
+	public void setBeanProxy(AbstractProxy beanProxy) {
 		mBeanProxy = beanProxy;
 	}
 

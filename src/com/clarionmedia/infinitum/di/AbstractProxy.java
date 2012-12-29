@@ -33,7 +33,7 @@ import java.lang.reflect.InvocationHandler;
  * @see JdkDynamicProxy
  * @see DexMakerProxy
  */
-public abstract class AopProxy implements InvocationHandler {
+public abstract class AbstractProxy implements InvocationHandler {
 
 	/**
 	 * Indicates the backing implementation of a proxy.
@@ -45,12 +45,12 @@ public abstract class AopProxy implements InvocationHandler {
 	protected Object mTarget;
 
 	/**
-	 * Creates a new {@code AopProxy}.
+	 * Creates a new {@code AbstractProxy}.
 	 * 
 	 * @param target
 	 *            the proxied {@link Object}
 	 */
-	public AopProxy(Object target) {
+	public AbstractProxy(Object target) {
 		mTarget = target;
 	}
 
@@ -59,10 +59,10 @@ public abstract class AopProxy implements InvocationHandler {
 	 * 
 	 * @param object
 	 *            the {code Object} to retrieve a proxy instance for
-	 * @return {@code AopProxy} or {@code null} if {@code object} is not a proxy
+	 * @return {@code AbstractProxy} or {@code null} if {@code object} is not a proxy
 	 */
-	public static AopProxy getProxy(Object object) {
-		AopProxy proxy = DexMakerProxy.getProxy(object);
+	public static AbstractProxy getProxy(Object object) {
+		AbstractProxy proxy = DexMakerProxy.getProxy(object);
 		if (proxy != null)
 			return proxy;
 		proxy = JdkDynamicProxy.getProxy(object);
@@ -70,7 +70,7 @@ public abstract class AopProxy implements InvocationHandler {
 	}
 
 	/**
-	 * Indicates if the given {@link Object} is an {@link AopProxy}.
+	 * Indicates if the given {@link Object} is an {@link AbstractProxy}.
 	 * 
 	 * @param object
 	 *            the {@code Object} to check
@@ -123,18 +123,18 @@ public abstract class AopProxy implements InvocationHandler {
 	public abstract InvocationHandler getInvocationHandler(Object proxy);
 
 	/**
-	 * Returns the {@link ProxyType} for this {@code AopProxy}.
+	 * Returns the {@link ProxyType} for this {@code AbstractProxy}.
 	 * 
 	 * @return {@code ProxyType}
 	 */
 	public abstract ProxyType getProxyType();
 
 	/**
-	 * Creates a copy of the {@code AopProxy}.
+	 * Creates a copy of the {@code AbstractProxy}.
 	 * 
-	 * @return copied {@code AopProxy}
+	 * @return copied {@code AbstractProxy}
 	 */
-	public abstract AopProxy clone();
+	public abstract AbstractProxy clone();
 
 	/**
 	 * Returns the proxied {@link Object}.
