@@ -118,6 +118,15 @@ public interface BeanFactory {
 	Map<String, AbstractBeanDefinition> getBeanDefinitions();
 
 	/**
+	 * Returns the {@link Class} type for the bean with the given name.
+	 * 
+	 * @param name
+	 *            bean name
+	 * @return bean type or {@code null} if no such bean exists
+	 */
+	Class<?> getBeanType(String name);
+
+	/**
 	 * Returns the associated {@link InfinitumContext}.
 	 * 
 	 * @return {@code InfinitumContext}

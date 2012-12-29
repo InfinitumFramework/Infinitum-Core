@@ -254,4 +254,13 @@ public class DefaultClassReflector implements ClassReflector {
 		return getSuperInterface(superClass);
 	}
 
+	@Override
+	public boolean containsMethodAnnotation(Class<?> clazz, Class<? extends Annotation> annotation) {
+		for (Method method : getAllMethods(clazz)) {
+			if (method.isAnnotationPresent(annotation))
+				return true;
+		}
+		return false;
+	}
+
 }

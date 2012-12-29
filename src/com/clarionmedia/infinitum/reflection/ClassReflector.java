@@ -220,4 +220,17 @@ public interface ClassReflector {
 	 */
 	Class<?> getSuperInterface(Class<?> clazz);
 
+	/**
+	 * Indicates if the given {@link Class} has a {@link Method} with the given
+	 * {@link Annotation}.
+	 * 
+	 * @param clazz
+	 *            the {@code Class} to check
+	 * @param annotation
+	 *            the {@code Annotation} to check for
+	 * @return {@code true} if the {@code Class} has the {@code Annotation},
+	 *         {@code false} if not
+	 */
+	boolean containsMethodAnnotation(Class<?> clazz, Class<? extends Annotation> annotation);
+
 }

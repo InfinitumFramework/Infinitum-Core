@@ -124,4 +124,12 @@ public class ConfigurableBeanFactory implements BeanFactory {
 		return mBeanDefinitions.get(name);
 	}
 
+	@Override
+	public Class<?> getBeanType(String name) {
+		AbstractBeanDefinition bean = mBeanDefinitions.get(name);
+		if (bean == null)
+			return null;
+		return bean.getType();
+	}
+
 }
