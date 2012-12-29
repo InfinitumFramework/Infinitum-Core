@@ -114,7 +114,6 @@ public class XmlContextFactory extends ContextFactory {
 				throw new InfinitumConfigurationException("Unable to initialize Infinitum configuration.");
 			addChildContexts(ret);
 			ret.postProcess(mContext);
-			ret.executeDeferredPostProcessing();
 			return ret;
 		} catch (Exception e) {
 			throw new InfinitumConfigurationException("Unable to initialize Infinitum configuration.", e);

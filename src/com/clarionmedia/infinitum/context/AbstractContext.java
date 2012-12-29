@@ -52,14 +52,15 @@ import com.clarionmedia.infinitum.reflection.impl.DefaultPackageReflector;
 
 /**
  * <p>
- * Abstract implementation of {@link InfinitumContext}.
+ * Abstract implementation of {@link InfinitumContext} representing a root
+ * "parent" context.
  * </p>
  * 
  * @author Tyler Treat
  * @version 1.0 07/11/12
  * @since 1.0
  */
-public abstract class AbstractContext implements InfinitumContext {
+public abstract class AbstractContext implements InfinitumContext, BeanProvider {
 
 	protected BeanFactory mBeanFactory;
 	protected Context mContext;
@@ -67,7 +68,6 @@ public abstract class AbstractContext implements InfinitumContext {
 	protected InfinitumContext mParentContext;
 	protected Set<Class<?>> mScannedComponents;
 	protected Set<XmlBean> mXmlComponents;
-	protected boolean mIsProcessed;
 
 	/**
 	 * Returns a {@link List} of {@link XmlBean} instances that were registered
@@ -75,7 +75,7 @@ public abstract class AbstractContext implements InfinitumContext {
 	 * 
 	 * @return {@code List} of {@code BeanComponents}
 	 */
-	protected abstract List<XmlBean> getBeans();
+	protected abstract List<XmlBean> getXmlBeans();
 
 	/**
 	 * Returns the {@link RestfulContext} that was registered with the context
@@ -104,8 +104,6 @@ public abstract class AbstractContext implements InfinitumContext {
 	@Override
 	@SuppressWarnings("unchecked")
 	public void postProcess(final Context context) {
-		if (mIsProcessed)
-			return;
 		mContext = context;
 		PackageReflector reflector = new DefaultPackageReflector();
 		RestfulContext restContext = getRestContext();
@@ -113,8 +111,7 @@ public abstract class AbstractContext implements InfinitumContext {
 			restContext.setParentContext(this);
 
 		// Register XML beans
-		registerFrameworkComponents();
-		List<XmlBean> beans = getBeans();
+		List<XmlBean> beans = getXmlBeans();
 		mBeanFactory.registerBeans(beans);
 
 		// Get XML components
@@ -157,22 +154,21 @@ public abstract class AbstractContext implements InfinitumContext {
 			}
 		}
 
-		// Post process child contexts
+		// Add provider beans
+		for (AbstractBeanDefinition bean : getBeans(beanDefinitionBuilder))
+			mBeanFactory.registerBean(bean);
 		for (InfinitumContext childContext : getChildContexts()) {
-			if (!childContext.getClass().getName().equals(Module.AOP.getContextClass()))
-				childContext.postProcess(context);
+			for (AbstractBeanDefinition bean : ((BeanProvider) childContext).getBeans(beanDefinitionBuilder))
+				mBeanFactory.registerBean(bean);
 		}
-		
+
 		// Execute post processors
 		executeBeanPostProcessors(beanPostProcessors);
 		executeBeanFactoryPostProcessors(beanFactoryPostProcessors);
-		for (InfinitumContext childContext : getChildContexts()) {
-			if (!childContext.getClass().getName().equals(Module.AOP.getContextClass()))
-				continue;
-			childContext.postProcess(context);
-		}
 
-		mIsProcessed = true;
+		// Post process child contexts
+		for (InfinitumContext childContext : getChildContexts())
+			childContext.postProcess(context);
 	}
 
 	@Override
@@ -208,6 +204,15 @@ public abstract class AbstractContext implements InfinitumContext {
 	@Override
 	public Context getAndroidContext() {
 		return mContext;
+	}
+
+	@Override
+	public List<AbstractBeanDefinition> getBeans(BeanDefinitionBuilder beanDefinitionBuilder) {
+		List<AbstractBeanDefinition> beans = new ArrayList<AbstractBeanDefinition>();
+		beans.add(beanDefinitionBuilder.setName("$InfinitumContext").setType(XmlApplicationContext.class).build());
+		beans.add(beanDefinitionBuilder.setName("$ClassReflector").setType(DefaultClassReflector.class).build());
+		beans.add(beanDefinitionBuilder.setName("$PackageReflector").setType(DefaultPackageReflector.class).build());
+		return beans;
 	}
 
 	public Set<Class<?>> getScannedComponents() {
@@ -305,20 +310,6 @@ public abstract class AbstractContext implements InfinitumContext {
 				throw new InfinitumRuntimeException("BeanFactoryPostProcessor '" + postProcessor.getName() + "' could not be invoked.");
 			}
 		}
-	}
-
-	/**
-	 * Registers components used internally by the framework for injection.
-	 */
-	private void registerFrameworkComponents() {
-		BeanDefinitionBuilder beanDefinitionBuilder = new GenericBeanDefinitionBuilder(mBeanFactory);
-		AbstractBeanDefinition beanDefinition = beanDefinitionBuilder.setName("$InfinitumContext").setType(XmlApplicationContext.class)
-				.build();
-		mBeanFactory.registerBean(beanDefinition);
-		beanDefinition = beanDefinitionBuilder.setName("$ClassReflector").setType(DefaultClassReflector.class).build();
-		mBeanFactory.registerBean(beanDefinition);
-		beanDefinition = beanDefinitionBuilder.setName("$PackageReflector").setType(DefaultPackageReflector.class).build();
-		mBeanFactory.registerBean(beanDefinition);
 	}
 
 }

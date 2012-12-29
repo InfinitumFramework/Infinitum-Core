@@ -80,7 +80,7 @@ public class XmlApplicationContext extends AbstractContext {
 	}
 
 	@Override
-	protected List<XmlBean> getBeans() {
+	protected List<XmlBean> getXmlBeans() {
 		List<XmlBean> ret = new ArrayList<XmlBean>();
 		if (mBeanContainer.mBeans != null)
 			ret.addAll(mBeanContainer.mBeans);
