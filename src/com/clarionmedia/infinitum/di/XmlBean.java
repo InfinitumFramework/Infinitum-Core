@@ -19,14 +19,12 @@
 
 package com.clarionmedia.infinitum.di;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
-import org.simpleframework.xml.Text;
+import java.lang.reflect.Field;
 
 /**
  * <p>
@@ -105,7 +103,7 @@ public class XmlBean {
 		@Attribute(name = "name")
 		private String mName;
 
-		@Text(required = false)
+		@Attribute(name = "value", required = false)
 		private String mValue;
 
 		@Attribute(name = "ref", required = false)
