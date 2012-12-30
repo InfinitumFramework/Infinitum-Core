@@ -12,7 +12,7 @@ Infinitum is currently in a pre-release form and is still under active developme
 Infinitum Core
 --------------
 
-[Infinitum Core](https://github.com/InfinitumFramework/Infinitum-Core/README.md#core-features) offers an inversion-of-control container which allows for framework and non-framework beans to be injected and retrieved at runtime. Beans, aspects, and other application components can be automatically discovered by Infinitum, and the framework also provides support for autowiring properties, methods, and constructors. Likewise, Android activities can be injected with layouts, views, and resources and event listeners can be bound to views using annotations -- yielding cleaner, more concise code.
+[Infinitum Core](https://github.com/InfinitumFramework/Infinitum-Core#core-features) offers an inversion-of-control container which allows for framework and non-framework beans to be injected and retrieved at runtime. Beans, aspects, and other application components can be automatically discovered by Infinitum, and the framework also provides support for autowiring properties, methods, and constructors. Likewise, Android activities can be injected with layouts, views, and resources and event listeners can be bound to views using annotations -- yielding cleaner, more concise code.
 
 In addition to dependency injection, Infinitum provides a lightweight logging framework which wraps Android's Logcat. This logging framework allows log statements to be made within application code but only asserted in debug environments. This means that logging code does not need conditional statements or be removed altogether when preparing an application for release.
 
