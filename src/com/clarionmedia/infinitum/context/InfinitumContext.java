@@ -23,6 +23,7 @@ import java.util.List;
 
 import android.content.Context;
 
+import com.clarionmedia.infinitum.context.exception.InfinitumConfigurationException;
 import com.clarionmedia.infinitum.di.BeanFactory;
 
 /**
@@ -126,7 +127,18 @@ public interface InfinitumContext {
 	 * @return parent context
 	 */
 	InfinitumContext getParentContext();
-	
+
+	/**
+	 * Retrieves a child {@link InfinitumContext} singleton of the given type.
+	 * 
+	 * @param contextType
+	 *            the type of the {@code InfinitumContext} to retrieve
+	 * @return the {@code InfinitumContext} singleton
+	 * @throws InfinitumConfigurationException
+	 *             if the desired type is not available
+	 */
+	<T extends InfinitumContext> T getChildContext(Class<T> contextType);
+
 	/**
 	 * Retrieves the {@link RestfulContext} for this {@code InfinitumContext}.
 	 * The {@code RestfulConfiguration} contains configuration settings for the

@@ -30,6 +30,7 @@ import java.util.Set;
 
 import android.content.Context;
 
+import com.clarionmedia.infinitum.context.exception.InfinitumConfigurationException;
 import com.clarionmedia.infinitum.context.impl.XmlApplicationContext;
 import com.clarionmedia.infinitum.di.AbstractBeanDefinition;
 import com.clarionmedia.infinitum.di.BeanDefinitionBuilder;
@@ -169,6 +170,18 @@ public abstract class AbstractContext implements InfinitumContext, BeanProvider 
 		// Post process child contexts
 		for (InfinitumContext childContext : getChildContexts())
 			childContext.postProcess(context);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends InfinitumContext> T getChildContext(Class<T> contextType) {
+		if (AbstractContext.class.isAssignableFrom(contextType))
+			return (T) this;
+		for (InfinitumContext context : getChildContexts()) {
+			if (contextType.isAssignableFrom(context.getClass()))
+				return (T) context;
+		}
+		throw new InfinitumConfigurationException("Configuration of type '" + contextType.getClass().getName() + "' could not be found.");
 	}
 
 	@Override

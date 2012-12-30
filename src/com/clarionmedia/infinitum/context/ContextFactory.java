@@ -54,11 +54,11 @@ public abstract class ContextFactory {
 	public static ContextFactory newInstance() {
 		return new XmlContextFactory();
 	}
-	
+
 	/**
 	 * Retrieves the Android {@link Context} registered with the configured
 	 * {@link InfinitumContext}.
-	 *
+	 * 
 	 * @return {@code Context}
 	 */
 	public Context getAndroidContext() {
@@ -106,7 +106,7 @@ public abstract class ContextFactory {
 	public abstract InfinitumContext getContext() throws InfinitumConfigurationException;
 
 	/**
-	 * Retrieves the {@link InfinitumContext} singleton.
+	 * Retrieves an {@link InfinitumContext} singleton of the given type.
 	 * {@link ContextFactory#configure} must be called before using this method.
 	 * Otherwise, an {@link InfinitumConfigurationException} will be thrown.
 	 * 
