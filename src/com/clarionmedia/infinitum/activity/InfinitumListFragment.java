@@ -33,45 +33,46 @@ import com.clarionmedia.infinitum.di.impl.ObjectInjector;
  * provides support for resource injection and event binding, and exposes an
  * {@link InfinitumContext}.
  * </p>
- *
+ * 
  * @author Tyler Treat
  * @version 1.0 12/18/12
- * @see InfinitumFragment
  * @since 1.0
+ * @see InfinitumFragment
  */
 public class InfinitumListFragment extends ListFragment {
 
-    private InfinitumContext mInfinitumContext;
-    private int mInfinitumConfigId;
-    private ContextFactory mContextFactory;
+	private InfinitumContext mInfinitumContext;
+	private int mInfinitumConfigId;
+	private ContextFactory mContextFactory;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        mContextFactory = ContextFactory.newInstance();
-        mInfinitumContext = mInfinitumConfigId == 0 ?
-                mContextFactory.configure(getActivity()) :
-                mContextFactory.configure(getActivity(), mInfinitumConfigId);
-        final ActivityInjector injector = new ObjectInjector(mInfinitumContext, this);
-        injector.inject();
-        super.onCreate(savedInstanceState);
-    }
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		mContextFactory = ContextFactory.newInstance();
+		mInfinitumContext = mInfinitumConfigId == 0 ?
+				mContextFactory.configure(getActivity()) :
+				mContextFactory.configure(getActivity(), mInfinitumConfigId);
+		final ActivityInjector injector = new ObjectInjector(mInfinitumContext, this);
+		injector.inject();
+		super.onCreate(savedInstanceState);
+	}
 
-    /**
-     * Returns the {@link InfinitumContext} for the {@code InfinitumActivity}.
-     *
-     * @return {@code InfinitumContext}
-     */
-    protected InfinitumContext getInfinitumContext() {
-        return mInfinitumContext;
-    }
+	/**
+	 * Returns the {@link InfinitumContext} for the {@code InfinitumActivity}.
+	 * 
+	 * @return {@code InfinitumContext}
+	 */
+	protected InfinitumContext getInfinitumContext() {
+		return mInfinitumContext;
+	}
 
-    /**
-     * Sets the resource ID of the Infinitum XML config to use.
-     *
-     * @param configId Infinitum config ID
-     */
-    protected void setInfinitumConfigId(int configId) {
-        mInfinitumConfigId = configId;
-    }
+	/**
+	 * Sets the resource ID of the Infinitum XML config to use.
+	 * 
+	 * @param configId
+	 *            Infinitum config ID
+	 */
+	protected void setInfinitumConfigId(int configId) {
+		mInfinitumConfigId = configId;
+	}
 
 }

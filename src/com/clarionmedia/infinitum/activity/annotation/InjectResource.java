@@ -25,7 +25,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
-
 import com.clarionmedia.infinitum.di.annotation.Autowired;
 
 /**
@@ -36,24 +35,24 @@ import com.clarionmedia.infinitum.di.annotation.Autowired;
  * <p>
  * The {@code value} attribute corresponds to the ID of the resource to inject.
  * </p>
- *
+ * 
  * @author Tyler Treat
  * @version 1.0 07/18/12
+ * @since 1.0
  * @see Autowired
  * @see InjectLayout
  * @see InjectView
- * @since 1.0
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface InjectResource {
 
-    /**
-     * Declares the ID of the Android resource to inject.
-     *
-     * @return resource ID
-     */
-    int value();
+	/**
+	 * Declares the ID of the Android resource to inject.
+	 * 
+	 * @return resource ID
+	 */
+	int value();
 
 }

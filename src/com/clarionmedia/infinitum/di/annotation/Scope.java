@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
  * <p>
  * If a scope is not provided, {@code singleton} is used by default.
  * </p>
- *
+ * 
  * @author Tyler Treat
  * @version 1.0 07/11/12
  * @since 1.0
@@ -44,11 +44,11 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Scope {
 
-    /**
-     * Declares the {@link Bean} scope.
-     *
-     * @return the desired {@code Bean} scope
-     */
-    String value() default "singleton";
+	/**
+	 * Declares the {@link Bean} scope.
+	 * 
+	 * @return the desired {@code Bean} scope
+	 */
+	String value() default "singleton";
 
 }

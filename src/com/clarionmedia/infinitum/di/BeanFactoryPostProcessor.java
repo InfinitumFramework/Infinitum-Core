@@ -26,19 +26,20 @@ import com.clarionmedia.infinitum.context.InfinitumContext;
  * This interface enables an {@link InfinitumContext} to have its
  * {@link BeanFactory} modified after it has been configured.
  * </p>
- *
+ * 
  * @author Tyler Treat
  * @version 1.0
  * @since 07/05/12
  */
 public interface BeanFactoryPostProcessor {
 
-    /**
-     * Post process the {@link BeanFactory} after the {@link InfinitumContext}
-     * has been initialized.
-     *
-     * @param beanFactory the {@code BeanFactory} to modify
-     */
-    void postProcessBeanFactory(BeanFactory beanFactory);
+	/**
+	 * Post process the {@link BeanFactory} after the {@link InfinitumContext}
+	 * has been initialized.
+	 * 
+	 * @param beanFactory
+	 *            the {@code BeanFactory} to modify
+	 */
+	void postProcessBeanFactory(BeanFactory beanFactory);
 
 }

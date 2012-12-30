@@ -27,26 +27,24 @@ import android.view.View;
  * Responsible for injecting an {@link Activity} with Android resources and
  * framework components.
  * </p>
- *
+ * 
  * @author Tyler Treat
  * @version 1.0 07/18/12
  * @since 1.0
  */
 public interface ActivityInjector {
 
-    /**
-     * Defines the type of input event that occurs on a {@link View}.
-     */
-    public static enum Event {
-        OnClick, OnLongClick, OnCreateContextMenu, OnFocusChange, OnKey, OnTouch
-    }
+	/**
+	 * Defines the type of input event that occurs on a {@link View}.
+	 */
+	public static enum Event {
+		OnClick, OnLongClick, OnCreateContextMenu, OnFocusChange, OnKey, OnTouch
+	};
 
-    ;
-
-    /**
-     * Injects the appropriate resources and components into any annotated
-     * fields.
-     */
-    void inject();
+	/**
+	 * Injects the appropriate resources and components into any annotated
+	 * fields.
+	 */
+	void inject();
 
 }

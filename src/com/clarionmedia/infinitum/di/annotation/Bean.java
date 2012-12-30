@@ -24,7 +24,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
 import com.clarionmedia.infinitum.context.InfinitumContext;
 import com.clarionmedia.infinitum.di.BeanFactory;
 
@@ -43,7 +42,7 @@ import com.clarionmedia.infinitum.di.BeanFactory;
  * {@code FooBar} will use the bean name {@code fooBar} unless otherwise
  * specified.
  * </p>
- *
+ * 
  * @author Tyler Treat
  * @version 1.0 07/11/12
  * @since 1.0
@@ -52,12 +51,12 @@ import com.clarionmedia.infinitum.di.BeanFactory;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Bean {
-
-    /**
-     * Declares the {@code Bean} name to be used.
-     *
-     * @return the suggested {@code Bean} name
-     */
-    String value() default "";
+	
+	/**
+	 * Declares the {@code Bean} name to be used.
+	 * 
+	 * @return the suggested {@code Bean} name
+	 */
+	String value() default "";
 
 }

@@ -38,90 +38,99 @@ import com.clarionmedia.infinitum.di.annotation.Bean;
  * initializing bean instances, and performing any necessary dependency
  * injections.
  * </p>
- *
+ * 
  * @author Tyler Treat
  * @version 1.0 05/18/12
  * @since 1.0
  */
 public interface BeanFactory {
 
-    /**
-     * Retrieves an instance of the bean with the given name. The name is
-     * configured in {@code infinitum.cfg.xml} or the {@link Bean} annotation.
-     *
-     * @param name the name of the bean to retrieve
-     * @return an instance of the bean
-     * @throws InfinitumConfigurationException
-     *          if the bean does not exist or could not be constructed
-     */
-    Object loadBean(String name) throws InfinitumConfigurationException;
+	/**
+	 * Retrieves an instance of the bean with the given name. The name is
+	 * configured in {@code infinitum.cfg.xml} or the {@link Bean} annotation.
+	 * 
+	 * @param name
+	 *            the name of the bean to retrieve
+	 * @return an instance of the bean
+	 * @throws InfinitumConfigurationException
+	 *             if the bean does not exist or could not be constructed
+	 */
+	Object loadBean(String name) throws InfinitumConfigurationException;
 
-    /**
-     * Retrieves an instance of the bean with the given name and {@link Class}.
-     * The name is configured in {@code infinitum.cfg.xml} or the {@link Bean}
-     * annotation.
-     *
-     * @param name  the name of the bean to retrieve
-     * @param clazz the type of the bean to retrieve
-     * @return an instance of the bean
-     * @throws InfinitumConfigurationException
-     *          if the bean does not exist, could not be constructed, or is
-     *          of the wrong type
-     */
-    <T> T loadBean(String name, Class<T> clazz) throws InfinitumConfigurationException;
+	/**
+	 * Retrieves an instance of the bean with the given name and {@link Class}.
+	 * The name is configured in {@code infinitum.cfg.xml} or the {@link Bean}
+	 * annotation.
+	 * 
+	 * @param name
+	 *            the name of the bean to retrieve
+	 * @param clazz
+	 *            the type of the bean to retrieve
+	 * @return an instance of the bean
+	 * @throws InfinitumConfigurationException
+	 *             if the bean does not exist, could not be constructed, or is
+	 *             of the wrong type
+	 */
+	<T> T loadBean(String name, Class<T> clazz) throws InfinitumConfigurationException;
 
-    /**
-     * Retrieves the {@link AbstractBeanDefinition} for the bean with the given
-     * name.
-     *
-     * @param name bean name
-     * @return {@code AbstractBeanDefinition}
-     */
-    AbstractBeanDefinition getBeanDefinition(String name);
+	/**
+	 * Retrieves the {@link AbstractBeanDefinition} for the bean with the given
+	 * name.
+	 * 
+	 * @param name
+	 *            bean name
+	 * @return {@code AbstractBeanDefinition}
+	 */
+	AbstractBeanDefinition getBeanDefinition(String name);
 
-    /**
-     * Checks if a bean with the given name exists.
-     *
-     * @param name the name to check
-     * @return {@code true} if it exists, {@code false} if not
-     */
-    boolean beanExists(String name);
+	/**
+	 * Checks if a bean with the given name exists.
+	 * 
+	 * @param name
+	 *            the name to check
+	 * @return {@code true} if it exists, {@code false} if not
+	 */
+	boolean beanExists(String name);
 
-    /**
-     * Registers the given {@code Beans} with the {@code BeanFactory}.
-     *
-     * @param beans the {@code Beans} to register
-     */
-    void registerBeans(List<XmlBean> beans);
+	/**
+	 * Registers the given {@code Beans} with the {@code BeanFactory}.
+	 * 
+	 * @param beans
+	 *            the {@code Beans} to register
+	 */
+	void registerBeans(List<XmlBean> beans);
 
-    /**
-     * Registers the bean with the {@code BeanFactory}.
-     *
-     * @param beanDefinition the {@link AbstractBeanDefinition} to register
-     */
-    void registerBean(AbstractBeanDefinition beanDefinition);
+	/**
+	 * Registers the bean with the {@code BeanFactory}.
+	 * 
+	 * @param beanDefinition
+	 *            the {@link AbstractBeanDefinition} to register
+	 * 
+	 */
+	void registerBean(AbstractBeanDefinition beanDefinition);
 
-    /**
-     * Retrieves the bean {@link Map} for this {@code BeanFactory}.
-     *
-     * @return {@code Map} of bean names and their corresponding
-     *         {@link BeanDefinition} instances
-     */
-    Map<String, AbstractBeanDefinition> getBeanDefinitions();
+	/**
+	 * Retrieves the bean {@link Map} for this {@code BeanFactory}.
+	 * 
+	 * @return {@code Map} of bean names and their corresponding
+	 *         {@link BeanDefinition} instances
+	 */
+	Map<String, AbstractBeanDefinition> getBeanDefinitions();
 
-    /**
-     * Returns the {@link Class} type for the bean with the given name.
-     *
-     * @param name bean name
-     * @return bean type or {@code null} if no such bean exists
-     */
-    Class<?> getBeanType(String name);
+	/**
+	 * Returns the {@link Class} type for the bean with the given name.
+	 * 
+	 * @param name
+	 *            bean name
+	 * @return bean type or {@code null} if no such bean exists
+	 */
+	Class<?> getBeanType(String name);
 
-    /**
-     * Returns the associated {@link InfinitumContext}.
-     *
-     * @return {@code InfinitumContext}
-     */
-    InfinitumContext getContext();
+	/**
+	 * Returns the associated {@link InfinitumContext}.
+	 * 
+	 * @return {@code InfinitumContext}
+	 */
+	InfinitumContext getContext();
 
 }

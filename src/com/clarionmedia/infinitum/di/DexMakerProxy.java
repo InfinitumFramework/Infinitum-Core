@@ -34,77 +34,81 @@ import com.google.dexmaker.stock.ProxyBuilder;
  * Abstract implementation of {@link AbstractProxy} that relies on DexMaker in order
  * to proxy non-final classes in addition to interfaces.
  * </p>
- *
+ * 
  * @author Tyler Treat
  * @version 1.0 07/14/12
+ * @since 1.0
  * @see AdvisedDexMakerProxy
  * @see LazyLoadDexMakerProxy
- * @since 1.0
  */
 public abstract class DexMakerProxy extends AbstractProxy {
 
-    protected Context mContext;
+	protected Context mContext;
 
-    /**
-     * Creates a new {@code DexMakerProxy}.
-     *
-     * @param context the {@link Context} used to retrieve the DEX bytecode cache
-     * @param target  the proxied {@link Object}
-     */
-    public DexMakerProxy(Context context, Object target) {
-        super(target);
-        Preconditions.checkNotNull(context);
-        mContext = context;
-    }
+	/**
+	 * Creates a new {@code DexMakerProxy}.
+	 * 
+	 * @param context
+	 *            the {@link Context} used to retrieve the DEX bytecode cache
+	 * @param target
+	 *            the proxied {@link Object}
+	 */
+	public DexMakerProxy(Context context, Object target) {
+		super(target);
+		Preconditions.checkNotNull(context);
+		mContext = context;
+	}
 
-    /**
-     * Retrieves a {@code DexMakerProxy} instance for the given proxy.
-     *
-     * @param object the {@link Object} to retrieve a proxy instance for
-     * @return {@code DexMakerProxy} or {@code null} if {@code object} is not a
-     *         proxy
-     */
-    public static DexMakerProxy getProxy(Object object) {
-        if (!ProxyBuilder.isProxyClass(object.getClass()))
-            return null;
-        return (DexMakerProxy) ProxyBuilder.getInvocationHandler(object);
-    }
+	/**
+	 * Retrieves a {@code DexMakerProxy} instance for the given proxy.
+	 * 
+	 * @param object
+	 *            the {@link Object} to retrieve a proxy instance for
+	 * @return {@code DexMakerProxy} or {@code null} if {@code object} is not a
+	 *         proxy
+	 */
+	public static DexMakerProxy getProxy(Object object) {
+		if (!ProxyBuilder.isProxyClass(object.getClass()))
+			return null;
+		return (DexMakerProxy) ProxyBuilder.getInvocationHandler(object);
+	}
 
-    /**
-     * Indicates if the given {@link Object} is an {@link AbstractProxy}.
-     *
-     * @param object the {@code Object} to check
-     * @return {@code true} if it is a proxy, {@code false} if not
-     */
-    public static boolean isAopProxy(Object object) {
-        return ProxyBuilder.isProxyClass(object.getClass());
-    }
+	/**
+	 * Indicates if the given {@link Object} is an {@link AbstractProxy}.
+	 * 
+	 * @param object
+	 *            the {@code Object} to check
+	 * @return {@code true} if it is a proxy, {@code false} if not
+	 */
+	public static boolean isAopProxy(Object object) {
+		return ProxyBuilder.isProxyClass(object.getClass());
+	}
 
-    @Override
-    public Object getProxy() {
-        try {
-            return ProxyBuilder.forClass(mTarget.getClass()).handler(this)
-                    .dexCache(DexCaching.getDexCache(mContext)).build();
-        } catch (IOException e) {
-            throw new InfinitumRuntimeException("DEX cache was not writeable.");
-        }
-    }
+	@Override
+	public Object getProxy() {
+		try {
+			return ProxyBuilder.forClass(mTarget.getClass()).handler(this)
+					.dexCache(DexCaching.getDexCache(mContext)).build();
+		} catch (IOException e) {
+			throw new InfinitumRuntimeException("DEX cache was not writeable.");
+		}
+	}
 
-    @Override
-    public final boolean isProxy(Object object) {
-        return ProxyBuilder.isProxyClass(object.getClass());
-    }
+	@Override
+	public final boolean isProxy(Object object) {
+		return ProxyBuilder.isProxyClass(object.getClass());
+	}
 
-    @Override
-    public final InvocationHandler getInvocationHandler(Object proxy) {
-        if (!isProxy(proxy))
-            return null;
-        return ProxyBuilder.getInvocationHandler(proxy);
-    }
+	@Override
+	public final InvocationHandler getInvocationHandler(Object proxy) {
+		if (!isProxy(proxy))
+			return null;
+		return ProxyBuilder.getInvocationHandler(proxy);
+	}
 
-    @Override
-    public final ProxyType getProxyType() {
-        return ProxyType.DexMaker;
-    }
+	@Override
+	public final ProxyType getProxyType() {
+		return ProxyType.DexMaker;
+	}
 
 }

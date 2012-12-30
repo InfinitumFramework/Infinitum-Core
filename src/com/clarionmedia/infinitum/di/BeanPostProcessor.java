@@ -25,21 +25,23 @@ import com.clarionmedia.infinitum.context.InfinitumContext;
  * <p>
  * Allows for beans to be modified after they are initialized by the container.
  * </p>
- *
+ * 
  * @author Tyler Treat
  * @version 1.0 07/05/12
  * @since 1.0
  */
 public interface BeanPostProcessor {
 
-    /**
-     * Invoked on the given {@link AbstractBeanDefinition} after it has been
-     * initialized.
-     *
-     * @param context        the {@link InfinitumContext} the given bean is registered with
-     * @param beanDefinition the {@code AbstractBeanDefinition} to post process
-     */
-    void postProcessBean(InfinitumContext context,
-                         AbstractBeanDefinition beanDefinition);
+	/**
+	 * Invoked on the given {@link AbstractBeanDefinition} after it has been
+	 * initialized.
+	 * 
+	 * @param context
+	 *            the {@link InfinitumContext} the given bean is registered with
+	 * @param beanDefinition
+	 *            the {@code AbstractBeanDefinition} to post process
+	 */
+	void postProcessBean(InfinitumContext context,
+			AbstractBeanDefinition beanDefinition);
 
 }

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.clarionmedia.infinitum"
-          android:versionCode="1"
-          android:versionName="1.0">
+    package="com.clarionmedia.infinitum"
+    android:versionCode="1"
+    android:versionName="1.0">
 
     <!-- Infinitum is never compiled as an APK but rather used as a library. -->
-    <uses-sdk android:minSdkVersion="4"/>
+    <uses-sdk android:minSdkVersion="4" />
 
 </manifest>

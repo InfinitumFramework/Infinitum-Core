@@ -28,41 +28,42 @@ import com.clarionmedia.infinitum.di.BeanFactory;
  * Concrete implementation of {@link AbstractBeanDefinition} which describes
  * prototype beans.
  * </p>
- *
+ * 
  * @author Tyler Treat
  * @version 1.0 08/04/12
  * @since 1.0
  */
 public class PrototypeBeanDefinition extends AbstractBeanDefinition {
 
-    /**
-     * Constructs a new {@code PrototypeBeanDefinition}.
-     *
-     * @param beanFactory the {@link BeanFactory} containing this bean
-     */
-    public PrototypeBeanDefinition(BeanFactory beanFactory) {
-        super(beanFactory);
-    }
+	/**
+	 * Constructs a new {@code PrototypeBeanDefinition}.
+	 * 
+	 * @param beanFactory
+	 *            the {@link BeanFactory} containing this bean
+	 */
+	public PrototypeBeanDefinition(BeanFactory beanFactory) {
+		super(beanFactory);
+	}
 
-    @Override
-    public Object getBeanInstance() {
-        Object bean = createBean();
-        inject(bean);
-        setFields(bean);
-        postConstruct(bean);
-        if (mBeanProxy != null) {
-            AbstractProxy proxy = mBeanProxy.clone();
-            proxy.setTarget(bean);
-            return proxy.getProxy();
-        }
-        return bean;
-    }
+	@Override
+	public Object getBeanInstance() {
+		Object bean = createBean();
+		inject(bean);
+		setFields(bean);
+		postConstruct(bean);
+		if (mBeanProxy != null) {
+			AbstractProxy proxy = mBeanProxy.clone();
+			proxy.setTarget(bean);
+			return proxy.getProxy();
+		}
+		return bean;
+	}
 
-    @Override
-    public Object getNonProxiedBeanInstance() {
-        Object bean = createBean();
-        setFields(bean);
-        return bean;
-    }
+	@Override
+	public Object getNonProxiedBeanInstance() {
+		Object bean = createBean();
+		setFields(bean);
+		return bean;
+	}
 
 }

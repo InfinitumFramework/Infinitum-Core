@@ -37,98 +37,99 @@ import com.clarionmedia.infinitum.reflection.impl.DefaultPackageReflector;
  * configured in {@code infinitum.cfg.xml}. {@code ConfigurableBeanFactory} also
  * acts as a service locator for {@link InfinitumContext}.
  * </p>
- *
+ * 
  * @author Tyler Treat
  * @version 1.0 04/23/12
  * @since 1.0
  */
 public class ConfigurableBeanFactory implements BeanFactory {
 
-    private PackageReflector mPackageReflector;
-    private Map<String, AbstractBeanDefinition> mBeanDefinitions;
-    private InfinitumContext mContext;
+	private PackageReflector mPackageReflector;
+	private Map<String, AbstractBeanDefinition> mBeanDefinitions;
+	private InfinitumContext mContext;
 
-    /**
-     * Constructs a new {@code ConfigurableBeanFactory}.
-     *
-     * @param context the parent {@link InfinitumContext}
-     */
-    public ConfigurableBeanFactory(InfinitumContext context) {
-        mContext = context;
-        mPackageReflector = new DefaultPackageReflector();
-        mBeanDefinitions = new HashMap<String, AbstractBeanDefinition>();
-    }
+	/**
+	 * Constructs a new {@code ConfigurableBeanFactory}.
+	 * 
+	 * @param context
+	 *            the parent {@link InfinitumContext}
+	 */
+	public ConfigurableBeanFactory(InfinitumContext context) {
+		mContext = context;
+		mPackageReflector = new DefaultPackageReflector();
+		mBeanDefinitions = new HashMap<String, AbstractBeanDefinition>();
+	}
 
-    @Override
-    public Object loadBean(String name) throws InfinitumConfigurationException {
-        if (!mBeanDefinitions.containsKey(name))
-            throw new InfinitumConfigurationException("Bean '" + name + "' could not be resolved");
-        return mBeanDefinitions.get(name).getBeanInstance();
-    }
+	@Override
+	public Object loadBean(String name) throws InfinitumConfigurationException {
+		if (!mBeanDefinitions.containsKey(name))
+			throw new InfinitumConfigurationException("Bean '" + name + "' could not be resolved");
+		return mBeanDefinitions.get(name).getBeanInstance();
+	}
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> T loadBean(String name, Class<T> clazz) throws InfinitumConfigurationException {
-        Object bean = loadBean(name);
-        if (!clazz.isInstance(bean))
-            throw new InfinitumConfigurationException("Bean '" + name + "' was not of type '" + clazz.getName() + "'.");
-        return (T) bean;
-    }
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T loadBean(String name, Class<T> clazz) throws InfinitumConfigurationException {
+		Object bean = loadBean(name);
+		if (!clazz.isInstance(bean))
+			throw new InfinitumConfigurationException("Bean '" + name + "' was not of type '" + clazz.getName() + "'.");
+		return (T) bean;
+	}
 
-    @Override
-    public boolean beanExists(String name) {
-        return mBeanDefinitions.containsKey(name);
-    }
+	@Override
+	public boolean beanExists(String name) {
+		return mBeanDefinitions.containsKey(name);
+	}
 
-    @Override
-    public void registerBeans(List<XmlBean> beans) {
-        if (beans == null)
-            return;
-        for (XmlBean bean : beans) {
-            Map<String, Object> propertiesMap = new HashMap<String, Object>();
-            for (XmlBean.Property property : bean.getProperties()) {
-                String name = property.getName();
-                String ref = property.getRef();
-                if (ref != null) {
-                    propertiesMap.put(name, loadBean(ref));
-                } else {
-                    String value = property.getValue();
-                    propertiesMap.put(name, value);
-                }
-            }
-            Class<?> clazz = mPackageReflector.getClass(bean.getClassName());
-            AbstractBeanDefinition beanDefinition = new GenericBeanDefinitionBuilder(this).setName(bean.getId()).setType(clazz)
-                    .setProperties(propertiesMap).setScope(bean.getScope()).build();
-            registerBean(beanDefinition);
-        }
-    }
+	@Override
+	public void registerBeans(List<XmlBean> beans) {
+		if (beans == null)
+			return;
+		for (XmlBean bean : beans) {
+			Map<String, Object> propertiesMap = new HashMap<String, Object>();
+			for (XmlBean.Property property : bean.getProperties()) {
+				String name = property.getName();
+				String ref = property.getRef();
+				if (ref != null) {
+					propertiesMap.put(name, loadBean(ref));
+				} else {
+					String value = property.getValue();
+					propertiesMap.put(name, value);
+				}
+			}
+			Class<?> clazz = mPackageReflector.getClass(bean.getClassName());
+			AbstractBeanDefinition beanDefinition = new GenericBeanDefinitionBuilder(this).setName(bean.getId()).setType(clazz)
+					.setProperties(propertiesMap).setScope(bean.getScope()).build();
+			registerBean(beanDefinition);
+		}
+	}
 
-    @Override
-    public void registerBean(AbstractBeanDefinition beanDefinition) {
-        mBeanDefinitions.put(beanDefinition.getName(), beanDefinition);
-    }
+	@Override
+	public void registerBean(AbstractBeanDefinition beanDefinition) {
+		mBeanDefinitions.put(beanDefinition.getName(), beanDefinition);
+	}
 
-    @Override
-    public Map<String, AbstractBeanDefinition> getBeanDefinitions() {
-        return mBeanDefinitions;
-    }
+	@Override
+	public Map<String, AbstractBeanDefinition> getBeanDefinitions() {
+		return mBeanDefinitions;
+	}
 
-    @Override
-    public InfinitumContext getContext() {
-        return mContext;
-    }
+	@Override
+	public InfinitumContext getContext() {
+		return mContext;
+	}
 
-    @Override
-    public AbstractBeanDefinition getBeanDefinition(String name) {
-        return mBeanDefinitions.get(name);
-    }
+	@Override
+	public AbstractBeanDefinition getBeanDefinition(String name) {
+		return mBeanDefinitions.get(name);
+	}
 
-    @Override
-    public Class<?> getBeanType(String name) {
-        AbstractBeanDefinition bean = mBeanDefinitions.get(name);
-        if (bean == null)
-            return null;
-        return bean.getType();
-    }
+	@Override
+	public Class<?> getBeanType(String name) {
+		AbstractBeanDefinition bean = mBeanDefinitions.get(name);
+		if (bean == null)
+			return null;
+		return bean.getType();
+	}
 
 }

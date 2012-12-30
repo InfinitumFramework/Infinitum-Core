@@ -24,7 +24,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
 import com.clarionmedia.infinitum.di.ActivityInjector.Event;
 import android.view.KeyEvent;
 import android.view.View;
@@ -46,30 +45,30 @@ import android.view.View;
  * callback must return a {@code boolean} and take a {@code View}, {@code int},
  * and {@link KeyEvent} as its arguments.
  * </p>
- *
+ * 
  * @author Tyler Treat
  * @version 1.0 07/19/12
- * @see InjectView
  * @since 1.0
+ * @see InjectView
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface Bind {
 
-    /**
-     * Declares the event type for this binding. Defaults to
-     * {@code Event.OnClick}.
-     *
-     * @return {@link Event} binding
-     */
-    Event event() default Event.OnClick;
+	/**
+	 * Declares the event type for this binding. Defaults to
+	 * {@code Event.OnClick}.
+	 * 
+	 * @return {@link Event} binding
+	 */
+	Event event() default Event.OnClick;
 
-    /**
-     * Declares the name of the method to invoked.
-     *
-     * @return method name
-     */
-    String value();
+	/**
+	 * Declares the name of the method to invoked.
+	 * 
+	 * @return method name
+	 */
+	String value();
 
 }

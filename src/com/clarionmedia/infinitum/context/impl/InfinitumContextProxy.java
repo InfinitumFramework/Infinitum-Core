@@ -33,36 +33,37 @@ import com.clarionmedia.infinitum.di.JdkDynamicProxy;
  * placeholder to avoid "Infinitum context not configured" issues during
  * framework initialization.
  * </p>
- *
+ * 
  * @author Tyler Treat
  * @version 1.0 12/28/12
  * @since 1.0
  */
 public class InfinitumContextProxy extends JdkDynamicProxy {
 
-    private InfinitumContext mProxiedContext;
-    private Class<? extends InfinitumContext> mContextType;
+	private InfinitumContext mProxiedContext;
+	private Class<? extends InfinitumContext> mContextType;
 
-    /**
-     * Creates a new {@code InfinitumContextProxy} instance.
-     *
-     * @param contextType the {@link InfinitumContext} type to proxy
-     */
-    public InfinitumContextProxy(Class<? extends InfinitumContext> contextType) {
-        super(null, new Class<?>[]{contextType});
-        mContextType = contextType;
-    }
+	/**
+	 * Creates a new {@code InfinitumContextProxy} instance.
+	 * 
+	 * @param contextType
+	 *            the {@link InfinitumContext} type to proxy
+	 */
+	public InfinitumContextProxy(Class<? extends InfinitumContext> contextType) {
+		super(null, new Class<?>[] { contextType });
+		mContextType = contextType;
+	}
 
-    @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if (mProxiedContext == null)
-            mProxiedContext = ContextFactory.newInstance().getContext(mContextType);
-        return method.invoke(mProxiedContext, args);
-    }
+	@Override
+	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+		if (mProxiedContext == null)
+			mProxiedContext = ContextFactory.newInstance().getContext(mContextType);
+		return method.invoke(mProxiedContext, args);
+	}
 
-    @Override
-    public AbstractProxy clone() {
-        throw new UnsupportedOperationException("Clone is not supported for InfinitumContextProxy!");
-    }
+	@Override
+	public AbstractProxy clone() {
+		throw new UnsupportedOperationException("Clone is not supported for InfinitumContextProxy!");
+	}
 
 }

@@ -37,82 +37,86 @@ import com.clarionmedia.infinitum.context.impl.XmlContextFactory;
  * {@code ContextFactory} instances can be retrieved by calling
  * {@link ContextFactory#newInstance()}.
  * </p>
- *
+ * 
  * @author Tyler Treat
  * @version 1.0 05/18/12
  * @since 1.0
  */
 public abstract class ContextFactory {
 
-    protected static Context mContext;
+	protected static Context mContext;
 
-    /**
-     * Retrieves a new {@code ContextFactory} instance.
-     *
-     * @return {@code ContextFactory}
-     */
-    public static ContextFactory newInstance() {
-        return new XmlContextFactory();
-    }
+	/**
+	 * Retrieves a new {@code ContextFactory} instance.
+	 * 
+	 * @return {@code ContextFactory}
+	 */
+	public static ContextFactory newInstance() {
+		return new XmlContextFactory();
+	}
+	
+	/**
+	 * Retrieves the Android {@link Context} registered with the configured
+	 * {@link InfinitumContext}.
+	 *
+	 * @return {@code Context}
+	 */
+	public Context getAndroidContext() {
+		return mContext;
+	}
 
-    /**
-     * Retrieves the Android {@link Context} registered with the configured
-     * {@link InfinitumContext}.
-     *
-     * @return {@code Context}
-     */
-    public Context getAndroidContext() {
-        return mContext;
-    }
+	/**
+	 * Configures Infinitum with the implicit configuration file
+	 * {@code res/raw/infinitum.cfg.xml}. This method must be called before
+	 * attempting to retrieve an {@link InfinitumContext}.
+	 * 
+	 * @param context
+	 *            the calling {@link Context}.
+	 * @return configured {@code InfinitumContext}
+	 * @throws InfinitumConfigurationException
+	 *             if the implied configuration file could not be found or if
+	 *             the file could not be parsed
+	 */
+	public abstract InfinitumContext configure(Context context) throws InfinitumConfigurationException;
 
-    /**
-     * Configures Infinitum with the implicit configuration file
-     * {@code res/raw/infinitum.cfg.xml}. This method must be called before
-     * attempting to retrieve an {@link InfinitumContext}.
-     *
-     * @param context the calling {@link Context}.
-     * @return configured {@code InfinitumContext}
-     * @throws InfinitumConfigurationException
-     *          if the implied configuration file could not be found or if
-     *          the file could not be parsed
-     */
-    public abstract InfinitumContext configure(Context context) throws InfinitumConfigurationException;
+	/**
+	 * Configures Infinitum with the specified configuration file. This method
+	 * must be called before attempting to retrieve an {@link InfinitumContext}.
+	 * 
+	 * @param context
+	 *            the calling {@code Context}
+	 * @param configId
+	 *            the resource ID for the raw XML configuration file
+	 * @return configured {@code InfinitumContext}
+	 * @throws InfinitumConfigurationException
+	 *             if the configuration file could not be found or if the file
+	 *             could not be parsed
+	 */
+	public abstract InfinitumContext configure(Context context, int configId) throws InfinitumConfigurationException;
 
-    /**
-     * Configures Infinitum with the specified configuration file. This method
-     * must be called before attempting to retrieve an {@link InfinitumContext}.
-     *
-     * @param context  the calling {@code Context}
-     * @param configId the resource ID for the raw XML configuration file
-     * @return configured {@code InfinitumContext}
-     * @throws InfinitumConfigurationException
-     *          if the configuration file could not be found or if the file
-     *          could not be parsed
-     */
-    public abstract InfinitumContext configure(Context context, int configId) throws InfinitumConfigurationException;
+	/**
+	 * Retrieves the {@link InfinitumContext} singleton.
+	 * {@link ContextFactory#configure} must be called before using this method.
+	 * Otherwise, an {@link InfinitumConfigurationException} will be thrown.
+	 * 
+	 * @return the {@code InfinitumContext} singleton
+	 * @throws InfinitumConfigurationException
+	 *             if {@code configure} was not called
+	 */
+	public abstract InfinitumContext getContext() throws InfinitumConfigurationException;
 
-    /**
-     * Retrieves the {@link InfinitumContext} singleton.
-     * {@link ContextFactory#configure} must be called before using this method.
-     * Otherwise, an {@link InfinitumConfigurationException} will be thrown.
-     *
-     * @return the {@code InfinitumContext} singleton
-     * @throws InfinitumConfigurationException
-     *          if {@code configure} was not called
-     */
-    public abstract InfinitumContext getContext() throws InfinitumConfigurationException;
-
-    /**
-     * Retrieves the {@link InfinitumContext} singleton.
-     * {@link ContextFactory#configure} must be called before using this method.
-     * Otherwise, an {@link InfinitumConfigurationException} will be thrown.
-     *
-     * @param contextType the type of the {@code InfinitumContext} to retrieve
-     * @return the {@code InfinitumContext} singleton
-     * @throws InfinitumConfigurationException
-     *          if {@code configure} was not called or a context of the
-     *          desired type is not available
-     */
-    public abstract <T extends InfinitumContext> T getContext(Class<T> contextType) throws InfinitumConfigurationException;
+	/**
+	 * Retrieves the {@link InfinitumContext} singleton.
+	 * {@link ContextFactory#configure} must be called before using this method.
+	 * Otherwise, an {@link InfinitumConfigurationException} will be thrown.
+	 * 
+	 * @param contextType
+	 *            the type of the {@code InfinitumContext} to retrieve
+	 * @return the {@code InfinitumContext} singleton
+	 * @throws InfinitumConfigurationException
+	 *             if {@code configure} was not called or a context of the
+	 *             desired type is not available
+	 */
+	public abstract <T extends InfinitumContext> T getContext(Class<T> contextType) throws InfinitumConfigurationException;
 
 }

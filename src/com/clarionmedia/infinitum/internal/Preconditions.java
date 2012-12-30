@@ -24,15 +24,15 @@ package com.clarionmedia.infinitum.internal;
  * <p>
  * Utility class used to check method preconditions.
  * </p>
- *
+ * 
  * @author Tyler Treat
  * @version 1.0 03/18/12
  */
 public class Preconditions {
 
-    public static void checkNotNull(Object arg) {
-        if (arg == null)
-            throw new IllegalArgumentException("Argument may not be null.");
-    }
+	public static void checkNotNull(Object arg) {
+		if (arg == null)
+			throw new IllegalArgumentException("Argument may not be null.");
+	}
 
 }

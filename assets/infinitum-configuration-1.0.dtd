@@ -22,50 +22,50 @@
  
 -->
 
-        <!ELEMENT infinitum-configuration (application? , sqlite? , rest? , domain? , beans?)>
+<!ELEMENT infinitum-configuration (application? , sqlite? , rest? , domain? , beans?)>
 
-        <!ELEMENT application (property*)>
-        <!ELEMENT sqlite (property+)>
-        <!ELEMENT domain (model*)>
-        <!ELEMENT beans (component-scan , bean* , aspect*)>
-        <!ELEMENT rest (property+ , authentication?)>
-        <!ATTLIST rest ref CDATA #IMPLIED>
+<!ELEMENT application (property*)>
+<!ELEMENT sqlite (property+)>
+<!ELEMENT domain (model*)>
+<!ELEMENT beans (component-scan , bean* , aspect*)>
+<!ELEMENT rest (property+ , authentication?)>
+<!ATTLIST rest ref CDATA #IMPLIED>
 
-        <!ELEMENT property (#PCDATA)>
-        <!ATTLIST property name CDATA #REQUIRED>
-        <!ATTLIST property ref CDATA #IMPLIED>
-        <!ATTLIST property value CDATA #IMPLIED>
+<!ELEMENT property (#PCDATA)>
+<!ATTLIST property name CDATA #REQUIRED>
+<!ATTLIST property ref CDATA #IMPLIED>
+<!ATTLIST property value CDATA #IMPLIED>
 
-        <!ELEMENT model (#PCDATA)>
-        <!ATTLIST model resource CDATA #REQUIRED>
+<!ELEMENT model (#PCDATA)>
+<!ATTLIST model resource CDATA #REQUIRED>
 
-        <!ELEMENT bean (property*)>
-        <!ATTLIST bean id CDATA #REQUIRED>
-        <!ATTLIST bean src CDATA #REQUIRED>
-        <!ATTLIST bean scope CDATA #IMPLIED>
+<!ELEMENT bean (property*)>
+<!ATTLIST bean id CDATA #REQUIRED>
+<!ATTLIST bean src CDATA #REQUIRED>
+<!ATTLIST bean scope CDATA #IMPLIED>
 
-        <!ELEMENT aspect (property* , advice*)>
-        <!ATTLIST aspect id CDATA #REQUIRED>
-        <!ATTLIST aspect src CDATA #REQUIRED>
-        <!ATTLIST aspect scope CDATA #IMPLIED>
+<!ELEMENT aspect (property* , advice*)>
+<!ATTLIST aspect id CDATA #REQUIRED>
+<!ATTLIST aspect src CDATA #REQUIRED>
+<!ATTLIST aspect scope CDATA #IMPLIED>
 
-        <!ELEMENT advice (#PCDATA)>
-        <!ATTLIST advice id CDATA #REQUIRED>
-        <!ATTLIST advice type CDATA #REQUIRED>
-        <!ATTLIST advice pointcut CDATA #REQUIRED>
-        <!ATTLIST advice value CDATA #REQUIRED>
-        <!ATTLIST advice order CDATA #IMPLIED>
+<!ELEMENT advice (#PCDATA)>
+<!ATTLIST advice id CDATA #REQUIRED>
+<!ATTLIST advice type CDATA #REQUIRED>
+<!ATTLIST advice pointcut CDATA #REQUIRED>
+<!ATTLIST advice value CDATA #REQUIRED>
+<!ATTLIST advice order CDATA #IMPLIED>
 
-        <!ELEMENT component-scan (#PCDATA)>
-        <!ATTLIST component-scan enabled CDATA #IMPLIED>
-        <!ATTLIST component-scan base-package CDATA #IMPLIED>
+<!ELEMENT component-scan (#PCDATA)>
+<!ATTLIST component-scan enabled CDATA #IMPLIED>
+<!ATTLIST component-scan base-package CDATA #IMPLIED>
 
-        <!ELEMENT resource (#PCDATA)>
-        <!ATTLIST resource name CDATA #REQUIRED>
+<!ELEMENT resource (#PCDATA)>
+<!ATTLIST resource name CDATA #REQUIRED>
 
-        <!ELEMENT authentication (property*)>
-        <!ATTLIST authentication strategy CDATA #IMPLIED>
-        <!ATTLIST authentication ref CDATA #IMPLIED>
-        <!ATTLIST authentication enabled CDATA #IMPLIED>
-        <!ATTLIST authentication generator CDATA #IMPLIED>
-        <!ATTLIST authentication header CDATA #IMPLIED>
+<!ELEMENT authentication (property*)>
+<!ATTLIST authentication strategy CDATA #IMPLIED>
+<!ATTLIST authentication ref CDATA #IMPLIED>
+<!ATTLIST authentication enabled CDATA #IMPLIED>
+<!ATTLIST authentication generator CDATA #IMPLIED>
+<!ATTLIST authentication header CDATA #IMPLIED>
