@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
  * Only one method can carry this annotation, and it does not have to be public.
  * A method marked with this annotation must not have any arguments.
  * </p>
- * 
+ *
  * @author Tyler Treat
  * @version 1.0 07/29/12
  * @since 1.0

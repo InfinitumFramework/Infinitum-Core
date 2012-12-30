@@ -29,67 +29,66 @@ import com.clarionmedia.infinitum.di.BeanFactory;
  * <p>
  * Generic implementation of {@link BeanDefinitionBuilder}.
  * </p>
- * 
+ *
  * @author Tyler Treat
  * @version 1.0 08/04/12
  * @since 1.0
  */
 public class GenericBeanDefinitionBuilder implements BeanDefinitionBuilder {
 
-	private String mName;
-	private Class<?> mType;
-	private Map<String, Object> mProperties;
-	private String mScope;
-	private BeanFactory mBeanFactory;
+    private String mName;
+    private Class<?> mType;
+    private Map<String, Object> mProperties;
+    private String mScope;
+    private BeanFactory mBeanFactory;
 
-	/**
-	 * Creates a new {@code GenericBeanDefinitionBuilder}.
-	 * 
-	 * @param beanFactory
-	 *            the {@link BeanFactory} created bean definitions are scoped to
-	 */
-	public GenericBeanDefinitionBuilder(BeanFactory beanFactory) {
-		mBeanFactory = beanFactory;
-	}
+    /**
+     * Creates a new {@code GenericBeanDefinitionBuilder}.
+     *
+     * @param beanFactory the {@link BeanFactory} created bean definitions are scoped to
+     */
+    public GenericBeanDefinitionBuilder(BeanFactory beanFactory) {
+        mBeanFactory = beanFactory;
+    }
 
-	@Override
-	public AbstractBeanDefinition build() {
-		if (mName == null || mType == null)
-			throw new IllegalStateException(
-					"Must provide bean name and type to build definition.");
-		AbstractBeanDefinition ret;
-		if (mScope == null || mScope.equalsIgnoreCase("singleton"))
-			ret = new SingletonBeanDefinition(mBeanFactory);
-		else
-			ret = new PrototypeBeanDefinition(mBeanFactory);
-		ret.setName(mName);
-		ret.setType(mType);
-		ret.setProperties(mProperties);
-		return ret;
-	}
+    @Override
+    public AbstractBeanDefinition build() {
+        if (mName == null || mType == null)
+            throw new IllegalStateException(
+                    "Must provide bean name and type to build definition.");
+        AbstractBeanDefinition ret;
+        if (mScope == null || mScope.equalsIgnoreCase("singleton"))
+            ret = new SingletonBeanDefinition(mBeanFactory);
+        else
+            ret = new PrototypeBeanDefinition(mBeanFactory);
+        ret.setName(mName);
+        ret.setType(mType);
+        ret.setProperties(mProperties);
+        return ret;
+    }
 
-	@Override
-	public BeanDefinitionBuilder setName(String name) {
-		mName = name;
-		return this;
-	}
+    @Override
+    public BeanDefinitionBuilder setName(String name) {
+        mName = name;
+        return this;
+    }
 
-	@Override
-	public BeanDefinitionBuilder setType(Class<?> type) {
-		mType = type;
-		return this;
-	}
+    @Override
+    public BeanDefinitionBuilder setType(Class<?> type) {
+        mType = type;
+        return this;
+    }
 
-	@Override
-	public BeanDefinitionBuilder setProperties(Map<String, Object> properties) {
-		mProperties = properties;
-		return this;
-	}
+    @Override
+    public BeanDefinitionBuilder setProperties(Map<String, Object> properties) {
+        mProperties = properties;
+        return this;
+    }
 
-	@Override
-	public BeanDefinitionBuilder setScope(String scope) {
-		mScope = scope;
-		return this;
-	}
+    @Override
+    public BeanDefinitionBuilder setScope(String scope) {
+        mScope = scope;
+        return this;
+    }
 
 }

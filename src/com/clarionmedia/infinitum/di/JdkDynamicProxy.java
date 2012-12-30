@@ -32,96 +32,92 @@ import com.clarionmedia.infinitum.reflection.impl.DefaultClassReflector;
  * Abstract implementation of {@link AbstractProxy} that relies on the JDK-provided
  * {@link Proxy} in order to proxy interfaces.
  * </p>
- * 
+ *
  * @author Tyler Treat
  * @version 1.0 07/14/12
- * @since 1.0
  * @see AdvisedJdkDynamicProxy
+ * @since 1.0
  */
 public abstract class JdkDynamicProxy extends AbstractProxy {
 
-	protected final Class<?>[] mInterfaces;
+    protected final Class<?>[] mInterfaces;
 
-	/**
-	 * Creates a new {@code JdkDynamicProxy}.
-	 * 
-	 * @param target
-	 *            the proxied {@link Object}
-	 * @param interfaces
-	 *            the interfaces the proxy will implement
-	 */
-	public JdkDynamicProxy(Object target, Class<?>[] interfaces) {
-		super(target);
-		Preconditions.checkNotNull(interfaces);
-		ClassReflector reflector = new DefaultClassReflector();
-		Class<?>[] realInterfaces = new Class<?>[interfaces.length];
-		for (int i = 0; i < interfaces.length; i++) {
-			Class<?> realInterface;
-			Class<?> clazz = interfaces[i];
-			if (!clazz.isInterface()) {
-				if (InfinitumContext.class.isAssignableFrom(clazz)) {
-					realInterface = reflector.getSuperInterface(clazz, InfinitumContext.class);
-					if (realInterface == null)
-						throw new IllegalArgumentException("'" + clazz.getName() + "' is not an interface.");
-				} else {
-					realInterface = reflector.getSuperInterface(clazz);
-					if (realInterface == null)
-						throw new IllegalArgumentException("'" + clazz.getName()
-								+ "' is not an interface and does not implement an interface.");
-				}
-			} else {
-				realInterface = clazz;
-			}
-			realInterfaces[i] = realInterface;
-		}
-		mInterfaces = realInterfaces;
-	}
+    /**
+     * Creates a new {@code JdkDynamicProxy}.
+     *
+     * @param target     the proxied {@link Object}
+     * @param interfaces the interfaces the proxy will implement
+     */
+    public JdkDynamicProxy(Object target, Class<?>[] interfaces) {
+        super(target);
+        Preconditions.checkNotNull(interfaces);
+        ClassReflector reflector = new DefaultClassReflector();
+        Class<?>[] realInterfaces = new Class<?>[interfaces.length];
+        for (int i = 0; i < interfaces.length; i++) {
+            Class<?> realInterface;
+            Class<?> clazz = interfaces[i];
+            if (!clazz.isInterface()) {
+                if (InfinitumContext.class.isAssignableFrom(clazz)) {
+                    realInterface = reflector.getSuperInterface(clazz, InfinitumContext.class);
+                    if (realInterface == null)
+                        throw new IllegalArgumentException("'" + clazz.getName() + "' is not an interface.");
+                } else {
+                    realInterface = reflector.getSuperInterface(clazz);
+                    if (realInterface == null)
+                        throw new IllegalArgumentException("'" + clazz.getName()
+                                + "' is not an interface and does not implement an interface.");
+                }
+            } else {
+                realInterface = clazz;
+            }
+            realInterfaces[i] = realInterface;
+        }
+        mInterfaces = realInterfaces;
+    }
 
-	/**
-	 * Retrieves a {@code JdkDynamicProxy} instance for the given proxy.
-	 * 
-	 * @param object
-	 *            the {@link Object} to retrieve a proxy instance for
-	 * @return {@code JdkDynamicProxy} or {@code null} if {@code object} is not
-	 *         a proxy
-	 */
-	public static JdkDynamicProxy getProxy(Object object) {
-		if (!Proxy.isProxyClass(object.getClass()))
-			return null;
-		return (JdkDynamicProxy) Proxy.getInvocationHandler(object);
-	}
+    /**
+     * Retrieves a {@code JdkDynamicProxy} instance for the given proxy.
+     *
+     * @param object the {@link Object} to retrieve a proxy instance for
+     * @return {@code JdkDynamicProxy} or {@code null} if {@code object} is not
+     *         a proxy
+     */
+    public static JdkDynamicProxy getProxy(Object object) {
+        if (!Proxy.isProxyClass(object.getClass()))
+            return null;
+        return (JdkDynamicProxy) Proxy.getInvocationHandler(object);
+    }
 
-	/**
-	 * Indicates if the given {@link Object} is an {@link AbstractProxy}.
-	 * 
-	 * @param object
-	 *            the {@code Object} to check
-	 * @return {@code true} if it is a proxy, {@code false} if not
-	 */
-	public static boolean isAopProxy(Object object) {
-		return Proxy.isProxyClass(object.getClass());
-	}
+    /**
+     * Indicates if the given {@link Object} is an {@link AbstractProxy}.
+     *
+     * @param object the {@code Object} to check
+     * @return {@code true} if it is a proxy, {@code false} if not
+     */
+    public static boolean isAopProxy(Object object) {
+        return Proxy.isProxyClass(object.getClass());
+    }
 
-	@Override
-	public final boolean isProxy(Object object) {
-		return Proxy.isProxyClass(object.getClass());
-	}
+    @Override
+    public final boolean isProxy(Object object) {
+        return Proxy.isProxyClass(object.getClass());
+    }
 
-	@Override
-	public final Object getProxy() {
-		return Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), mInterfaces, this);
-	}
+    @Override
+    public final Object getProxy() {
+        return Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), mInterfaces, this);
+    }
 
-	@Override
-	public final InvocationHandler getInvocationHandler(Object proxy) {
-		if (!isProxy(proxy))
-			return null;
-		return Proxy.getInvocationHandler(proxy);
-	}
+    @Override
+    public final InvocationHandler getInvocationHandler(Object proxy) {
+        if (!isProxy(proxy))
+            return null;
+        return Proxy.getInvocationHandler(proxy);
+    }
 
-	@Override
-	public final ProxyType getProxyType() {
-		return ProxyType.JdkDynamic;
-	}
+    @Override
+    public final ProxyType getProxyType() {
+        return ProxyType.JdkDynamic;
+    }
 
 }

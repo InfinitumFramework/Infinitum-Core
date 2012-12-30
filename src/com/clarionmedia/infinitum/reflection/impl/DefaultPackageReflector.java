@@ -37,43 +37,43 @@ import dalvik.system.DexFile;
  * This class provides reflection methods for working with packages contained
  * within projects that are using Infinitum and their contained resources.
  * </p>
- * 
+ *
  * @author Tyler Treat
  * @version 1.0 02/14/12
  * @since 1.0
  */
 public class DefaultPackageReflector implements PackageReflector {
 
-	@Override
-	public Class<?> getClass(String className) {
-		Class<?> clazz;
-		try {
-			clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
-		} catch (ClassNotFoundException e) {
-			throw new InfinitumRuntimeException("Class '" + className + "' could not be resolved.");
-		}
-		return clazz;
-	}
+    @Override
+    public Class<?> getClass(String className) {
+        Class<?> clazz;
+        try {
+            clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
+        } catch (ClassNotFoundException e) {
+            throw new InfinitumRuntimeException("Class '" + className + "' could not be resolved.");
+        }
+        return clazz;
+    }
 
-	@Override
-	public synchronized Set<Class<?>> getPackageClasses(Context context, String... packageNames) {
-		Set<Class<?>> classes = new HashSet<Class<?>>();
-		try {
-			DexFile dex = new DexFile(context.getApplicationInfo().sourceDir);
-			Enumeration<String> entries = dex.entries();
-			while (entries.hasMoreElements()) {
-				String entry = entries.nextElement();
-				for (String packageName : packageNames) {
-					if (entry.toLowerCase(Locale.getDefault()).startsWith(packageName.toLowerCase())) {
-						classes.add(getClass(entry));
-						break;
-					}
-				}
-			}
-		} catch (IOException e) {
-			throw new InfinitumRuntimeException("Component scanning is not supported in this environment.");
-		}
-		return classes;
-	}
+    @Override
+    public synchronized Set<Class<?>> getPackageClasses(Context context, String... packageNames) {
+        Set<Class<?>> classes = new HashSet<Class<?>>();
+        try {
+            DexFile dex = new DexFile(context.getApplicationInfo().sourceDir);
+            Enumeration<String> entries = dex.entries();
+            while (entries.hasMoreElements()) {
+                String entry = entries.nextElement();
+                for (String packageName : packageNames) {
+                    if (entry.toLowerCase(Locale.getDefault()).startsWith(packageName.toLowerCase())) {
+                        classes.add(getClass(entry));
+                        break;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            throw new InfinitumRuntimeException("Component scanning is not supported in this environment.");
+        }
+        return classes;
+    }
 
 }

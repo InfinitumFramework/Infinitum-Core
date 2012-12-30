@@ -44,7 +44,7 @@ import com.clarionmedia.infinitum.di.impl.ConfigurableBeanFactory;
  * directly but rather obtained through the {@link XmlContextFactory}, which
  * creates an instance of this from {@code infinitum.cfg.xml}.
  * </p>
- * 
+ *
  * @author Tyler Treat
  * @version 1.0 06/26/12
  * @since 06/26/12
@@ -52,121 +52,121 @@ import com.clarionmedia.infinitum.di.impl.ConfigurableBeanFactory;
 @Root(name = "infinitum-configuration")
 public class XmlApplicationContext extends AbstractContext {
 
-	@ElementMap(name = "application", entry = "property", key = "name", attribute = true, required = false)
-	protected Map<String, String> mAppConfig;
+    @ElementMap(name = "application", entry = "property", key = "name", attribute = true, required = false)
+    protected Map<String, String> mAppConfig;
 
-	@ElementMap(name = "sqlite", entry = "property", key = "name", attribute = true, required = false)
-	protected Map<String, String> mSqliteConfig;
+    @ElementMap(name = "sqlite", entry = "property", key = "name", attribute = true, required = false)
+    protected Map<String, String> mSqliteConfig;
 
-	@ElementList(name = "domain")
-	protected List<Model> mModels;
+    @ElementList(name = "domain")
+    protected List<Model> mModels;
 
-	@Element(name = "rest", required = false, type = XmlRestfulContext.class)
-	protected XmlRestfulContext mRestConfig;
+    @Element(name = "rest", required = false, type = XmlRestfulContext.class)
+    protected XmlRestfulContext mRestConfig;
 
-	@Element(name = "beans", required = false)
-	protected BeanContainer mBeanContainer;
-	
-	protected XmlApplicationContext() {
-		mBeanFactory = new ConfigurableBeanFactory(this);
-	}
+    @Element(name = "beans", required = false)
+    protected BeanContainer mBeanContainer;
 
-	@Override
-	public boolean isDebug() {
-		String debug = mAppConfig.get("debug");
-		if (debug == null)
-			return false;
-		return parseBoolean(debug);
-	}
+    protected XmlApplicationContext() {
+        mBeanFactory = new ConfigurableBeanFactory(this);
+    }
 
-	@Override
-	protected List<XmlBean> getXmlBeans() {
-		List<XmlBean> ret = new ArrayList<XmlBean>();
-		if (mBeanContainer.mBeans != null)
-			ret.addAll(mBeanContainer.mBeans);
-		if (mBeanContainer.mAspects != null)
-			ret.addAll(mBeanContainer.mAspects);
-		return ret;
-	}
+    @Override
+    public boolean isDebug() {
+        String debug = mAppConfig.get("debug");
+        if (debug == null)
+            return false;
+        return parseBoolean(debug);
+    }
 
-	@Override
-	public XmlRestfulContext getRestContext() {
-		return mRestConfig;
-	}
-	
-	public Map<String, String> getAppConfig() {
-		return mAppConfig;
-	}
-	
-	public Map<String, String> getSqliteConfig() {
-		return mSqliteConfig;
-	}
-	
-	public List<Model> getModels() {
-		return mModels;
-	}
+    @Override
+    protected List<XmlBean> getXmlBeans() {
+        List<XmlBean> ret = new ArrayList<XmlBean>();
+        if (mBeanContainer.mBeans != null)
+            ret.addAll(mBeanContainer.mBeans);
+        if (mBeanContainer.mAspects != null)
+            ret.addAll(mBeanContainer.mAspects);
+        return ret;
+    }
 
-	@Override
-	protected List<String> getScanPackages() {
-		if (mBeanContainer.mComponentScan == null)
-			return new ArrayList<String>();
-		return mBeanContainer.mComponentScan.getBasePackages();
-	}
+    @Override
+    public XmlRestfulContext getRestContext() {
+        return mRestConfig;
+    }
 
-	@Override
-	public boolean isComponentScanEnabled() {
-		if (mBeanContainer.mComponentScan == null)
-			return false;
-		return mBeanContainer.mComponentScan.mIsEnabled;
-	}
+    public Map<String, String> getAppConfig() {
+        return mAppConfig;
+    }
 
-	@Root
-	public static class Model {
+    public Map<String, String> getSqliteConfig() {
+        return mSqliteConfig;
+    }
 
-		@Attribute(name = "resource")
-		private String mResource;
-		
-		public String getResource() {
-			return mResource;
-		}
+    public List<Model> getModels() {
+        return mModels;
+    }
 
-	}
+    @Override
+    protected List<String> getScanPackages() {
+        if (mBeanContainer.mComponentScan == null)
+            return new ArrayList<String>();
+        return mBeanContainer.mComponentScan.getBasePackages();
+    }
 
-	@Root
-	private static class BeanContainer {
+    @Override
+    public boolean isComponentScanEnabled() {
+        if (mBeanContainer.mComponentScan == null)
+            return false;
+        return mBeanContainer.mComponentScan.mIsEnabled;
+    }
 
-		@ElementList(entry = "bean", inline = true, required = false)
-		private List<XmlBean> mBeans;
+    @Root
+    public static class Model {
 
-		@ElementList(entry = "aspect", inline = true, required = false)
-		private List<XmlAspect> mAspects;
+        @Attribute(name = "resource")
+        private String mResource;
 
-		@Element(name = "component-scan", required = false)
-		private ComponentScan mComponentScan;
+        public String getResource() {
+            return mResource;
+        }
 
-		@Root
-		private static class ComponentScan {
+    }
 
-			@Attribute(name = "enabled", required = false)
-			private boolean mIsEnabled = true;
+    @Root
+    private static class BeanContainer {
 
-			@Attribute(name = "base-package", required = false)
-			private String mBasePackages;
+        @ElementList(entry = "bean", inline = true, required = false)
+        private List<XmlBean> mBeans;
 
-			public List<String> getBasePackages() {
-				List<String> packages = new ArrayList<String>(asList(mBasePackages.split(",")));
-				Iterator<String> iter = packages.iterator();
-				while (iter.hasNext()) {
-					String pkg = iter.next().trim();
-					if (pkg.length() == 0)
-						iter.remove();
-				}
-				packages.add("com.clarionmedia.infinitum.internal");
-				return packages;
-			}
+        @ElementList(entry = "aspect", inline = true, required = false)
+        private List<XmlAspect> mAspects;
 
-		}
+        @Element(name = "component-scan", required = false)
+        private ComponentScan mComponentScan;
 
-	}
+        @Root
+        private static class ComponentScan {
+
+            @Attribute(name = "enabled", required = false)
+            private boolean mIsEnabled = true;
+
+            @Attribute(name = "base-package", required = false)
+            private String mBasePackages;
+
+            public List<String> getBasePackages() {
+                List<String> packages = new ArrayList<String>(asList(mBasePackages.split(",")));
+                Iterator<String> iter = packages.iterator();
+                while (iter.hasNext()) {
+                    String pkg = iter.next().trim();
+                    if (pkg.length() == 0)
+                        iter.remove();
+                }
+                packages.add("com.clarionmedia.infinitum.internal");
+                return packages;
+            }
+
+        }
+
+    }
 
 }

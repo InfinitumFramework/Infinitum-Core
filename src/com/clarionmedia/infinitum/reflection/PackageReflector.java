@@ -29,29 +29,28 @@ import android.content.Context;
  * contained within projects that are using Infinitum and their contained
  * resources.
  * </p>
- * 
+ *
  * @author Tyler Treat
  * @version 1.0 05/17/12
  * @since 1.0
  */
 public interface PackageReflector {
 
-	/**
-	 * Retrieves a {@link Class} instance for the {@code Class} described by the
-	 * given package-qualified name. Returns {@code null} if the {@code Class}
-	 * can not be found.
-	 * 
-	 * @param className
-	 *            the package-qualified name of the desired {@code Class}
-	 * @return instance of the {@code Class} or {@code null}if the {@code Class}
-	 *         was not found
-	 */
-	Class<?> getClass(String className);
+    /**
+     * Retrieves a {@link Class} instance for the {@code Class} described by the
+     * given package-qualified name. Returns {@code null} if the {@code Class}
+     * can not be found.
+     *
+     * @param className the package-qualified name of the desired {@code Class}
+     * @return instance of the {@code Class} or {@code null}if the {@code Class}
+     *         was not found
+     */
+    Class<?> getClass(String className);
 
-	/**
-	 * Retrieves a {@link Set} of {@link Class} instances whose are contained in
-	 * one of the given package names.
-	 */
-	Set<Class<?>> getPackageClasses(Context context, String... packageNames);
+    /**
+     * Retrieves a {@link Set} of {@link Class} instances whose are contained in
+     * one of the given package names.
+     */
+    Set<Class<?>> getPackageClasses(Context context, String... packageNames);
 
 }

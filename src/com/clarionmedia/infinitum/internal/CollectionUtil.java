@@ -27,26 +27,25 @@ import java.util.Map.Entry;
  * <p>
  * Contains static utility methods for dealing with collections.
  * </p>
- * 
+ *
  * @author Tyler Treat
  * @version 1.0 07/18/12
  * @since 1.0
  */
 public class CollectionUtil {
 
-	/**
-	 * Inverts the given {@link Map}, assuming a one-to-one key-value
-	 * correspondence.
-	 * 
-	 * @param map
-	 *            the {@code Map} to invert
-	 * @return inverted {@code Map}
-	 */
-	public static <K, V> Map<V, K> invert(Map<K, V> map) {
-		Map<V, K> inv = new HashMap<V, K>();
-		for (Entry<K, V> entry : map.entrySet())
-			inv.put(entry.getValue(), entry.getKey());
-		return inv;
-	}
+    /**
+     * Inverts the given {@link Map}, assuming a one-to-one key-value
+     * correspondence.
+     *
+     * @param map the {@code Map} to invert
+     * @return inverted {@code Map}
+     */
+    public static <K, V> Map<V, K> invert(Map<K, V> map) {
+        Map<V, K> inv = new HashMap<V, K>();
+        for (Entry<K, V> entry : map.entrySet())
+            inv.put(entry.getValue(), entry.getKey());
+        return inv;
+    }
 
 }

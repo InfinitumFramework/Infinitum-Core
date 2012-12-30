@@ -27,57 +27,53 @@ import java.util.Map;
  * can be used to dynamically build bean definitions with the purpose of
  * registering them with a {@link BeanFactory} later.
  * </p>
- * 
+ *
  * @author Tyler Treat
  * @version 1.0 08/04/12
  * @since 1.0
  */
 public interface BeanDefinitionBuilder {
 
-	/**
-	 * Builds the {@link AbstractBeanDefinition} instance.
-	 * 
-	 * @return configured {@code AbstractBeanDefinition}
-	 */
-	AbstractBeanDefinition build();
+    /**
+     * Builds the {@link AbstractBeanDefinition} instance.
+     *
+     * @return configured {@code AbstractBeanDefinition}
+     */
+    AbstractBeanDefinition build();
 
-	/**
-	 * Sets the bean name.
-	 * 
-	 * @param name
-	 *            the name to set
-	 * @return {@code BeanDefinitionBuilder} to allow chaining
-	 */
-	BeanDefinitionBuilder setName(String name);
+    /**
+     * Sets the bean name.
+     *
+     * @param name the name to set
+     * @return {@code BeanDefinitionBuilder} to allow chaining
+     */
+    BeanDefinitionBuilder setName(String name);
 
-	/**
-	 * Sets the bean {@link Class} type.
-	 * 
-	 * @param type
-	 *            the type to set
-	 * @return {@code BeanDefinitionBuilder} to allow chaining
-	 */
-	BeanDefinitionBuilder setType(Class<?> type);
+    /**
+     * Sets the bean {@link Class} type.
+     *
+     * @param type the type to set
+     * @return {@code BeanDefinitionBuilder} to allow chaining
+     */
+    BeanDefinitionBuilder setType(Class<?> type);
 
-	/**
-	 * Sets the bean properties. These are {@code Field}-value pairs which can
-	 * be injected into the bean.
-	 * 
-	 * @param properties
-	 *            the bean properties to set
-	 * @return {@code BeanDefinitionBuilder} to allow chaining
-	 */
-	BeanDefinitionBuilder setProperties(Map<String, Object> properties);
+    /**
+     * Sets the bean properties. These are {@code Field}-value pairs which can
+     * be injected into the bean.
+     *
+     * @param properties the bean properties to set
+     * @return {@code BeanDefinitionBuilder} to allow chaining
+     */
+    BeanDefinitionBuilder setProperties(Map<String, Object> properties);
 
-	/**
-	 * Sets the bean lifecycle scope. The {@code singleton} scope is used by
-	 * default if this is not specified.
-	 * 
-	 * @param scope
-	 *            the scope to set, such as {@code prototype} or
-	 *            {@code singleton}
-	 * @return {@code BeanDefinitionBuilder} to allow chaining
-	 */
-	BeanDefinitionBuilder setScope(String scope);
+    /**
+     * Sets the bean lifecycle scope. The {@code singleton} scope is used by
+     * default if this is not specified.
+     *
+     * @param scope the scope to set, such as {@code prototype} or
+     *              {@code singleton}
+     * @return {@code BeanDefinitionBuilder} to allow chaining
+     */
+    BeanDefinitionBuilder setScope(String scope);
 
 }

@@ -35,203 +35,203 @@ import com.clarionmedia.infinitum.context.exception.InfinitumConfigurationExcept
  * Implementation of {@link RestfulContext} containing RESTful web service
  * configuration information.
  * </p>
- * 
+ *
  * @author Tyler Treat
  * @version 1.0
  * @since 03/30/12
  */
 public class XmlRestfulContext implements RestfulContext {
 
-	@Attribute(name = "ref", required = false)
-	private String mClientBean;
+    @Attribute(name = "ref", required = false)
+    private String mClientBean;
 
-	@ElementMap(required = true, entry = "property", key = "name", attribute = true, inline = true)
-	private Map<String, String> mProperties;
+    @ElementMap(required = true, entry = "property", key = "name", attribute = true, inline = true)
+    private Map<String, String> mProperties;
 
-	@Element(name = "authentication", required = false)
-	private Authentication mAuthentication;
+    @Element(name = "authentication", required = false)
+    private Authentication mAuthentication;
 
-	private InfinitumContext mParentContext;
+    private InfinitumContext mParentContext;
 
-	@Override
-	public InfinitumContext getParentContext() {
-		return mParentContext;
-	}
+    @Override
+    public InfinitumContext getParentContext() {
+        return mParentContext;
+    }
 
-	@Override
-	public void setParentContext(InfinitumContext context) {
-		mParentContext = context;
-	}
+    @Override
+    public void setParentContext(InfinitumContext context) {
+        mParentContext = context;
+    }
 
-	@Override
-	public String getRestHost() {
-		String host = mProperties.get("host");
-		if (host == null || host.trim().length() == 0)
-			throw new InfinitumConfigurationException("Web service host not specified!");
-		return host;
-	}
+    @Override
+    public String getRestHost() {
+        String host = mProperties.get("host");
+        if (host == null || host.trim().length() == 0)
+            throw new InfinitumConfigurationException("Web service host not specified!");
+        return host;
+    }
 
-	@Override
-	public void setRestHost(String restHost) {
-		if (!restHost.endsWith("/"))
-			restHost += '/';
-		mProperties.put("host", restHost);
-	}
+    @Override
+    public void setRestHost(String restHost) {
+        if (!restHost.endsWith("/"))
+            restHost += '/';
+        mProperties.put("host", restHost);
+    }
 
-	@Override
-	public void setRestAuthenticated(boolean isRestAuthenticated) {
-		mAuthentication = new Authentication();
-	}
+    @Override
+    public void setRestAuthenticated(boolean isRestAuthenticated) {
+        mAuthentication = new Authentication();
+    }
 
-	@Override
-	public boolean isRestAuthenticated() {
-		if (mAuthentication == null)
-			return false;
-		return mAuthentication.mIsEnabled;
-	}
+    @Override
+    public boolean isRestAuthenticated() {
+        if (mAuthentication == null)
+            return false;
+        return mAuthentication.mIsEnabled;
+    }
 
-	@Override
-	public int getConnectionTimeout() {
-		String timeout = mProperties.get("connectionTimeout");
-		if (timeout == null)
-			return 0;
-		return Integer.parseInt(timeout);
-	}
+    @Override
+    public int getConnectionTimeout() {
+        String timeout = mProperties.get("connectionTimeout");
+        if (timeout == null)
+            return 0;
+        return Integer.parseInt(timeout);
+    }
 
-	@Override
-	public void setConnectionTimeout(int connectionTimeout) {
-		mProperties.put("connectionTimeout", Integer.toString(connectionTimeout));
-	}
+    @Override
+    public void setConnectionTimeout(int connectionTimeout) {
+        mProperties.put("connectionTimeout", Integer.toString(connectionTimeout));
+    }
 
-	@Override
-	public int getResponseTimeout() {
-		String timeout = mProperties.get("responseTimeout");
-		if (timeout == null)
-			return 0;
-		return Integer.parseInt(timeout);
-	}
+    @Override
+    public int getResponseTimeout() {
+        String timeout = mProperties.get("responseTimeout");
+        if (timeout == null)
+            return 0;
+        return Integer.parseInt(timeout);
+    }
 
-	@Override
-	public void setResponseTimeout(int responseTimeout) {
-		mProperties.put("responseTimeout", Integer.toString(responseTimeout));
-	}
+    @Override
+    public void setResponseTimeout(int responseTimeout) {
+        mProperties.put("responseTimeout", Integer.toString(responseTimeout));
+    }
 
-	@Override
-	public String getClientBean() {
-		return mClientBean;
-	}
+    @Override
+    public String getClientBean() {
+        return mClientBean;
+    }
 
-	@Override
-	public void setClientBean(String clientBean) {
-		mClientBean = clientBean;
-	}
+    @Override
+    public void setClientBean(String clientBean) {
+        mClientBean = clientBean;
+    }
 
-	public Authentication getAuthentication() {
-		return mAuthentication;
-	}
+    public Authentication getAuthentication() {
+        return mAuthentication;
+    }
 
-	public void setAuthentication(Authentication authentication) {
-		mAuthentication = authentication;
-	}
+    public void setAuthentication(Authentication authentication) {
+        mAuthentication = authentication;
+    }
 
-	@Override
-	public MessageType getMessageType() {
-		String messageType = mProperties.get("messageType");
-		if (messageType == null || messageType.trim().length() == 0)
-			return MessageType.PAIRS; // default to pairs
-		if (messageType.equalsIgnoreCase("pairs"))
-			return MessageType.PAIRS;
-		if (messageType.equalsIgnoreCase("xml"))
-			return MessageType.XML;
-		if (messageType.equalsIgnoreCase("json"))
-			return MessageType.JSON;
-		throw new InfinitumConfigurationException("Invalid HTTP message type '" + messageType + "'.");
-	}
+    @Override
+    public MessageType getMessageType() {
+        String messageType = mProperties.get("messageType");
+        if (messageType == null || messageType.trim().length() == 0)
+            return MessageType.PAIRS; // default to pairs
+        if (messageType.equalsIgnoreCase("pairs"))
+            return MessageType.PAIRS;
+        if (messageType.equalsIgnoreCase("xml"))
+            return MessageType.XML;
+        if (messageType.equalsIgnoreCase("json"))
+            return MessageType.JSON;
+        throw new InfinitumConfigurationException("Invalid HTTP message type '" + messageType + "'.");
+    }
 
-	@Override
-	public void setMessageType(MessageType messageType) {
-		switch (messageType) {
-		case PAIRS:
-			mProperties.put("messageType", "pairs");
-			break;
-		case XML:
-			mProperties.put("messageType", "xml");
-			break;
-		case JSON:
-			mProperties.put("messageType", "json");
-			break;
-		}
-	}
+    @Override
+    public void setMessageType(MessageType messageType) {
+        switch (messageType) {
+            case PAIRS:
+                mProperties.put("messageType", "pairs");
+                break;
+            case XML:
+                mProperties.put("messageType", "xml");
+                break;
+            case JSON:
+                mProperties.put("messageType", "json");
+                break;
+        }
+    }
 
-	@Root
-	public static class Authentication {
+    @Root
+    public static class Authentication {
 
-		@Attribute(name = "enabled", required = false)
-		private boolean mIsEnabled = true;
+        @Attribute(name = "enabled", required = false)
+        private boolean mIsEnabled = true;
 
-		@Attribute(name = "ref", required = false)
-		private String mAuthBean;
+        @Attribute(name = "ref", required = false)
+        private String mAuthBean;
 
-		@Attribute(name = "strategy", required = false)
-		private String mStrategy;
+        @Attribute(name = "strategy", required = false)
+        private String mStrategy;
 
-		@Attribute(name = "header", required = false)
-		private boolean mHeader;
+        @Attribute(name = "header", required = false)
+        private boolean mHeader;
 
-		@Attribute(name = "generator", required = false)
-		private String mGenerator;
+        @Attribute(name = "generator", required = false)
+        private String mGenerator;
 
-		@ElementMap(required = false, entry = "property", key = "name", attribute = true, inline = true)
-		private Map<String, String> mAuthProperties;
+        @ElementMap(required = false, entry = "property", key = "name", attribute = true, inline = true)
+        private Map<String, String> mAuthProperties;
 
-		public boolean isEnabled() {
-			return mIsEnabled;
-		}
+        public boolean isEnabled() {
+            return mIsEnabled;
+        }
 
-		public void setEnabled(boolean isEnabled) {
-			mIsEnabled = isEnabled;
-		}
+        public void setEnabled(boolean isEnabled) {
+            mIsEnabled = isEnabled;
+        }
 
-		public String getAuthBean() {
-			return mAuthBean;
-		}
+        public String getAuthBean() {
+            return mAuthBean;
+        }
 
-		public void setAuthBean(String authBean) {
-			mAuthBean = authBean;
-		}
+        public void setAuthBean(String authBean) {
+            mAuthBean = authBean;
+        }
 
-		public String getStrategy() {
-			return mStrategy;
-		}
+        public String getStrategy() {
+            return mStrategy;
+        }
 
-		public void setStrategy(String strategy) {
-			mStrategy = strategy;
-		}
+        public void setStrategy(String strategy) {
+            mStrategy = strategy;
+        }
 
-		public boolean isHeader() {
-			return mHeader;
-		}
+        public boolean isHeader() {
+            return mHeader;
+        }
 
-		public void setHeader(boolean header) {
-			mHeader = header;
-		}
+        public void setHeader(boolean header) {
+            mHeader = header;
+        }
 
-		public String getGenerator() {
-			return mGenerator;
-		}
+        public String getGenerator() {
+            return mGenerator;
+        }
 
-		public void setGenerator(String generator) {
-			mGenerator = generator;
-		}
+        public void setGenerator(String generator) {
+            mGenerator = generator;
+        }
 
-		public Map<String, String> getAuthProperties() {
-			return mAuthProperties;
-		}
+        public Map<String, String> getAuthProperties() {
+            return mAuthProperties;
+        }
 
-		public void setAuthProperties(Map<String, String> authProperties) {
-			mAuthProperties = authProperties;
-		}
+        public void setAuthProperties(Map<String, String> authProperties) {
+            mAuthProperties = authProperties;
+        }
 
-	}
+    }
 
 }

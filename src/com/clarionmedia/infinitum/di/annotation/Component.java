@@ -31,7 +31,7 @@ import java.lang.annotation.Target;
  * it is a candidate for auto-detection by the framework if classpath scanning
  * is enabled.
  * </p>
- * 
+ *
  * @author Tyler Treat
  * @version 1.0 07/11/12
  * @since 1.0
@@ -41,11 +41,11 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Component {
 
-	/**
-	 * Declares the {@Component} name to be used.
-	 * 
-	 * @return the suggested {@Component} name
-	 */
-	String value() default "";
+    /**
+     * Declares the {@Component} name to be used.
+     *
+     * @return the suggested {@Component} name
+     */
+    String value() default "";
 
 }

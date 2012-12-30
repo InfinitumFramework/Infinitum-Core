@@ -29,22 +29,21 @@ import com.clarionmedia.infinitum.di.BeanDefinitionBuilder;
  * Provides a hook for implementing classes to provide bean definitions which
  * will be registered with the {@link BeanFactory}.
  * </p>
- * 
+ *
  * @author Tyler Treat
  * @version 1.0 12/29/12
  * @since 1.0
  */
 public interface BeanProvider {
 
-	/**
-	 * Returns the {@code AbstractBeanDefinition}s to be registered with the
-	 * {@link BeanFactory}.
-	 * 
-	 * @param beanDefinitionBuilder
-	 *            the {@link BeanDefinitionBuilder} to build
-	 *            beans with
-	 * @return {@link List} of {@code AbstractBeanDefinition}s
-	 */
-	List<AbstractBeanDefinition> getBeans(BeanDefinitionBuilder beanDefinitionBuilder);
+    /**
+     * Returns the {@code AbstractBeanDefinition}s to be registered with the
+     * {@link BeanFactory}.
+     *
+     * @param beanDefinitionBuilder the {@link BeanDefinitionBuilder} to build
+     *                              beans with
+     * @return {@link List} of {@code AbstractBeanDefinition}s
+     */
+    List<AbstractBeanDefinition> getBeans(BeanDefinitionBuilder beanDefinitionBuilder);
 
 }

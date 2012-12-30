@@ -33,7 +33,7 @@ import org.simpleframework.xml.Text;
  * Encapsulates the notion of a "bean", which consists of a name or ID, a class,
  * and optional properties, as defined in XML.
  * </p>
- * 
+ *
  * @author Tyler Treat
  * @version 1.0 06/26/12
  * @since 1.0
@@ -41,99 +41,99 @@ import org.simpleframework.xml.Text;
 @Root
 public class XmlBean {
 
-	@Attribute(name = "id")
-	private String mId;
+    @Attribute(name = "id")
+    private String mId;
 
-	@Attribute(name = "src")
-	private String mClass;
+    @Attribute(name = "src")
+    private String mClass;
 
-	@Attribute(name = "scope", required = false)
-	private String mScope;
+    @Attribute(name = "scope", required = false)
+    private String mScope;
 
-	@ElementList(required = false, entry = "property", inline = true)
-	private List<Property> mProperties;
+    @ElementList(required = false, entry = "property", inline = true)
+    private List<Property> mProperties;
 
-	public XmlBean() {
-		mProperties = new ArrayList<Property>();
-	}
+    public XmlBean() {
+        mProperties = new ArrayList<Property>();
+    }
 
-	public void setId(String id) {
-		mId = id;
-	}
+    public void setId(String id) {
+        mId = id;
+    }
 
-	public String getId() {
-		return mId;
-	}
+    public String getId() {
+        return mId;
+    }
 
-	public void setClassName(String className) {
-		mClass = className;
-	}
+    public void setClassName(String className) {
+        mClass = className;
+    }
 
-	public String getClassName() {
-		return mClass;
-	}
+    public String getClassName() {
+        return mClass;
+    }
 
-	public void setProperties(List<Property> properties) {
-		mProperties = properties;
-	}
+    public void setProperties(List<Property> properties) {
+        mProperties = properties;
+    }
 
-	public List<Property> getProperties() {
-		return mProperties;
-	}
+    public List<Property> getProperties() {
+        return mProperties;
+    }
 
-	public void setScope(String scope) {
-		mScope = scope;
-	}
+    public void setScope(String scope) {
+        mScope = scope;
+    }
 
-	public String getScope() {
-		return mScope;
-	}
+    public String getScope() {
+        return mScope;
+    }
 
-	/**
-	 * <p>
-	 * Encapsulates a bean property, which represents a {@link Field} inside a
-	 * bean instance.
-	 * </p>
-	 * 
-	 * @author Tyler Treat
-	 * @version 1.0 06/26/12
-	 * @since 06/26/12
-	 */
-	@Root
-	public static class Property {
+    /**
+     * <p>
+     * Encapsulates a bean property, which represents a {@link Field} inside a
+     * bean instance.
+     * </p>
+     *
+     * @author Tyler Treat
+     * @version 1.0 06/26/12
+     * @since 06/26/12
+     */
+    @Root
+    public static class Property {
 
-		@Attribute(name = "name")
-		private String mName;
+        @Attribute(name = "name")
+        private String mName;
 
-		@Text(required = false)
-		private String mValue;
+        @Text(required = false)
+        private String mValue;
 
-		@Attribute(name = "ref", required = false)
-		private String mRef;
+        @Attribute(name = "ref", required = false)
+        private String mRef;
 
-		public String getName() {
-			return mName;
-		}
+        public String getName() {
+            return mName;
+        }
 
-		public void setName(String name) {
-			mName = name;
-		}
+        public void setName(String name) {
+            mName = name;
+        }
 
-		public String getValue() {
-			return mValue;
-		}
+        public String getValue() {
+            return mValue;
+        }
 
-		public void setValue(String value) {
-			mValue = value;
-		}
+        public void setValue(String value) {
+            mValue = value;
+        }
 
-		public String getRef() {
-			return mRef;
-		}
+        public String getRef() {
+            return mRef;
+        }
 
-		public void setRef(String ref) {
-			mRef = ref;
-		}
+        public void setRef(String ref) {
+            mRef = ref;
+        }
 
-	}
+    }
 }
