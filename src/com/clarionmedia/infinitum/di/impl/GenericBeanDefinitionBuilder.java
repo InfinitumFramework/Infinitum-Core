@@ -65,6 +65,10 @@ public class GenericBeanDefinitionBuilder implements BeanDefinitionBuilder {
 		ret.setName(mName);
 		ret.setType(mType);
 		ret.setProperties(mProperties);
+		mName = null;
+		mType = null;
+		mScope = null;
+		mProperties = null;
 		return ret;
 	}
 

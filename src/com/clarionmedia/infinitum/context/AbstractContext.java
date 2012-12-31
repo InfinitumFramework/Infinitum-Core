@@ -37,6 +37,7 @@ import com.clarionmedia.infinitum.di.BeanDefinitionBuilder;
 import com.clarionmedia.infinitum.di.BeanFactory;
 import com.clarionmedia.infinitum.di.BeanFactoryPostProcessor;
 import com.clarionmedia.infinitum.di.BeanPostProcessor;
+import com.clarionmedia.infinitum.di.BeanProvider;
 import com.clarionmedia.infinitum.di.XmlBean;
 import com.clarionmedia.infinitum.di.annotation.Bean;
 import com.clarionmedia.infinitum.di.annotation.Component;
@@ -119,14 +120,16 @@ public abstract class AbstractContext implements InfinitumContext, BeanProvider 
 		Set<Class<? extends BeanPostProcessor>> xmlBeanPostProcessors = new HashSet<Class<? extends BeanPostProcessor>>();
 		xmlBeanPostProcessors.add(AutowiredBeanPostProcessor.class);
 		Set<Class<BeanFactoryPostProcessor>> xmlBeanFactoryPostProcessors = new HashSet<Class<BeanFactoryPostProcessor>>();
+		Set<Class<BeanProvider>> xmlBeanProviders = new HashSet<Class<BeanProvider>>();
 		for (XmlBean bean : beans) {
 			Class<?> clazz = reflector.getClass(bean.getClassName());
+			mXmlComponents.add(bean);
 			if (BeanPostProcessor.class.isAssignableFrom(clazz))
 				xmlBeanPostProcessors.add((Class<BeanPostProcessor>) clazz);
-			else if (BeanFactoryPostProcessor.class.isAssignableFrom(clazz))
+			if (BeanFactoryPostProcessor.class.isAssignableFrom(clazz))
 				xmlBeanFactoryPostProcessors.add((Class<BeanFactoryPostProcessor>) clazz);
-			else
-				mXmlComponents.add(bean);
+			if (BeanProvider.class.isAssignableFrom(clazz))
+				xmlBeanProviders.add((Class<BeanProvider>) clazz);
 		}
 
 		// Scan for annotated components
@@ -136,8 +139,10 @@ public abstract class AbstractContext implements InfinitumContext, BeanProvider 
 		// Categorize the components while filtering down the original Set
 		final Set<Class<? extends BeanPostProcessor>> beanPostProcessors = getAndRemoveBeanPostProcessors(mScannedComponents);
 		beanPostProcessors.addAll(xmlBeanPostProcessors);
-		final Set<Class<BeanFactoryPostProcessor>> beanFactoryPostProcessors = getAndRemoveBeanFactoryPostProcessors(mScannedComponents);
+		final Set<Class<? extends BeanFactoryPostProcessor>> beanFactoryPostProcessors = getAndRemoveBeanFactoryPostProcessors(mScannedComponents);
 		beanFactoryPostProcessors.addAll(xmlBeanFactoryPostProcessors);
+		final Set<Class<? extends BeanProvider>> beanProviders = getAndRemoveBeanProviders(mScannedComponents);
+		beanProviders.addAll(xmlBeanProviders);
 
 		// Register scanned bean candidates
 		BeanDefinitionBuilder beanDefinitionBuilder = new GenericBeanDefinitionBuilder(mBeanFactory);
@@ -156,12 +161,7 @@ public abstract class AbstractContext implements InfinitumContext, BeanProvider 
 		}
 
 		// Add provider beans
-		for (AbstractBeanDefinition bean : getBeans(beanDefinitionBuilder))
-			mBeanFactory.registerBean(bean);
-		for (InfinitumContext childContext : getChildContexts()) {
-			for (AbstractBeanDefinition bean : ((BeanProvider) childContext).getBeans(beanDefinitionBuilder))
-				mBeanFactory.registerBean(bean);
-		}
+		registerProviderBeans(beanProviders, beanDefinitionBuilder);
 
 		// Execute post processors
 		executeBeanPostProcessors(beanPostProcessors);
@@ -171,7 +171,7 @@ public abstract class AbstractContext implements InfinitumContext, BeanProvider 
 		for (InfinitumContext childContext : getChildContexts())
 			childContext.postProcess(context);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends InfinitumContext> T getChildContext(Class<T> contextType) {
@@ -269,8 +269,8 @@ public abstract class AbstractContext implements InfinitumContext, BeanProvider 
 	}
 
 	@SuppressWarnings("unchecked")
-	private Set<Class<BeanFactoryPostProcessor>> getAndRemoveBeanFactoryPostProcessors(Collection<Class<?>> components) {
-		Set<Class<BeanFactoryPostProcessor>> postProcessors = new HashSet<Class<BeanFactoryPostProcessor>>();
+	private Set<Class<? extends BeanFactoryPostProcessor>> getAndRemoveBeanFactoryPostProcessors(Collection<Class<?>> components) {
+		Set<Class<? extends BeanFactoryPostProcessor>> postProcessors = new HashSet<Class<? extends BeanFactoryPostProcessor>>();
 		Iterator<Class<?>> iter = components.iterator();
 		while (iter.hasNext()) {
 			Class<?> component = iter.next();
@@ -296,6 +296,20 @@ public abstract class AbstractContext implements InfinitumContext, BeanProvider 
 		return postProcessors;
 	}
 
+	@SuppressWarnings("unchecked")
+	private Set<Class<? extends BeanProvider>> getAndRemoveBeanProviders(Collection<Class<?>> components) {
+		Set<Class<? extends BeanProvider>> beanProviders = new HashSet<Class<? extends BeanProvider>>();
+		Iterator<Class<?>> iter = components.iterator();
+		while (iter.hasNext()) {
+			Class<?> component = iter.next();
+			if (BeanProvider.class.isAssignableFrom(component)) {
+				beanProviders.add((Class<BeanProvider>) component);
+				iter.remove();
+			}
+		}
+		return beanProviders;
+	}
+
 	private void executeBeanPostProcessors(Collection<Class<? extends BeanPostProcessor>> postProcessors) {
 		for (Class<? extends BeanPostProcessor> postProcessor : postProcessors) {
 			try {
@@ -306,13 +320,13 @@ public abstract class AbstractContext implements InfinitumContext, BeanProvider 
 			} catch (InstantiationException e) {
 				throw new InfinitumRuntimeException("BeanPostProcessor '" + postProcessor.getName() + "' must have an empty constructor.");
 			} catch (IllegalAccessException e) {
-				throw new InfinitumRuntimeException("BeanPostProcessor '" + postProcessor.getName() + "' could not be invoked.");
+				throw new InfinitumRuntimeException("BeanPostProcessor '" + postProcessor.getName() + "' could not be invoked.", e);
 			}
 		}
 	}
 
-	private void executeBeanFactoryPostProcessors(Collection<Class<BeanFactoryPostProcessor>> postProcessors) {
-		for (Class<BeanFactoryPostProcessor> postProcessor : postProcessors) {
+	private void executeBeanFactoryPostProcessors(Collection<Class<? extends BeanFactoryPostProcessor>> postProcessors) {
+		for (Class<? extends BeanFactoryPostProcessor> postProcessor : postProcessors) {
 			try {
 				BeanFactoryPostProcessor postProcessorInstance = postProcessor.newInstance();
 				postProcessorInstance.postProcessBeanFactory(mBeanFactory);
@@ -320,7 +334,29 @@ public abstract class AbstractContext implements InfinitumContext, BeanProvider 
 				throw new InfinitumRuntimeException("BeanFactoryPostProcessor '" + postProcessor.getName()
 						+ "' must have an empty constructor.");
 			} catch (IllegalAccessException e) {
-				throw new InfinitumRuntimeException("BeanFactoryPostProcessor '" + postProcessor.getName() + "' could not be invoked.");
+				throw new InfinitumRuntimeException("BeanFactoryPostProcessor '" + postProcessor.getName() + "' could not be invoked.", e);
+			}
+		}
+	}
+
+	private void registerProviderBeans(Set<Class<? extends BeanProvider>> beanProviders, BeanDefinitionBuilder builder) {
+		// Register context-provided beans
+		for (AbstractBeanDefinition bean : getBeans(builder))
+			mBeanFactory.registerBean(bean);
+		for (InfinitumContext childContext : getChildContexts()) {
+			for (AbstractBeanDefinition bean : ((BeanProvider) childContext).getBeans(builder))
+				mBeanFactory.registerBean(bean);
+		}
+		// Register user-provided beans
+		for (Class<? extends BeanProvider> beanProvider : beanProviders) {
+			try {
+				BeanProvider beanProviderInstance = beanProvider.newInstance();
+				for (AbstractBeanDefinition bean : beanProviderInstance.getBeans(builder))
+					mBeanFactory.registerBean(bean);
+			} catch (InstantiationException e) {
+				throw new InfinitumRuntimeException("BeanProvider '" + beanProvider.getName() + "' must have an empty constructor.");
+			} catch (IllegalAccessException e) {
+				throw new InfinitumRuntimeException("BeanProvider '" + beanProvider.getName() + "' could not be invoked.", e);
 			}
 		}
 	}
