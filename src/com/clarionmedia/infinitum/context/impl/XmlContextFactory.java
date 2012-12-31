@@ -25,6 +25,8 @@ import java.util.Scanner;
 
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
+import org.simpleframework.xml.strategy.Strategy;
+import org.simpleframework.xml.strategy.TreeStrategy;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -105,7 +107,8 @@ public class XmlContextFactory extends ContextFactory {
 	private XmlApplicationContext configureFromXml(int configId) {
 		long start = Calendar.getInstance().getTimeInMillis();
 		Resources resources = mContext.getResources();
-		Serializer serializer = new Persister();
+		Strategy strategy = new TreeStrategy("clazz", "len");
+		Serializer serializer = new Persister(strategy);
 		try {
 			InputStream stream = resources.openRawResource(configId);
 			String xml = new Scanner(stream).useDelimiter("\\A").next();

@@ -44,7 +44,7 @@ public class XmlBean {
 	@Attribute(name = "id")
 	private String mId;
 
-	@Attribute(name = "src")
+	@Attribute(name = "class")
 	private String mClass;
 
 	@Attribute(name = "scope", required = false)
