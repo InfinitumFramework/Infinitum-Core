@@ -143,7 +143,7 @@ public class DefaultClassReflector implements ClassReflector {
 		try {
 			return clazz.newInstance();
 		} catch (InstantiationException e) {
-			throw new InfinitumRuntimeException("Unable to instantiate '" + clazz.getName() + "'.");
+			throw new InfinitumRuntimeException("Unable to instantiate '" + clazz.getName() + "'. Does it have a default constructor?");
 		} catch (IllegalAccessException e) {
 			throw new InfinitumRuntimeException("Unable to instantiate '" + clazz.getName() + "'.");
 		}
