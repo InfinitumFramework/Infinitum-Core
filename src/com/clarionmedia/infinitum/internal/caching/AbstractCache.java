@@ -13,8 +13,6 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
-import com.clarionmedia.infinitum.context.InfinitumContext;
-import com.clarionmedia.infinitum.context.impl.InfinitumContextProxy;
 import com.clarionmedia.infinitum.logging.Logger;
 
 /**
@@ -93,8 +91,7 @@ public abstract class AbstractCache<K, V> implements Map<K, V> {
 		mDefaultExpirationTimeout = defaultExpiration;
 		mCache = new ExpirableCache<K, V>(mDefaultExpirationTimeout);
 		mDiskTimeoutCache = new ConcurrentHashMap<String, Long>();
-		mLogger = Logger.getInstance((InfinitumContext) new InfinitumContextProxy(InfinitumContext.class).getProxy(), getClass()
-				.getSimpleName());
+		mLogger = Logger.getInstance(getClass().getSimpleName());
 	}
 
 	/**

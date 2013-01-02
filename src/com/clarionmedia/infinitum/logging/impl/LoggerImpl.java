@@ -18,7 +18,7 @@ package com.clarionmedia.infinitum.logging.impl;
 
 import android.util.Log;
 
-import com.clarionmedia.infinitum.context.InfinitumContext;
+import com.clarionmedia.infinitum.context.ContextFactory;
 import com.clarionmedia.infinitum.logging.Logger;
 
 /**
@@ -33,78 +33,75 @@ import com.clarionmedia.infinitum.logging.Logger;
 public class LoggerImpl extends Logger {
 
 	private String mTag;
-	private InfinitumContext mContext;
+	private ContextFactory mContextFactory;
 
 	/**
 	 * Constructs a new {@code LoggerImpl} with the given tag.
-	 * 
-	 * @param context
-	 *            the {@link InfinitumContext} to use
 	 * @param tag
 	 *            the tag to assign to this {@code LoggerImpl}
 	 */
-	public LoggerImpl(InfinitumContext context, String tag) {
-		mContext = context;
+	public LoggerImpl(String tag) {
 		mTag = tag;
+		mContextFactory = ContextFactory.newInstance();
 	}
 
 	@Override
 	public void debug(String msg) {
-		if (mContext.isDebug())
+		if (mContextFactory.getContext().isDebug())
 			Log.d(mTag, msg);
 	}
 
 	@Override
 	public void debug(String msg, Throwable tr) {
-		if (mContext.isDebug())
+		if (mContextFactory.getContext().isDebug())
 			Log.d(mTag, msg, tr);
 	}
 
 	@Override
 	public void error(String msg) {
-		if (mContext.isDebug())
+		if (mContextFactory.getContext().isDebug())
 			Log.e(mTag, msg);
 	}
 
 	@Override
 	public void error(String msg, Throwable tr) {
-		if (mContext.isDebug())
+		if (mContextFactory.getContext().isDebug())
 			Log.e(mTag, msg, tr);
 	}
 
 	@Override
 	public void info(String msg) {
-		if (mContext.isDebug())
+		if (mContextFactory.getContext().isDebug())
 			Log.i(mTag, msg);
 	}
 
 	@Override
 	public void info(String msg, Throwable tr) {
-		if (mContext.isDebug())
+		if (mContextFactory.getContext().isDebug())
 			Log.i(mTag, msg, tr);
 	}
 
 	@Override
 	public void verbose(String msg) {
-		if (mContext.isDebug())
+		if (mContextFactory.getContext().isDebug())
 			Log.v(mTag, msg);
 	}
 
 	@Override
 	public void verbose(String msg, Throwable tr) {
-		if (mContext.isDebug())
+		if (mContextFactory.getContext().isDebug())
 			Log.v(mTag, msg, tr);
 	}
 
 	@Override
 	public void warn(String msg) {
-		if (mContext.isDebug())
+		if (mContextFactory.getContext().isDebug())
 			Log.w(mTag, msg);
 	}
 
 	@Override
 	public void warn(String msg, Throwable tr) {
-		if (mContext.isDebug())
+		if (mContextFactory.getContext().isDebug())
 			Log.w(mTag, msg, tr);
 	}
 
