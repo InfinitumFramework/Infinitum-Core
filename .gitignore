@@ -1,6 +1,6 @@
-###################
-# compiled source #
-###################
+############
+# Binaries #
+############
 *.class
 *.apk
 *.ap_
@@ -30,3 +30,4 @@ local.properties
 .loadpath
 proguard.cfg
 lint.xml
+build.xml
