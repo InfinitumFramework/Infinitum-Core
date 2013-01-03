@@ -5,7 +5,7 @@
 Overview
 --------
 
-**Infinitum** is an extensible, modular framework enabling Android developers to quickly and efficiently create rich, domain-driven applications while facilitating the convention-over-configuration paradigm. One of its primary goals is to foster a strong separation of concerns, empowering developers to write modular, cohesive, and concise software for the Android platform. The idea is to maintain focus on the fundamental business problem of the software, not the underlying plumbing that connects it.
+**Infinitum** is an extensible, modular framework enabling Android developers to quickly create rich, domain-driven applications while facilitating the convention-over-configuration paradigm. One of its primary goals is to foster a strong separation of concerns, empowering developers to write modular, cohesive, and concise software for the Android platform. The idea is to maintain focus on the fundamental business problem of the software, not the underlying plumbing that connects it.
 
 Infinitum is currently in a pre-release form and is still under active development. See the [road map](https://github.com/InfinitumFramework/Infinitum-Core/wiki/Road-Map) for what's in store for the framework.
 
