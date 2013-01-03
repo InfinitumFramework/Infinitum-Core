@@ -31,3 +31,5 @@ local.properties
 proguard.cfg
 lint.xml
 build.xml
+javadoc.xml
+javadoc.sh
