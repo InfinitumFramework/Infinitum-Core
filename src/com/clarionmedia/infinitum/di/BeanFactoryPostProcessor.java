@@ -26,7 +26,7 @@ import com.clarionmedia.infinitum.context.InfinitumContext;
  * 
  * @author Tyler Treat
  * @version 1.0
- * @since 07/05/12
+ * @since 1.0
  */
 public interface BeanFactoryPostProcessor {
 

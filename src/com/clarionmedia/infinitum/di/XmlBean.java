@@ -94,7 +94,7 @@ public class XmlBean {
 	 * 
 	 * @author Tyler Treat
 	 * @version 1.0 06/26/12
-	 * @since 06/26/12
+	 * @since 1.0
 	 */
 	@Root
 	public static class Property {

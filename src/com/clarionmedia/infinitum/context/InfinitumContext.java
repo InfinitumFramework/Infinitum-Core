@@ -32,7 +32,7 @@ import com.clarionmedia.infinitum.di.BeanFactory;
  * 
  * @author Tyler Treat
  * @version 1.0 05/18/12
- * @since 05/18/12
+ * @since 1.0
  */
 public interface InfinitumContext {
 

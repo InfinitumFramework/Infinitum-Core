@@ -35,7 +35,7 @@ import com.clarionmedia.infinitum.context.exception.InfinitumConfigurationExcept
  * 
  * @author Tyler Treat
  * @version 1.0
- * @since 03/30/12
+ * @since 1.0
  */
 public class XmlRestfulContext implements RestfulContext {
 

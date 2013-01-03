@@ -44,7 +44,7 @@ import com.clarionmedia.infinitum.di.impl.ConfigurableBeanFactory;
  * 
  * @author Tyler Treat
  * @version 1.0 06/26/12
- * @since 06/26/12
+ * @since 1.0
  */
 @Root(name = "infinitum-configuration")
 public class XmlApplicationContext extends AbstractContext {
