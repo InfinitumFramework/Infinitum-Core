@@ -19,9 +19,11 @@ package com.clarionmedia.infinitum.context;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -42,8 +44,6 @@ import com.clarionmedia.infinitum.di.annotation.Scope;
 import com.clarionmedia.infinitum.di.impl.AutowiredBeanPostProcessor;
 import com.clarionmedia.infinitum.di.impl.GenericBeanDefinitionBuilder;
 import com.clarionmedia.infinitum.exception.InfinitumRuntimeException;
-import com.clarionmedia.infinitum.internal.ModuleUtils;
-import com.clarionmedia.infinitum.internal.ModuleUtils.Module;
 import com.clarionmedia.infinitum.internal.StringUtil;
 import com.clarionmedia.infinitum.reflection.PackageReflector;
 import com.clarionmedia.infinitum.reflection.impl.DefaultClassReflector;
@@ -61,6 +61,7 @@ import com.clarionmedia.infinitum.reflection.impl.DefaultPackageReflector;
  */
 public abstract class AbstractContext implements InfinitumContext, BeanProvider {
 
+	private PackageReflector mPackageReflector;
 	protected BeanFactory mBeanFactory;
 	protected Context mContext;
 	protected List<InfinitumContext> mChildContexts;
@@ -98,13 +99,13 @@ public abstract class AbstractContext implements InfinitumContext, BeanProvider 
 		mChildContexts = new ArrayList<InfinitumContext>();
 		mScannedComponents = new HashSet<Class<?>>();
 		mXmlComponents = new HashSet<XmlBean>();
+		mPackageReflector = new DefaultPackageReflector();
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public void postProcess(final Context context) {
 		mContext = context;
-		PackageReflector reflector = new DefaultPackageReflector();
 		RestfulContext restContext = getRestContext();
 		if (restContext != null)
 			restContext.setParentContext(this);
@@ -119,7 +120,7 @@ public abstract class AbstractContext implements InfinitumContext, BeanProvider 
 		Set<Class<BeanFactoryPostProcessor>> xmlBeanFactoryPostProcessors = new HashSet<Class<BeanFactoryPostProcessor>>();
 		Set<Class<BeanProvider>> xmlBeanProviders = new HashSet<Class<BeanProvider>>();
 		for (XmlBean bean : beans) {
-			Class<?> clazz = reflector.getClass(bean.getClassName());
+			Class<?> clazz = mPackageReflector.getClass(bean.getClassName());
 			mXmlComponents.add(bean);
 			if (BeanPostProcessor.class.isAssignableFrom(clazz))
 				xmlBeanPostProcessors.add((Class<BeanPostProcessor>) clazz);
@@ -244,25 +245,45 @@ public abstract class AbstractContext implements InfinitumContext, BeanProvider 
 		List<String> packages = getScanPackages();
 		if (packages.size() == 0)
 			return components;
-		PackageReflector reflector = new DefaultPackageReflector();
 		String[] packageArr = new String[packages.size()];
-		Set<Class<?>> classes = reflector.getPackageClasses(mContext, packages.toArray(packageArr));
+		Set<Class<?>> classes = mPackageReflector.getPackageClasses(mContext, packages.toArray(packageArr));
 		addQualifyingComponents(classes, components);
 		return components;
 	}
 
-	@SuppressWarnings("unchecked")
 	private void addQualifyingComponents(Set<Class<?>> classes, Set<Class<?>> components) {
-		PackageReflector reflector = new DefaultPackageReflector();
-		boolean isAopEnabled = ModuleUtils.hasModule(Module.AOP);
-		Class<? extends Annotation> aspectAnnotation = null;
-		if (isAopEnabled)
-			aspectAnnotation = (Class<? extends Annotation>) reflector.getClass("com.clarionmedia.infinitum.aop.annotation.Aspect");
+		Map<Class<?>, Boolean> checked = new HashMap<Class<?>, Boolean>();
+		checked.put(Component.class, true);
+		checked.put(Bean.class, true);
 		for (Class<?> clazz : classes) {
-			if (clazz.isAnnotationPresent(Component.class) || clazz.isAnnotationPresent(Bean.class)
-					|| clazz.isAnnotationPresent(aspectAnnotation))
+			if (isComponent(clazz, checked))
 				components.add(clazz);
 		}
+	}
+	
+	private boolean isComponent(Class<?> clazz, Map<Class<?>, Boolean> checked) {
+		if (checked.containsKey(clazz))
+			return checked.get(clazz);
+		for (Annotation anno : clazz.getAnnotations()) {
+			if (checked.containsKey(anno.annotationType()) && checked.get(anno.annotationType())) {
+				checked.put(clazz, true);
+				return true;
+			}
+			if (anno.annotationType() == Component.class) {
+				checked.put(clazz, true);
+				return true;
+			}
+			if (anno.annotationType().getName().startsWith("java.lang.annotation")) {
+				checked.put(anno.annotationType(), false);
+				continue;
+			}
+			if (isComponent(anno.annotationType(), checked)) {
+				checked.put(clazz, true);
+				return true;
+			}
+		}
+		checked.put(clazz, false);
+		return false;
 	}
 
 	@SuppressWarnings("unchecked")

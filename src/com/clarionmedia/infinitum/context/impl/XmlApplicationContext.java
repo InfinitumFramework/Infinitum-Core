@@ -158,7 +158,6 @@ public class XmlApplicationContext extends AbstractContext {
 					if (pkg.length() == 0)
 						iter.remove();
 				}
-				packages.add("com.clarionmedia.infinitum.internal");
 				return packages;
 			}
 
