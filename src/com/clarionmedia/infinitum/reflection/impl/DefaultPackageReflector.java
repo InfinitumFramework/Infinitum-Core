@@ -25,6 +25,7 @@ import java.util.Set;
 import android.content.Context;
 
 import com.clarionmedia.infinitum.exception.InfinitumRuntimeException;
+import com.clarionmedia.infinitum.logging.Logger;
 import com.clarionmedia.infinitum.reflection.PackageReflector;
 
 import dalvik.system.DexFile;
@@ -40,6 +41,15 @@ import dalvik.system.DexFile;
  * @since 1.0
  */
 public class DefaultPackageReflector implements PackageReflector {
+
+	private Logger mLogger;
+
+	/**
+	 * Creates a new {@code DefaultPackageReflector} instance.
+	 */
+	public DefaultPackageReflector() {
+		mLogger = Logger.getInstance(getClass().getSimpleName());
+	}
 
 	@Override
 	public Class<?> getClass(String className) {
@@ -61,16 +71,18 @@ public class DefaultPackageReflector implements PackageReflector {
 			while (entries.hasMoreElements()) {
 				String entry = entries.nextElement();
 				for (String packageName : packageNames) {
-					if (entry.toLowerCase(Locale.getDefault()).startsWith(packageName.toLowerCase())) {
+					Locale locale = Locale.getDefault();
+					if (entry.toLowerCase(locale).startsWith(packageName.toLowerCase(locale))) {
 						classes.add(getClass(entry));
 						break;
 					}
 				}
 			}
+			return classes;
 		} catch (IOException e) {
-			throw new InfinitumRuntimeException("Component scanning is not supported in this environment.");
+			mLogger.error("Component scanning is not supported in this environment.", e);
+			return classes;
 		}
-		return classes;
 	}
 
 }
