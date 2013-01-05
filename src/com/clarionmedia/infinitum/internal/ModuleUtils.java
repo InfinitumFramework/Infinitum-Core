@@ -23,7 +23,7 @@ import android.util.Log;
 
 import com.clarionmedia.infinitum.context.InfinitumContext;
 import com.clarionmedia.infinitum.reflection.ClassReflector;
-import com.clarionmedia.infinitum.reflection.impl.DefaultClassReflector;
+import com.clarionmedia.infinitum.reflection.impl.JavaClassReflector;
 
 /**
  * <p>
@@ -56,7 +56,7 @@ public class ModuleUtils {
 		Module(String marker, String context) {
 			mMarker = marker;
 			mContext = context;
-			mReflector = new DefaultClassReflector();
+			mReflector = new JavaClassReflector();
 		}
 
 		/**

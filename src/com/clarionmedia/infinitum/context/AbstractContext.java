@@ -45,9 +45,10 @@ import com.clarionmedia.infinitum.di.impl.AutowiredBeanPostProcessor;
 import com.clarionmedia.infinitum.di.impl.GenericBeanDefinitionBuilder;
 import com.clarionmedia.infinitum.exception.InfinitumRuntimeException;
 import com.clarionmedia.infinitum.internal.StringUtil;
-import com.clarionmedia.infinitum.reflection.PackageReflector;
-import com.clarionmedia.infinitum.reflection.impl.DefaultClassReflector;
-import com.clarionmedia.infinitum.reflection.impl.DefaultPackageReflector;
+import com.clarionmedia.infinitum.reflection.ClassReflector;
+import com.clarionmedia.infinitum.reflection.ClasspathReflector;
+import com.clarionmedia.infinitum.reflection.impl.JavaClassReflector;
+import com.clarionmedia.infinitum.reflection.impl.DexClasspathReflector;
 
 /**
  * <p>
@@ -61,7 +62,8 @@ import com.clarionmedia.infinitum.reflection.impl.DefaultPackageReflector;
  */
 public abstract class AbstractContext implements InfinitumContext, BeanProvider {
 
-	private PackageReflector mPackageReflector;
+	private ClassReflector mClassReflector;
+	private ClasspathReflector mClasspathReflector;
 	protected BeanFactory mBeanFactory;
 	protected Context mContext;
 	protected List<InfinitumContext> mChildContexts;
@@ -99,7 +101,8 @@ public abstract class AbstractContext implements InfinitumContext, BeanProvider 
 		mChildContexts = new ArrayList<InfinitumContext>();
 		mScannedComponents = new HashSet<Class<?>>();
 		mXmlComponents = new HashSet<XmlBean>();
-		mPackageReflector = new DefaultPackageReflector();
+		mClasspathReflector = new DexClasspathReflector();
+		mClassReflector = new JavaClassReflector();
 	}
 
 	@Override
@@ -120,7 +123,7 @@ public abstract class AbstractContext implements InfinitumContext, BeanProvider 
 		Set<Class<BeanFactoryPostProcessor>> xmlBeanFactoryPostProcessors = new HashSet<Class<BeanFactoryPostProcessor>>();
 		Set<Class<BeanProvider>> xmlBeanProviders = new HashSet<Class<BeanProvider>>();
 		for (XmlBean bean : beans) {
-			Class<?> clazz = mPackageReflector.getClass(bean.getClassName());
+			Class<?> clazz = mClassReflector.getClass(bean.getClassName());
 			mXmlComponents.add(bean);
 			if (BeanPostProcessor.class.isAssignableFrom(clazz))
 				xmlBeanPostProcessors.add((Class<BeanPostProcessor>) clazz);
@@ -220,9 +223,11 @@ public abstract class AbstractContext implements InfinitumContext, BeanProvider 
 	@Override
 	public List<AbstractBeanDefinition> getBeans(BeanDefinitionBuilder beanDefinitionBuilder) {
 		List<AbstractBeanDefinition> beans = new ArrayList<AbstractBeanDefinition>();
-		beans.add(beanDefinitionBuilder.setName("$InfinitumContext").setType(XmlApplicationContext.class).build());
-		beans.add(beanDefinitionBuilder.setName("$ClassReflector").setType(DefaultClassReflector.class).build());
-		beans.add(beanDefinitionBuilder.setName("$PackageReflector").setType(DefaultPackageReflector.class).build());
+		beans.add(beanDefinitionBuilder.setName("_" + XmlApplicationContext.class.getSimpleName()).setType(XmlApplicationContext.class)
+				.build());
+		beans.add(beanDefinitionBuilder.setName("_" + JavaClassReflector.class.getSimpleName()).setType(JavaClassReflector.class).build());
+		beans.add(beanDefinitionBuilder.setName("_" + DexClasspathReflector.class.getSimpleName()).setType(DexClasspathReflector.class)
+				.build());
 		return beans;
 	}
 
@@ -246,7 +251,7 @@ public abstract class AbstractContext implements InfinitumContext, BeanProvider 
 		if (packages.size() == 0)
 			return components;
 		String[] packageArr = new String[packages.size()];
-		Set<Class<?>> classes = mPackageReflector.getPackageClasses(mContext, packages.toArray(packageArr));
+		Set<Class<?>> classes = mClasspathReflector.getPackageClasses(mContext, packages.toArray(packageArr));
 		addQualifyingComponents(classes, components);
 		return components;
 	}
@@ -260,7 +265,7 @@ public abstract class AbstractContext implements InfinitumContext, BeanProvider 
 				components.add(clazz);
 		}
 	}
-	
+
 	private boolean isComponent(Class<?> clazz, Map<Class<?>, Boolean> checked) {
 		if (checked.containsKey(clazz))
 			return checked.get(clazz);

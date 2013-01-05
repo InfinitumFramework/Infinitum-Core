@@ -47,7 +47,7 @@ import com.clarionmedia.infinitum.di.BeanUtils;
 import com.clarionmedia.infinitum.di.annotation.Autowired;
 import com.clarionmedia.infinitum.exception.InfinitumRuntimeException;
 import com.clarionmedia.infinitum.reflection.ClassReflector;
-import com.clarionmedia.infinitum.reflection.impl.DefaultClassReflector;
+import com.clarionmedia.infinitum.reflection.impl.JavaClassReflector;
 
 /**
  * <p>
@@ -77,7 +77,7 @@ public class ObjectInjector implements ActivityInjector {
 	public ObjectInjector(InfinitumContext infinitumContext, Object object) {
 		mInfinitumContext = infinitumContext;
 		mObject = object;
-		mClassReflector = new DefaultClassReflector();
+		mClassReflector = new JavaClassReflector();
 		mFields = mClassReflector.getAllFields(mObject.getClass());
 	}
 

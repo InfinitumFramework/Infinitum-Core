@@ -23,10 +23,10 @@ import java.util.Map;
 import com.clarionmedia.infinitum.context.InfinitumContext;
 import com.clarionmedia.infinitum.context.exception.InfinitumConfigurationException;
 import com.clarionmedia.infinitum.di.AbstractBeanDefinition;
-import com.clarionmedia.infinitum.di.XmlBean;
 import com.clarionmedia.infinitum.di.BeanFactory;
-import com.clarionmedia.infinitum.reflection.PackageReflector;
-import com.clarionmedia.infinitum.reflection.impl.DefaultPackageReflector;
+import com.clarionmedia.infinitum.di.XmlBean;
+import com.clarionmedia.infinitum.reflection.ClassReflector;
+import com.clarionmedia.infinitum.reflection.impl.JavaClassReflector;
 
 /**
  * <p>
@@ -41,7 +41,7 @@ import com.clarionmedia.infinitum.reflection.impl.DefaultPackageReflector;
  */
 public class ConfigurableBeanFactory implements BeanFactory {
 
-	private PackageReflector mPackageReflector;
+	private ClassReflector mClassReflector;
 	private Map<String, AbstractBeanDefinition> mBeanDefinitions;
 	private InfinitumContext mContext;
 
@@ -53,7 +53,7 @@ public class ConfigurableBeanFactory implements BeanFactory {
 	 */
 	public ConfigurableBeanFactory(InfinitumContext context) {
 		mContext = context;
-		mPackageReflector = new DefaultPackageReflector();
+		mClassReflector = new JavaClassReflector();
 		mBeanDefinitions = new HashMap<String, AbstractBeanDefinition>();
 	}
 
@@ -94,7 +94,7 @@ public class ConfigurableBeanFactory implements BeanFactory {
 					propertiesMap.put(name, value);
 				}
 			}
-			Class<?> clazz = mPackageReflector.getClass(bean.getClassName());
+			Class<?> clazz = mClassReflector.getClass(bean.getClassName());
 			AbstractBeanDefinition beanDefinition = new GenericBeanDefinitionBuilder(this).setName(bean.getId()).setType(clazz)
 					.setProperties(propertiesMap).setScope(bean.getScope()).build();
 			registerBean(beanDefinition);

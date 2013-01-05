@@ -28,7 +28,7 @@ import com.clarionmedia.infinitum.di.BeanUtils;
 import com.clarionmedia.infinitum.di.annotation.Autowired;
 import com.clarionmedia.infinitum.exception.InfinitumRuntimeException;
 import com.clarionmedia.infinitum.reflection.ClassReflector;
-import com.clarionmedia.infinitum.reflection.impl.DefaultClassReflector;
+import com.clarionmedia.infinitum.reflection.impl.JavaClassReflector;
 
 /**
  * <p>
@@ -46,7 +46,7 @@ public class AutowiredBeanPostProcessor implements BeanPostProcessor {
 
 	@Override
 	public void postProcessBean(InfinitumContext context, AbstractBeanDefinition beanDefinition) {
-		mClassReflector = new DefaultClassReflector();
+		mClassReflector = new JavaClassReflector();
 		registerFieldInjections(context.getBeanFactory(), beanDefinition);
 		registerSetterInjections(context.getBeanFactory(), beanDefinition);
 	}

@@ -33,6 +33,18 @@ import java.util.List;
  * @since 1.0
  */
 public interface ClassReflector {
+	
+	/**
+	 * Retrieves a {@link Class} instance for the {@code Class} described by the
+	 * given package-qualified name. Returns {@code null} if the {@code Class}
+	 * can not be found.
+	 * 
+	 * @param className
+	 *            the package-qualified name of the desired {@code Class}
+	 * @return instance of the {@code Class} or {@code null}if the {@code Class}
+	 *         was not found
+	 */
+	Class<?> getClass(String className);
 
 	/**
 	 * Indicates if the given {@link Object} or {@code Object} proxy is

@@ -22,7 +22,7 @@ import java.lang.reflect.Proxy;
 import com.clarionmedia.infinitum.context.InfinitumContext;
 import com.clarionmedia.infinitum.internal.Preconditions;
 import com.clarionmedia.infinitum.reflection.ClassReflector;
-import com.clarionmedia.infinitum.reflection.impl.DefaultClassReflector;
+import com.clarionmedia.infinitum.reflection.impl.JavaClassReflector;
 
 /**
  * <p>
@@ -50,7 +50,7 @@ public abstract class JdkDynamicProxy extends AbstractProxy {
 	public JdkDynamicProxy(Object target, Class<?>[] interfaces) {
 		super(target);
 		Preconditions.checkNotNull(interfaces);
-		ClassReflector reflector = new DefaultClassReflector();
+		ClassReflector reflector = new JavaClassReflector();
 		Class<?>[] realInterfaces = new Class<?>[interfaces.length];
 		for (int i = 0; i < interfaces.length; i++) {
 			Class<?> realInterface;

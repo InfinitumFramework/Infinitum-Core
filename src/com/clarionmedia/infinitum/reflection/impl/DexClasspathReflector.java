@@ -24,42 +24,30 @@ import java.util.Set;
 
 import android.content.Context;
 
-import com.clarionmedia.infinitum.exception.InfinitumRuntimeException;
 import com.clarionmedia.infinitum.logging.Logger;
-import com.clarionmedia.infinitum.reflection.PackageReflector;
+import com.clarionmedia.infinitum.reflection.ClasspathReflector;
 
 import dalvik.system.DexFile;
 
 /**
  * <p>
- * This class provides reflection methods for working with packages contained
- * within projects that are using Infinitum and their contained resources.
+ * Implementation of {@link ClasspathReflector} which relies on Dalvik's
+ * {@code classes.dex} exposed through {@link DexFile}.
  * </p>
  * 
  * @author Tyler Treat
  * @version 1.0 02/14/12
  * @since 1.0
  */
-public class DefaultPackageReflector implements PackageReflector {
+public class DexClasspathReflector implements ClasspathReflector {
 
 	private Logger mLogger;
 
 	/**
-	 * Creates a new {@code DefaultPackageReflector} instance.
+	 * Creates a new {@code DexClasspathReflector} instance.
 	 */
-	public DefaultPackageReflector() {
+	public DexClasspathReflector() {
 		mLogger = Logger.getInstance(getClass().getSimpleName());
-	}
-
-	@Override
-	public Class<?> getClass(String className) {
-		Class<?> clazz;
-		try {
-			clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
-		} catch (ClassNotFoundException e) {
-			throw new InfinitumRuntimeException("Class '" + className + "' could not be resolved.");
-		}
-		return clazz;
 	}
 
 	@Override
@@ -68,12 +56,13 @@ public class DefaultPackageReflector implements PackageReflector {
 		try {
 			DexFile dex = new DexFile(context.getApplicationInfo().sourceDir);
 			Enumeration<String> entries = dex.entries();
+			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+			Locale locale = Locale.getDefault();
 			while (entries.hasMoreElements()) {
 				String entry = entries.nextElement();
 				for (String packageName : packageNames) {
-					Locale locale = Locale.getDefault();
 					if (entry.toLowerCase(locale).startsWith(packageName.toLowerCase(locale))) {
-						classes.add(getClass(entry));
+						addClass(classes, entry, classLoader);
 						break;
 					}
 				}
@@ -82,6 +71,14 @@ public class DefaultPackageReflector implements PackageReflector {
 		} catch (IOException e) {
 			mLogger.error("Component scanning is not supported in this environment.", e);
 			return classes;
+		}
+	}
+
+	private void addClass(Set<Class<?>> classes, String name, ClassLoader classLoader) {
+		try {
+			classes.add(classLoader.loadClass(name));
+		} catch (ClassNotFoundException e) {
+			mLogger.error("Failed to load class '" + name + "'.", e);
 		}
 	}
 

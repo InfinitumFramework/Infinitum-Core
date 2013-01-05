@@ -31,15 +31,26 @@ import com.clarionmedia.infinitum.reflection.ClassReflector;
 
 /**
  * <p>
- * This class provides reflection methods for working with classes contained
- * within projects that are using Infinitum.
+ * Implementation of {@link ClassReflector} which uses Java's standard
+ * reflection API to introspect classes.
  * </p>
  * 
  * @author Tyler Treat
  * @version 1.0 03/15/12
  * @since 1.0
  */
-public class DefaultClassReflector implements ClassReflector {
+public class JavaClassReflector implements ClassReflector {
+
+	@Override
+	public Class<?> getClass(String className) {
+		Class<?> clazz;
+		try {
+			clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
+		} catch (ClassNotFoundException e) {
+			throw new InfinitumRuntimeException("Class '" + className + "' could not be resolved.");
+		}
+		return clazz;
+	}
 
 	@Override
 	public boolean isNull(Object object) {
