@@ -19,6 +19,7 @@ package com.clarionmedia.infinitum.di.impl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.clarionmedia.infinitum.context.InfinitumContext;
 import com.clarionmedia.infinitum.context.exception.InfinitumConfigurationException;
@@ -127,6 +128,41 @@ public class ConfigurableBeanFactory implements BeanFactory {
 		if (bean == null)
 			return null;
 		return bean.getType();
+	}
+	
+	@Override
+	public Object findCandidateBean(Class<?> clazz) {
+		String beanName = findCandidateBeanName(clazz);
+		if (beanName == null)
+			return null;
+		return loadBean(beanName);
+	}
+	
+	@Override
+	public String findCandidateBeanName(Class<?> clazz) {
+		AbstractBeanDefinition candidate = null;
+		Map<AbstractBeanDefinition, String> invertedBeanMap = invert(getBeanDefinitions());
+		for (AbstractBeanDefinition beanDef : invertedBeanMap.keySet()) {
+			if (clazz.isAssignableFrom(beanDef.getType())) {
+				// TODO: check if there is more than 1 candidate?
+				candidate = beanDef;
+				break;
+			}
+		}
+		if (candidate == null)
+			return null;
+		return candidate.getName();
+	}
+
+	private <V, K> Map<V, K> invert(Map<K, V> map) {
+		Map<V, K> inv = new HashMap<V, K>();
+		for (Entry<K, V> entry : map.entrySet()) {
+			if (inv.containsKey(entry.getValue()))
+				throw new InfinitumConfigurationException("More than 1 autowire candidate found of type '"
+						+ entry.getValue() + "'.");
+			inv.put(entry.getValue(), entry.getKey());
+		}
+		return inv;
 	}
 
 }

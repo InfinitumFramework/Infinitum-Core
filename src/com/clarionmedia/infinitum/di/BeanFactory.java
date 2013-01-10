@@ -129,5 +129,31 @@ public interface BeanFactory {
 	 * @return {@code InfinitumContext}
 	 */
 	InfinitumContext getContext();
+	
+	/**
+	 * Resolves an autowire dependency for the given {@link Class}. This will
+	 * return an instance of the {@code Class} or one of its derivatives from
+	 * this {@code BeanFactory}. If there is no candidate, it will return
+	 * {@code null}. An {@link InfinitumConfigurationException} will be thrown
+	 * if more than one candidate is found.
+	 * 
+	 * @param clazz
+	 *            the {@code Class} of the candidate
+	 * @return bean candidate or {@code null} if none exists
+	 * @throws InfinitumConfigurationException
+	 *             if more than one autowire candidate is found
+	 */
+	Object findCandidateBean(Class<?> clazz);
+	
+	/**
+	 * Retrieves the name of a bean which satisfies the given {@link Class}.
+	 * 
+	 * @param clazz
+	 *            the {@code Class} of the candidate
+	 * @return bean candidate name or {@code null} if none exists
+	 * @throws InfinitumConfigurationException
+	 *             if more than one autowire candidate is found
+	 */
+	String findCandidateBeanName(Class<?> clazz);
 
 }

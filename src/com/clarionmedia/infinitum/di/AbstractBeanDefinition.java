@@ -240,7 +240,7 @@ public abstract class AbstractBeanDefinition {
 		Class<?>[] paramTypes = autowiredCtor.getParameterTypes();
 		Object[] args = new Object[paramTypes.length];
 		for (int i = 0; i < paramTypes.length; i++) {
-			Object arg = BeanUtils.findCandidateBean(mBeanFactory, paramTypes[i]);
+			Object arg = mBeanFactory.findCandidateBean(paramTypes[i]);
 			if (arg == null)
 				throw new InfinitumConfigurationException("Could not autowire constructor argument of type '" + paramTypes[i].getName()
 						+ "' in bean '" + mName + "' (no autowire candidates found)");
