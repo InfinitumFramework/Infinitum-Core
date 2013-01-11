@@ -27,7 +27,6 @@ import com.clarionmedia.infinitum.di.AbstractBeanDefinition;
 import com.clarionmedia.infinitum.di.BeanFactory;
 import com.clarionmedia.infinitum.di.XmlBean;
 import com.clarionmedia.infinitum.reflection.ClassReflector;
-import com.clarionmedia.infinitum.reflection.impl.JavaClassReflector;
 
 /**
  * <p>
@@ -51,11 +50,13 @@ public class ConfigurableBeanFactory implements BeanFactory {
 	 * 
 	 * @param context
 	 *            the parent {@link InfinitumContext}
+	 * @param classReflector
+	 *            the {@link ClassReflector} to use
 	 */
-	public ConfigurableBeanFactory(InfinitumContext context) {
+	public ConfigurableBeanFactory(InfinitumContext context, ClassReflector classReflector, Map<String, AbstractBeanDefinition> beanMap) {
 		mContext = context;
-		mClassReflector = new JavaClassReflector();
-		mBeanDefinitions = new HashMap<String, AbstractBeanDefinition>();
+		mClassReflector = classReflector;
+		mBeanDefinitions = beanMap;
 	}
 
 	@Override
@@ -104,6 +105,8 @@ public class ConfigurableBeanFactory implements BeanFactory {
 
 	@Override
 	public void registerBean(AbstractBeanDefinition beanDefinition) {
+		if (beanDefinition == null)
+			return;
 		mBeanDefinitions.put(beanDefinition.getName(), beanDefinition);
 	}
 
@@ -129,7 +132,7 @@ public class ConfigurableBeanFactory implements BeanFactory {
 			return null;
 		return bean.getType();
 	}
-	
+
 	@Override
 	public Object findCandidateBean(Class<?> clazz) {
 		String beanName = findCandidateBeanName(clazz);
@@ -137,11 +140,11 @@ public class ConfigurableBeanFactory implements BeanFactory {
 			return null;
 		return loadBean(beanName);
 	}
-	
+
 	@Override
 	public String findCandidateBeanName(Class<?> clazz) {
 		AbstractBeanDefinition candidate = null;
-		Map<AbstractBeanDefinition, String> invertedBeanMap = invert(getBeanDefinitions());
+		Map<AbstractBeanDefinition, String> invertedBeanMap = invert(mBeanDefinitions);
 		for (AbstractBeanDefinition beanDef : invertedBeanMap.keySet()) {
 			if (clazz.isAssignableFrom(beanDef.getType())) {
 				// TODO: check if there is more than 1 candidate?
@@ -154,12 +157,11 @@ public class ConfigurableBeanFactory implements BeanFactory {
 		return candidate.getName();
 	}
 
-	private <V, K> Map<V, K> invert(Map<K, V> map) {
-		Map<V, K> inv = new HashMap<V, K>();
-		for (Entry<K, V> entry : map.entrySet()) {
+	private Map<AbstractBeanDefinition, String> invert(Map<String, AbstractBeanDefinition> map) {
+		Map<AbstractBeanDefinition, String> inv = new HashMap<AbstractBeanDefinition, String>();
+		for (Entry<String, AbstractBeanDefinition> entry : map.entrySet()) {
 			if (inv.containsKey(entry.getValue()))
-				throw new InfinitumConfigurationException("More than 1 autowire candidate found of type '"
-						+ entry.getValue() + "'.");
+				throw new InfinitumConfigurationException("More than 1 autowire candidate found of type '" + entry.getValue() + "'.");
 			inv.put(entry.getValue(), entry.getKey());
 		}
 		return inv;

@@ -20,6 +20,7 @@ import static java.lang.Boolean.parseBoolean;
 import static java.util.Arrays.asList;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -32,8 +33,10 @@ import org.simpleframework.xml.Root;
 
 import com.clarionmedia.infinitum.context.AbstractContext;
 import com.clarionmedia.infinitum.context.InfinitumContext;
+import com.clarionmedia.infinitum.di.AbstractBeanDefinition;
 import com.clarionmedia.infinitum.di.XmlBean;
 import com.clarionmedia.infinitum.di.impl.ConfigurableBeanFactory;
+import com.clarionmedia.infinitum.reflection.impl.JavaClassReflector;
 
 /**
  * <p>
@@ -63,9 +66,9 @@ public class XmlApplicationContext extends AbstractContext {
 
 	@Element(name = "beans", required = false)
 	protected BeanContainer mBeanContainer;
-	
+
 	protected XmlApplicationContext() {
-		mBeanFactory = new ConfigurableBeanFactory(this);
+		mBeanFactory = new ConfigurableBeanFactory(this, new JavaClassReflector(), new HashMap<String, AbstractBeanDefinition>());
 	}
 
 	@Override
@@ -90,15 +93,15 @@ public class XmlApplicationContext extends AbstractContext {
 	public XmlRestfulContext getRestContext() {
 		return mRestConfig;
 	}
-	
+
 	public Map<String, String> getAppConfig() {
 		return mAppConfig;
 	}
-	
+
 	public Map<String, String> getSqliteConfig() {
 		return mSqliteConfig;
 	}
-	
+
 	public List<Model> getModels() {
 		return mModels;
 	}
@@ -122,7 +125,7 @@ public class XmlApplicationContext extends AbstractContext {
 
 		@Attribute(name = "resource")
 		private String mResource;
-		
+
 		public String getResource() {
 			return mResource;
 		}
