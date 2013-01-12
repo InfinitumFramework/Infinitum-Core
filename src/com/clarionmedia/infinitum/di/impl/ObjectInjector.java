@@ -46,7 +46,6 @@ import com.clarionmedia.infinitum.di.BeanFactory;
 import com.clarionmedia.infinitum.di.annotation.Autowired;
 import com.clarionmedia.infinitum.exception.InfinitumRuntimeException;
 import com.clarionmedia.infinitum.reflection.ClassReflector;
-import com.clarionmedia.infinitum.reflection.impl.JavaClassReflector;
 
 /**
  * <p>
@@ -62,7 +61,6 @@ public class ObjectInjector implements ActivityInjector {
 
 	private Object mObject;
 	private ClassReflector mClassReflector;
-	private List<Field> mFields;
 	private InfinitumContext mInfinitumContext;
 
 	/**
@@ -70,30 +68,32 @@ public class ObjectInjector implements ActivityInjector {
 	 * 
 	 * @param infinitumContext
 	 *            the {@link InfinitumContext} to use
+	 * @param classReflector
+	 *            the {@link ClassReflector} to use
 	 * @param object
 	 *            the {@link Object} to use
 	 */
-	public ObjectInjector(InfinitumContext infinitumContext, Object object) {
+	public ObjectInjector(InfinitumContext infinitumContext, ClassReflector classReflector, Object object) {
 		mInfinitumContext = infinitumContext;
+		mClassReflector = classReflector;
 		mObject = object;
-		mClassReflector = new JavaClassReflector();
-		mFields = mClassReflector.getAllFields(mObject.getClass());
 	}
 
 	@Override
 	public void inject() {
-		injectBeans();
-		if (mObject instanceof Activity) {
-			injectResources();
+		List<Field> fields = mClassReflector.getAllFields(mObject.getClass());
+		injectBeans(fields);
+		if (Activity.class.isAssignableFrom(mObject.getClass())) {
+			injectResources(fields);
 			injectLayout();
-			injectViews();
-			injectListeners();
+			injectViews(fields);
+			injectListeners(fields);
 		}
 	}
 
-	private void injectBeans() {
+	private void injectBeans(List<Field> fields) {
 		BeanFactory beanFactory = mInfinitumContext.getBeanFactory();
-		for (Field field : mFields) {
+		for (Field field : fields) {
 			if (!field.isAnnotationPresent(Autowired.class))
 				continue;
 			field.setAccessible(true);
@@ -102,7 +102,7 @@ public class ObjectInjector implements ActivityInjector {
 			Class<?> type = field.getType();
 			Object bean = qualifier.equals("") ? beanFactory.findCandidateBean(type) : mInfinitumContext.getBean(qualifier);
 			if (bean == null) {
-				throw new InfinitumConfigurationException("Could not autowire property of type '" + type.getName() + "' in Activity '"
+				throw new InfinitumConfigurationException("Could not autowire property of type '" + type.getName() + "' in '"
 						+ mObject.getClass().getName() + "' (no autowire candidates found)");
 			}
 			mClassReflector.setFieldValue(mObject, field, bean);
@@ -124,8 +124,8 @@ public class ObjectInjector implements ActivityInjector {
 	/**
 	 * Injects fields annotated with {@code @InjectView}.
 	 */
-	private void injectViews() {
-		for (Field field : mFields) {
+	private void injectViews(List<Field> fields) {
+		for (Field field : fields) {
 			if (!field.isAnnotationPresent(InjectView.class))
 				continue;
 			InjectView injectView = field.getAnnotation(InjectView.class);
@@ -138,8 +138,8 @@ public class ObjectInjector implements ActivityInjector {
 	/**
 	 * Injects the fields annotated with {@code @InjectResource}.
 	 */
-	private void injectResources() {
-		for (Field field : mFields) {
+	private void injectResources(List<Field> fields) {
+		for (Field field : fields) {
 			if (!field.isAnnotationPresent(InjectResource.class))
 				continue;
 			InjectResource injectResource = field.getAnnotation(InjectResource.class);
@@ -194,8 +194,8 @@ public class ObjectInjector implements ActivityInjector {
 	 * Injects event listeners into {@code View} fields annotated with
 	 * {@code Bind}
 	 */
-	private void injectListeners() {
-		for (Field field : mFields) {
+	private void injectListeners(List<Field> fields) {
+		for (Field field : fields) {
 			if (!View.class.isAssignableFrom(field.getType()) || !field.isAnnotationPresent(Bind.class))
 				continue;
 			Bind bind = field.getAnnotation(Bind.class);

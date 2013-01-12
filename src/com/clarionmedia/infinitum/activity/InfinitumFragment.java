@@ -23,6 +23,7 @@ import com.clarionmedia.infinitum.context.ContextFactory;
 import com.clarionmedia.infinitum.context.InfinitumContext;
 import com.clarionmedia.infinitum.di.ActivityInjector;
 import com.clarionmedia.infinitum.di.impl.ObjectInjector;
+import com.clarionmedia.infinitum.reflection.impl.JavaClassReflector;
 
 /**
  * <p>
@@ -48,7 +49,7 @@ public class InfinitumFragment extends Fragment {
 		mInfinitumContext = mInfinitumConfigId == 0 ?
 				mContextFactory.configure(getActivity()) :
 				mContextFactory.configure(getActivity(), mInfinitumConfigId);
-		final ActivityInjector injector = new ObjectInjector(mInfinitumContext, this);
+		final ActivityInjector injector = new ObjectInjector(mInfinitumContext, new JavaClassReflector(), this);
 		injector.inject();
 		super.onCreate(savedInstanceState);
 	}
