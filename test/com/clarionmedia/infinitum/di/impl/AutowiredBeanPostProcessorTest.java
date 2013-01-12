@@ -264,17 +264,17 @@ public class AutowiredBeanPostProcessorTest {
 		private BarBean mBar;
 
 		@Autowired(BEAN_CANDIDATE_1)
-		private void setFoo1(BarBean foo) {
+		public void setFoo1(BarBean foo) {
 			mFoo = foo;
 		}
 
 		@Autowired
-		private void setFoo2(BarBean foo) {
+		public void setFoo2(BarBean foo) {
 			mFoo = foo;
 		}
 
 		@Autowired
-		private void setFoo3(BarBean foo, int x) {
+		public void setFoo3(BarBean foo, int x) {
 			mFoo = foo;
 		}
 
