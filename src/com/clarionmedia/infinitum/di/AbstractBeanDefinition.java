@@ -32,7 +32,6 @@ import com.clarionmedia.infinitum.di.impl.SingletonBeanDefinition;
 import com.clarionmedia.infinitum.internal.Preconditions;
 import com.clarionmedia.infinitum.internal.Primitives;
 import com.clarionmedia.infinitum.reflection.ClassReflector;
-import com.clarionmedia.infinitum.reflection.impl.JavaClassReflector;
 
 /**
  * <p>
@@ -62,9 +61,11 @@ public abstract class AbstractBeanDefinition {
 	 * 
 	 * @param beanFactory
 	 *            the {@link BeanFactory} this bean definition is scoped to
+	 * @param classReflector
+	 *            the {@link ClassReflector} to use
 	 */
-	public AbstractBeanDefinition(BeanFactory beanFactory) {
-		mClassReflector = new JavaClassReflector();
+	public AbstractBeanDefinition(BeanFactory beanFactory, ClassReflector classReflector) {
+		mClassReflector = classReflector;
 		mBeanFactory = beanFactory;
 		mFieldInjections = new HashMap<Field, AbstractBeanDefinition>();
 		mSetterInjections = new HashMap<Method, AbstractBeanDefinition>();

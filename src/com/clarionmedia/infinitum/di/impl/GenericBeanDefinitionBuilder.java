@@ -21,6 +21,7 @@ import java.util.Map;
 import com.clarionmedia.infinitum.di.AbstractBeanDefinition;
 import com.clarionmedia.infinitum.di.BeanDefinitionBuilder;
 import com.clarionmedia.infinitum.di.BeanFactory;
+import com.clarionmedia.infinitum.reflection.impl.JavaClassReflector;
 
 /**
  * <p>
@@ -56,9 +57,9 @@ public class GenericBeanDefinitionBuilder implements BeanDefinitionBuilder {
 					"Must provide bean name and type to build definition.");
 		AbstractBeanDefinition ret;
 		if (mScope == null || mScope.equalsIgnoreCase("singleton"))
-			ret = new SingletonBeanDefinition(mBeanFactory);
+			ret = new SingletonBeanDefinition(mBeanFactory, new JavaClassReflector());
 		else
-			ret = new PrototypeBeanDefinition(mBeanFactory);
+			ret = new PrototypeBeanDefinition(mBeanFactory, new JavaClassReflector());
 		ret.setName(mName);
 		ret.setType(mType);
 		ret.setProperties(mProperties);

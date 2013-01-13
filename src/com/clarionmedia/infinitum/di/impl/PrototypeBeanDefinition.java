@@ -19,6 +19,7 @@ package com.clarionmedia.infinitum.di.impl;
 import com.clarionmedia.infinitum.di.AbstractBeanDefinition;
 import com.clarionmedia.infinitum.di.AbstractProxy;
 import com.clarionmedia.infinitum.di.BeanFactory;
+import com.clarionmedia.infinitum.reflection.ClassReflector;
 
 /**
  * <p>
@@ -37,9 +38,11 @@ public class PrototypeBeanDefinition extends AbstractBeanDefinition {
 	 * 
 	 * @param beanFactory
 	 *            the {@link BeanFactory} containing this bean
+	 * @param classReflector
+	 *            the {@link ClassReflector} to use
 	 */
-	public PrototypeBeanDefinition(BeanFactory beanFactory) {
-		super(beanFactory);
+	public PrototypeBeanDefinition(BeanFactory beanFactory, ClassReflector classReflector) {
+		super(beanFactory, classReflector);
 	}
 
 	@Override
@@ -59,7 +62,9 @@ public class PrototypeBeanDefinition extends AbstractBeanDefinition {
 	@Override
 	public Object getNonProxiedBeanInstance() {
 		Object bean = createBean();
+		inject(bean);
 		setFields(bean);
+		postConstruct(bean);
 		return bean;
 	}
 

@@ -33,7 +33,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import android.app.Activity;
-import android.content.DialogInterface.OnClickListener;
 import android.content.res.Resources;
 import android.view.View;
 import android.widget.LinearLayout;

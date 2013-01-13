@@ -21,6 +21,7 @@ import com.clarionmedia.infinitum.context.impl.InfinitumContextProxy;
 import com.clarionmedia.infinitum.di.AbstractBeanDefinition;
 import com.clarionmedia.infinitum.di.AbstractProxy;
 import com.clarionmedia.infinitum.di.BeanFactory;
+import com.clarionmedia.infinitum.reflection.ClassReflector;
 
 /**
  * <p>
@@ -42,9 +43,11 @@ public class SingletonBeanDefinition extends AbstractBeanDefinition {
 	 * 
 	 * @param beanFactory
 	 *            the {@link BeanFactory} containing this bean
+	 * @param classReflector
+	 *            the {@link ClassReflector} to use
 	 */
-	public SingletonBeanDefinition(BeanFactory beanFactory) {
-		super(beanFactory);
+	public SingletonBeanDefinition(BeanFactory beanFactory, ClassReflector classReflector) {
+		super(beanFactory, classReflector);
 	}
 
 	@SuppressWarnings("unchecked")
