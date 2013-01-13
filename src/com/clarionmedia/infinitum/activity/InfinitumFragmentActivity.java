@@ -19,6 +19,7 @@ package com.clarionmedia.infinitum.activity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
+import com.clarionmedia.infinitum.activity.LifecycleEvent.EventType;
 import com.clarionmedia.infinitum.context.ContextFactory;
 import com.clarionmedia.infinitum.context.InfinitumContext;
 import com.clarionmedia.infinitum.di.ActivityInjector;
@@ -38,7 +39,7 @@ import com.clarionmedia.infinitum.reflection.impl.JavaClassReflector;
  * @see InfinitumActivity
  * @see InfinitumListActivity
  */
-public class InfinitumFragmentActivity extends FragmentActivity {
+public class InfinitumFragmentActivity extends FragmentActivity implements EventPublisher {
 
 	private InfinitumContext mInfinitumContext;
 	private int mInfinitumConfigId;
@@ -52,7 +53,44 @@ public class InfinitumFragmentActivity extends FragmentActivity {
 				mContextFactory.configure(this, mInfinitumConfigId);
 		final ActivityInjector injector = new ObjectInjector(mInfinitumContext, new JavaClassReflector(), this);
 		injector.inject();
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, EventType.ON_CREATE));
 		super.onCreate(savedInstanceState);
+	}
+	
+	@Override
+	protected void onStart() {
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, EventType.ON_START));
+		super.onStart();
+	}
+
+	@Override
+	protected void onRestart() {
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, EventType.ON_RESTART));
+		super.onRestart();
+	}
+
+	@Override
+	protected void onResume() {
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, EventType.ON_RESUME));
+		super.onResume();
+	}
+
+	@Override
+	protected void onPause() {
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, EventType.ON_PAUSE));
+		super.onPause();
+	}
+
+	@Override
+	protected void onStop() {
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, EventType.ON_STOP));
+		super.onStop();
+	}
+
+	@Override
+	protected void onDestroy() {
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, EventType.ON_DESTROY));
+		super.onDestroy();
 	}
 
 	/**

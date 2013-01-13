@@ -48,13 +48,47 @@ public class InfinitumActivity extends Activity implements EventPublisher {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		mContextFactory = ContextFactory.newInstance();
-		mInfinitumContext = mInfinitumConfigId == 0 ?
-				mContextFactory.configure(this) :
-				mContextFactory.configure(this, mInfinitumConfigId);
+		mInfinitumContext = mInfinitumConfigId == 0 ? mContextFactory.configure(this) : mContextFactory.configure(this, mInfinitumConfigId);
 		final ActivityInjector injector = new ObjectInjector(mInfinitumContext, new JavaClassReflector(), this);
 		injector.inject();
 		mInfinitumContext.publishEvent(new LifecycleEvent(this, EventType.ON_CREATE));
 		super.onCreate(savedInstanceState);
+	}
+
+	@Override
+	protected void onStart() {
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, EventType.ON_START));
+		super.onStart();
+	}
+
+	@Override
+	protected void onRestart() {
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, EventType.ON_RESTART));
+		super.onRestart();
+	}
+
+	@Override
+	protected void onResume() {
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, EventType.ON_RESUME));
+		super.onResume();
+	}
+
+	@Override
+	protected void onPause() {
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, EventType.ON_PAUSE));
+		super.onPause();
+	}
+
+	@Override
+	protected void onStop() {
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, EventType.ON_STOP));
+		super.onStop();
+	}
+
+	@Override
+	protected void onDestroy() {
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, EventType.ON_DESTROY));
+		super.onDestroy();
 	}
 
 	/**
