@@ -29,6 +29,8 @@ import java.util.Set;
 
 import android.content.Context;
 
+import com.clarionmedia.infinitum.activity.EventSubscriber;
+import com.clarionmedia.infinitum.activity.LifecycleEvent;
 import com.clarionmedia.infinitum.context.exception.InfinitumConfigurationException;
 import com.clarionmedia.infinitum.context.impl.XmlApplicationContext;
 import com.clarionmedia.infinitum.di.AbstractBeanDefinition;
@@ -47,8 +49,8 @@ import com.clarionmedia.infinitum.exception.InfinitumRuntimeException;
 import com.clarionmedia.infinitum.internal.StringUtil;
 import com.clarionmedia.infinitum.reflection.ClassReflector;
 import com.clarionmedia.infinitum.reflection.ClasspathReflector;
-import com.clarionmedia.infinitum.reflection.impl.JavaClassReflector;
 import com.clarionmedia.infinitum.reflection.impl.DexClasspathReflector;
+import com.clarionmedia.infinitum.reflection.impl.JavaClassReflector;
 
 /**
  * <p>
@@ -70,6 +72,7 @@ public abstract class AbstractContext implements InfinitumContext, BeanProvider 
 	protected InfinitumContext mParentContext;
 	protected Set<Class<?>> mScannedComponents;
 	protected Set<XmlBean> mXmlComponents;
+	protected List<EventSubscriber> mEventSubscribers;
 
 	/**
 	 * Returns a {@link List} of {@link XmlBean} instances that were registered
@@ -103,6 +106,7 @@ public abstract class AbstractContext implements InfinitumContext, BeanProvider 
 		mXmlComponents = new HashSet<XmlBean>();
 		mClasspathReflector = new DexClasspathReflector();
 		mClassReflector = new JavaClassReflector();
+		mEventSubscribers = new ArrayList<EventSubscriber>();
 	}
 
 	@Override
@@ -229,6 +233,18 @@ public abstract class AbstractContext implements InfinitumContext, BeanProvider 
 		beans.add(beanDefinitionBuilder.setName("_" + DexClasspathReflector.class.getSimpleName()).setType(DexClasspathReflector.class)
 				.build());
 		return beans;
+	}
+	
+	@Override
+	public void publishEvent(LifecycleEvent event) {
+		for (EventSubscriber subscriber : mEventSubscribers) {
+			subscriber.onEventPublished(event);
+		}
+	}
+	
+	@Override
+	public void subscribeForEvents(EventSubscriber subscriber) {
+		mEventSubscribers.add(subscriber);
 	}
 
 	public Set<Class<?>> getScannedComponents() {

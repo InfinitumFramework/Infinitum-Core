@@ -19,6 +19,7 @@ package com.clarionmedia.infinitum.activity;
 import android.app.Activity;
 import android.os.Bundle;
 
+import com.clarionmedia.infinitum.activity.LifecycleEvent.EventType;
 import com.clarionmedia.infinitum.context.ContextFactory;
 import com.clarionmedia.infinitum.context.InfinitumContext;
 import com.clarionmedia.infinitum.di.ActivityInjector;
@@ -38,7 +39,7 @@ import com.clarionmedia.infinitum.reflection.impl.JavaClassReflector;
  * @see InfinitumListActivity
  * @see InfinitumFragmentActivity
  */
-public class InfinitumActivity extends Activity {
+public class InfinitumActivity extends Activity implements EventPublisher {
 
 	private InfinitumContext mInfinitumContext;
 	private int mInfinitumConfigId;
@@ -52,6 +53,7 @@ public class InfinitumActivity extends Activity {
 				mContextFactory.configure(this, mInfinitumConfigId);
 		final ActivityInjector injector = new ObjectInjector(mInfinitumContext, new JavaClassReflector(), this);
 		injector.inject();
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, EventType.ON_CREATE));
 		super.onCreate(savedInstanceState);
 	}
 
