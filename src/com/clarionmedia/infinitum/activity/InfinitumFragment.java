@@ -28,6 +28,7 @@ import com.clarionmedia.infinitum.context.ContextFactory;
 import com.clarionmedia.infinitum.context.InfinitumContext;
 import com.clarionmedia.infinitum.di.ActivityInjector;
 import com.clarionmedia.infinitum.di.impl.ObjectInjector;
+import com.clarionmedia.infinitum.event.EventPublisher;
 import com.clarionmedia.infinitum.reflection.impl.JavaClassReflector;
 
 /**

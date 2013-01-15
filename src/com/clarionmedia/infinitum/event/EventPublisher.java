@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-package com.clarionmedia.infinitum.activity;
+package com.clarionmedia.infinitum.event;
 
-public interface EventSubscriber {
-
-	void onEventPublished(LifecycleEvent event);
+/**
+ * 
+ * @author Tyler Treat
+ * @version 1.0 01/13/13
+ * @since 1.0
+ */
+public interface EventPublisher {
 
 }

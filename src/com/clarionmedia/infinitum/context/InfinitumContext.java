@@ -20,10 +20,10 @@ import java.util.List;
 
 import android.content.Context;
 
-import com.clarionmedia.infinitum.activity.EventSubscriber;
 import com.clarionmedia.infinitum.activity.LifecycleEvent;
 import com.clarionmedia.infinitum.context.exception.InfinitumConfigurationException;
 import com.clarionmedia.infinitum.di.BeanFactory;
+import com.clarionmedia.infinitum.event.EventSubscriber;
 
 /**
  * <p>

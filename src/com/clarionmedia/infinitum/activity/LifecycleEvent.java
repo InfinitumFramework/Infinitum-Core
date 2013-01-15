@@ -16,6 +16,8 @@
 
 package com.clarionmedia.infinitum.activity;
 
+import com.clarionmedia.infinitum.event.EventPublisher;
+
 public class LifecycleEvent {
 
 	public static enum EventType {
