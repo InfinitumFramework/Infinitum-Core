@@ -17,6 +17,9 @@
 package com.clarionmedia.infinitum.event;
 
 /**
+ * <p>
+ * Marker interface identifying a class that publishes events.
+ * </p>
  * 
  * @author Tyler Treat
  * @version 1.0 01/13/13

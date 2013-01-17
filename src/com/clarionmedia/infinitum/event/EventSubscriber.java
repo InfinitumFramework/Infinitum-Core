@@ -19,6 +19,10 @@ package com.clarionmedia.infinitum.event;
 import com.clarionmedia.infinitum.activity.LifecycleEvent;
 
 /**
+ * <p>
+ * Provides a contract for subscribing to and consuming events published by an
+ * {@link EventPublisher}.
+ * </p>
  * 
  * @author Tyler Treat
  * @version 1.0 01/13/13
@@ -26,6 +30,12 @@ import com.clarionmedia.infinitum.activity.LifecycleEvent;
  */
 public interface EventSubscriber {
 
+	/**
+	 * Invoked when the given event is published by an {@link EventPublisher}.
+	 * 
+	 * @param event
+	 *            the published event to consume
+	 */
 	void onEventPublished(LifecycleEvent event);
 
 }
