@@ -21,6 +21,7 @@ import android.os.Bundle;
 
 import com.clarionmedia.infinitum.context.ContextFactory;
 import com.clarionmedia.infinitum.context.InfinitumContext;
+import com.clarionmedia.infinitum.context.exception.InfinitumConfigurationException;
 import com.clarionmedia.infinitum.di.ActivityInjector;
 import com.clarionmedia.infinitum.di.impl.ObjectInjector;
 import com.clarionmedia.infinitum.reflection.impl.JavaClassReflector;
@@ -60,6 +61,21 @@ public class InfinitumListActivity extends ListActivity {
 	 */
 	protected InfinitumContext getInfinitumContext() {
 		return mInfinitumContext;
+	}
+	
+	/**
+	 * Returns the {@link InfinitumContext} of the specified type if available.
+	 * This is a convenience method which is equivalent to
+	 * {@code getInfinitumContext().getChildContext(contextType)}.
+	 * 
+	 * @param contextType
+	 *            the {@code InfinitumContext} type to retrieve
+	 * @return {@code InfinitumContext}
+	 * @throws InfinitumConfigurationException
+	 *             if the desired type is not available
+	 */
+	protected <T extends InfinitumContext> T getInfinitumContext(Class<T> contextType) {
+		return mInfinitumContext.getChildContext(contextType);
 	}
 
 	/**
