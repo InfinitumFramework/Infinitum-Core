@@ -58,6 +58,7 @@ public class InfinitumListFragment extends ListFragment implements EventPublishe
 				mContextFactory.configure(getActivity(), mInfinitumConfigId);
 		final ActivityInjector injector = new ObjectInjector(mInfinitumContext,  new JavaClassReflector(),this);
 		injector.inject();
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_CREATE));
 		super.onCreate(savedInstanceState);
 	}
 	
