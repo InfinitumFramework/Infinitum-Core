@@ -23,12 +23,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.clarionmedia.infinitum.activity.LifecycleEvent.EventType;
 import com.clarionmedia.infinitum.context.ContextFactory;
 import com.clarionmedia.infinitum.context.InfinitumContext;
 import com.clarionmedia.infinitum.di.ActivityInjector;
 import com.clarionmedia.infinitum.di.impl.ObjectInjector;
 import com.clarionmedia.infinitum.event.EventPublisher;
+import com.clarionmedia.infinitum.event.impl.LifecycleEvent;
+import com.clarionmedia.infinitum.event.impl.LifecycleEvent.LifecycleHook;
 import com.clarionmedia.infinitum.reflection.impl.JavaClassReflector;
 
 /**
@@ -62,67 +63,67 @@ public class InfinitumListFragment extends ListFragment implements EventPublishe
 	
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
-		mInfinitumContext.publishEvent(new LifecycleEvent(this, EventType.ON_ACTIVITY_CREATED));
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_ACTIVITY_CREATED));
 		super.onActivityCreated(savedInstanceState);
 	}
 	
 	@Override
 	public void onAttach(Activity activity) {
-		mInfinitumContext.publishEvent(new LifecycleEvent(this, EventType.ON_ATTACH));
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_ATTACH));
 		super.onAttach(activity);
 	}
 	
 	@Override
 	public void onDetach() {
-		mInfinitumContext.publishEvent(new LifecycleEvent(this, EventType.ON_DETACH));
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_DETACH));
 		super.onDetach();
 	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		mInfinitumContext.publishEvent(new LifecycleEvent(this, EventType.ON_CREATE_VIEW));
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_CREATE_VIEW));
 		return super.onCreateView(inflater, container, savedInstanceState);
 	}
 
 	@Override
 	public void onResume() {
-		mInfinitumContext.publishEvent(new LifecycleEvent(this, EventType.ON_RESUME));
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_RESUME));
 		super.onResume();
 	}
 
 	@Override
 	public void onPause() {
-		mInfinitumContext.publishEvent(new LifecycleEvent(this, EventType.ON_PAUSE));
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_PAUSE));
 		super.onPause();
 	}
 	
 	@Override
 	public void onStart() {
-		mInfinitumContext.publishEvent(new LifecycleEvent(this, EventType.ON_START));
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_START));
 		super.onStart();
 	}
 
 	@Override
 	public void onStop() {
-		mInfinitumContext.publishEvent(new LifecycleEvent(this, EventType.ON_STOP));
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_STOP));
 		super.onStop();
 	}
 
 	@Override
 	public void onDestroy() {
-		mInfinitumContext.publishEvent(new LifecycleEvent(this, EventType.ON_DESTROY));
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_DESTROY));
 		super.onDestroy();
 	}
 	
 	@Override
 	public void onDestroyView() {
-		mInfinitumContext.publishEvent(new LifecycleEvent(this, EventType.ON_DESTROY_VIEW));
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_DESTROY_VIEW));
 		super.onDestroyView();
 	}
 	
 	@Override
 	public void onViewStateRestored(Bundle savedInstanceState) {
-		mInfinitumContext.publishEvent(new LifecycleEvent(this, EventType.ON_VIEW_STATE_RESTORED));
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_VIEW_STATE_RESTORED));
 		super.onViewStateRestored(savedInstanceState);
 	}
 

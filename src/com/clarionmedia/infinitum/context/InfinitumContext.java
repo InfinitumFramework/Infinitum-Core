@@ -20,10 +20,10 @@ import java.util.List;
 
 import android.content.Context;
 
-import com.clarionmedia.infinitum.activity.LifecycleEvent;
 import com.clarionmedia.infinitum.context.exception.InfinitumConfigurationException;
 import com.clarionmedia.infinitum.di.BeanFactory;
 import com.clarionmedia.infinitum.event.EventSubscriber;
+import com.clarionmedia.infinitum.event.AbstractEvent;
 
 /**
  * <p>
@@ -148,12 +148,12 @@ public interface InfinitumContext {
 	RestfulContext getRestContext();
 
 	/**
-	 * Publishes the given {@link LifecycleEvent} to the event system.
+	 * Publishes the given {@link AbstractEvent} to the event system.
 	 * 
 	 * @param event
-	 *            the {@code LifecycleEvent} to publish
+	 *            the {@code FrameworkEvent} to publish
 	 */
-	void publishEvent(LifecycleEvent event);
+	void publishEvent(AbstractEvent event);
 
 	/**
 	 * Registers the given {@link EventSubscriber} for events published by this

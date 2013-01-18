@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.clarionmedia.infinitum.event;
+package com.clarionmedia.infinitum.event.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -25,8 +25,8 @@ import java.lang.reflect.Method;
 
 /**
  * <p>
- * Indicates that the annotated {@link Method} should be published as an event
- * when invoked.
+ * Indicates that the annotated {@link Method} should be published as a
+ * framework event when invoked.
  * </p>
  * 
  * @author Tyler Treat

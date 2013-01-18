@@ -29,7 +29,6 @@ import java.util.Set;
 
 import android.content.Context;
 
-import com.clarionmedia.infinitum.activity.LifecycleEvent;
 import com.clarionmedia.infinitum.context.exception.InfinitumConfigurationException;
 import com.clarionmedia.infinitum.context.impl.XmlApplicationContext;
 import com.clarionmedia.infinitum.di.AbstractBeanDefinition;
@@ -45,6 +44,7 @@ import com.clarionmedia.infinitum.di.annotation.Scope;
 import com.clarionmedia.infinitum.di.impl.AutowiredBeanPostProcessor;
 import com.clarionmedia.infinitum.di.impl.GenericBeanDefinitionBuilder;
 import com.clarionmedia.infinitum.event.EventSubscriber;
+import com.clarionmedia.infinitum.event.AbstractEvent;
 import com.clarionmedia.infinitum.exception.InfinitumRuntimeException;
 import com.clarionmedia.infinitum.internal.StringUtil;
 import com.clarionmedia.infinitum.reflection.ClassReflector;
@@ -236,7 +236,7 @@ public abstract class AbstractContext implements InfinitumContext, BeanProvider 
 	}
 	
 	@Override
-	public void publishEvent(LifecycleEvent event) {
+	public void publishEvent(AbstractEvent event) {
 		for (EventSubscriber subscriber : mEventSubscribers) {
 			subscriber.onEventPublished(event);
 		}
