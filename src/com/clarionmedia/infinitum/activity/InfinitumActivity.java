@@ -24,6 +24,9 @@ import com.clarionmedia.infinitum.context.InfinitumContext;
 import com.clarionmedia.infinitum.context.exception.InfinitumConfigurationException;
 import com.clarionmedia.infinitum.di.ActivityInjector;
 import com.clarionmedia.infinitum.di.impl.ObjectInjector;
+import com.clarionmedia.infinitum.event.EventPublisher;
+import com.clarionmedia.infinitum.event.impl.LifecycleEvent;
+import com.clarionmedia.infinitum.event.impl.LifecycleEvent.LifecycleHook;
 import com.clarionmedia.infinitum.reflection.impl.JavaClassReflector;
 
 /**
@@ -39,7 +42,7 @@ import com.clarionmedia.infinitum.reflection.impl.JavaClassReflector;
  * @see InfinitumListActivity
  * @see InfinitumFragmentActivity
  */
-public class InfinitumActivity extends Activity {
+public class InfinitumActivity extends Activity implements EventPublisher {
 
 	private InfinitumContext mInfinitumContext;
 	private int mInfinitumConfigId;
@@ -51,7 +54,44 @@ public class InfinitumActivity extends Activity {
 		mInfinitumContext = mInfinitumConfigId == 0 ? mContextFactory.configure(this) : mContextFactory.configure(this, mInfinitumConfigId);
 		final ActivityInjector injector = new ObjectInjector(mInfinitumContext, new JavaClassReflector(), this);
 		injector.inject();
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_CREATE));
 		super.onCreate(savedInstanceState);
+	}
+
+	@Override
+	protected void onStart() {
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_START));
+		super.onStart();
+	}
+
+	@Override
+	protected void onRestart() {
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_RESTART));
+		super.onRestart();
+	}
+
+	@Override
+	protected void onResume() {
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_RESUME));
+		super.onResume();
+	}
+
+	@Override
+	protected void onPause() {
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_PAUSE));
+		super.onPause();
+	}
+
+	@Override
+	protected void onStop() {
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_STOP));
+		super.onStop();
+	}
+
+	@Override
+	protected void onDestroy() {
+		mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_DESTROY));
+		super.onDestroy();
 	}
 
 	/**

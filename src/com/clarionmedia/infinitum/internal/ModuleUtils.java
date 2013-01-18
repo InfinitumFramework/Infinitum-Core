@@ -42,12 +42,15 @@ public class ModuleUtils {
 	private static final String AOP_CONTEXT_CLASS = "com.clarionmedia.infinitum.aop.context.impl.XmlInfinitumAopContext";
 	private static final String WEB_MARKER_CLASS = "com.clarionmedia.infinitum.web.context.InfinitumWebContext";
 	private static final String WEB_CONTEXT_CLASS = "com.clarionmedia.infinitum.web.context.impl.XmlInfinitumWebContext";
+	private static final String UI_MARKER_CLASS = "com.clarionmedia.infinitum.ui.context.InfinitumUiContext";
+	private static final String UI_CONTEXT_CLASS = "com.clarionmedia.infinitum.ui.context.impl.XmlInfinitumUiContext";
 
 	/**
 	 * Module enum containing information for the various framework modules.
 	 */
 	public enum Module {
-		ORM(ORM_MARKER_CLASS, ORM_CONTEXT_CLASS), AOP(AOP_MARKER_CLASS, AOP_CONTEXT_CLASS), WEB(WEB_MARKER_CLASS, WEB_CONTEXT_CLASS);
+		ORM(ORM_MARKER_CLASS, ORM_CONTEXT_CLASS), AOP(AOP_MARKER_CLASS, AOP_CONTEXT_CLASS), WEB(WEB_MARKER_CLASS, WEB_CONTEXT_CLASS), UI(
+				UI_MARKER_CLASS, UI_CONTEXT_CLASS);
 
 		private String mMarker;
 		private String mContext;

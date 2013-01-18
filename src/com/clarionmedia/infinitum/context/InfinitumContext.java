@@ -22,6 +22,8 @@ import android.content.Context;
 
 import com.clarionmedia.infinitum.context.exception.InfinitumConfigurationException;
 import com.clarionmedia.infinitum.di.BeanFactory;
+import com.clarionmedia.infinitum.event.EventSubscriber;
+import com.clarionmedia.infinitum.event.AbstractEvent;
 
 /**
  * <p>
@@ -144,5 +146,22 @@ public interface InfinitumContext {
 	 * @return {@code RestfulContext}
 	 */
 	RestfulContext getRestContext();
+
+	/**
+	 * Publishes the given {@link AbstractEvent} to the event system.
+	 * 
+	 * @param event
+	 *            the {@code FrameworkEvent} to publish
+	 */
+	void publishEvent(AbstractEvent event);
+
+	/**
+	 * Registers the given {@link EventSubscriber} for events published by this
+	 * {@code InfinitumContext}.
+	 * 
+	 * @param subscriber
+	 *            the {@code EventSubscriber} to register for events
+	 */
+	void subscribeForEvents(EventSubscriber subscriber);
 
 }
