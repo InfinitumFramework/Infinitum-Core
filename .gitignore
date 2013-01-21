@@ -30,6 +30,5 @@ local.properties
 .loadpath
 proguard.cfg
 lint.xml
-build.xml
 javadoc.xml
 javadoc.sh
