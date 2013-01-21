@@ -3,6 +3,7 @@ before_install:
   # download the latest android sdk and unzip
   - wget http://dl.google.com/android/android-sdk_r18-linux.tgz
   - tar -zxf android-sdk_r18-linux.tgz
+  - echo $PWD
   - ls
   # setup your ANDROID_HOME and PATH environment variables
   # use ~/builds/[Github username]/[project]/android-sdk-linux
