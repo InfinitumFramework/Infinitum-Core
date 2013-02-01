@@ -10,6 +10,9 @@ before_install:
   # only update the sdk for the tools and platform-tools (1,2) and whatever api level
   # you are building for android (run "android list sdk" to get the full list.  9 = 2.3.3 or API level 10
   - android update sdk --no-ui --all --filter platform-tools,android-17,extra-android-support
+  - sudo apt-get -f install ia32-libs-multiarch
+  - sudo apt-get -f install ia32-libs
+  - aapt
 
 script:
   - ant clean
