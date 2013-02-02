@@ -32,3 +32,4 @@ proguard.cfg
 lint.xml
 javadoc.xml
 javadoc.sh
+build.xml
