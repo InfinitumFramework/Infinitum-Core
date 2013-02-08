@@ -16,7 +16,6 @@
 package com.clarionmedia.infinitum.di.impl;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -41,7 +40,7 @@ import com.clarionmedia.infinitum.di.annotation.Autowired;
 import com.clarionmedia.infinitum.di.annotation.PostConstruct;
 import com.clarionmedia.infinitum.reflection.ClassReflector;
 
-public class PrototypeBeanDefinitionTest {
+public class SingletonBeanDefinitionTest {
 
 	private static final String PROPERTY_VALUE = "foo";
 
@@ -58,12 +57,12 @@ public class PrototypeBeanDefinitionTest {
 	private Field injectedField;
 	private Method injectedSetter;
 	private Field propertyField;
-	private PrototypeBeanDefinition beanDefinition;
+	private SingletonBeanDefinition beanDefinition;
 
 	@Before
 	public void setup() throws SecurityException, NoSuchFieldException, NoSuchMethodException {
 		MockitoAnnotations.initMocks(this);
-		beanDefinition = new PrototypeBeanDefinition(mockBeanFactory, mockClassReflector);
+		beanDefinition = new SingletonBeanDefinition(mockBeanFactory, mockClassReflector);
 		beanDefinition.setType(FooBean.class);
 		Map<String, Object> properties = new HashMap<String, Object>();
 		properties.put("mProperty", PROPERTY_VALUE);
@@ -146,7 +145,7 @@ public class PrototypeBeanDefinitionTest {
 	}
 	
 	@Test
-	public void testGetBeanInstance_isPrototype() throws SecurityException, NoSuchMethodException {
+	public void testGetBeanInstance_isSingleton() throws SecurityException, NoSuchMethodException {
 		// Setup
 		when(mockClassReflector.getAllConstructors(FooBean.class)).thenReturn(new ArrayList<Constructor<?>>());
 		BarBean beanArg = new BarBean();
@@ -164,7 +163,7 @@ public class PrototypeBeanDefinitionTest {
 		Object secondActual = beanDefinition.getBeanInstance();
 
 		// Verify
-		assertFalse("getBeanInstance results should not reference the same object", firstActual == secondActual);
+		assertTrue("getBeanInstance results should reference the same object", firstActual == secondActual);
 	}
 	
 	@Test(expected = InfinitumConfigurationException.class)
@@ -240,7 +239,7 @@ public class PrototypeBeanDefinitionTest {
 	}
 	
 	@Test
-	public void testGetNonProxiedBeanInstance_isPrototype() throws SecurityException, NoSuchMethodException {
+	public void testGetNonProxiedBeanInstance_isSingleton() throws SecurityException, NoSuchMethodException {
 		// Setup
 		when(mockClassReflector.getAllConstructors(FooBean.class)).thenReturn(new ArrayList<Constructor<?>>());
 		BarBean beanArg = new BarBean();
@@ -258,7 +257,7 @@ public class PrototypeBeanDefinitionTest {
 		Object secondActual = beanDefinition.getNonProxiedBeanInstance();
 
 		// Verify
-		assertFalse("getNonProxiedBeanInstance results should not reference the same object", firstActual == secondActual);
+		assertTrue("getNonProxiedBeanInstance results should reference the same object", firstActual == secondActual);
 	}
 	
 	@Test(expected = InfinitumConfigurationException.class)
