@@ -41,8 +41,9 @@ Core Features
 * Dependency injection: singleton and prototype beans can be declared for both framework and non-framework components in XML or through annotations and be injected at runtime
 * Autowiring: bean properties, methods, and constructors can be autowired to allow Infinitum to resolve dependencies at runtime
 * Resource injection: inject Activities with Android resources, layouts, and views
-* Event binding: event listeners can be bound to views using simple annotations
+* UI event binding: event listeners can be bound to views using simple annotations
 * Component scanning: the framework can be configured to automatically discover components such as beans and aspects, which can then be injected or retrieved at runtime
 * Logcat wrapper: log statements are still made through Android's Logcat utility but only asserted when an application is configured for debug mode -- make logging calls without worrying about environments
+* Event framework: allows application code to subscribe to predefined events and lifecycle hooks, such as those found in activities and fragments
 * Convention over configuration: Infinitum requires minimal configuration, reducing the number of decisions developers need to make, while maintaining flexibility
 * Testability: framework components are coded to interfaces, allowing these application dependencies to be mocked in unit tests
