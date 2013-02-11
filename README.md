@@ -1,5 +1,5 @@
 <p align="center">
-  <img id="Infinitum Framework" src="http://infinitumframework.com/images/infinitum.jpg" />
+  <img id="Infinitum Framework" src="http://infinitumframework.com/images/logo.png" />
 </p>
 
 Overview
