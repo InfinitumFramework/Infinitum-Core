@@ -15,7 +15,7 @@
  
  <!DOCTYPE infinitum-configuration PUBLIC
 	"-//Infinitum/Infinitum Configuration DTD 1.0//EN"
-	"http://www.clarionmedia.com/infinitum/dtd/infinitum-configuration-1.0.dtd">
+	"http://infinitumframework.com/dtd/infinitum-configuration-1.0.dtd">
  
 -->
 
@@ -38,12 +38,12 @@
 
 <!ELEMENT bean (property*)>
 <!ATTLIST bean id CDATA #REQUIRED>
-<!ATTLIST bean src CDATA #REQUIRED>
+<!ATTLIST bean class CDATA #REQUIRED>
 <!ATTLIST bean scope CDATA #IMPLIED>
 
 <!ELEMENT aspect (property* , advice*)>
 <!ATTLIST aspect id CDATA #REQUIRED>
-<!ATTLIST aspect src CDATA #REQUIRED>
+<!ATTLIST aspect class CDATA #REQUIRED>
 <!ATTLIST aspect scope CDATA #IMPLIED>
 
 <!ELEMENT advice (#PCDATA)>
