@@ -33,3 +33,5 @@ lint.xml
 javadoc.xml
 javadoc.sh
 build.xml
+target/
+release.properties

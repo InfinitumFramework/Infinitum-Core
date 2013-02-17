@@ -122,12 +122,6 @@ public class InfinitumFragment extends Fragment implements EventPublisher {
 		mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_DESTROY_VIEW));
 		super.onDestroyView();
 	}
-	
-	@Override
-	public void onViewStateRestored(Bundle savedInstanceState) {
-		mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_VIEW_STATE_RESTORED));
-		super.onViewStateRestored(savedInstanceState);
-	}
 
 	/**
 	 * Returns the {@link InfinitumContext} for the {@code InfinitumActivity}.
