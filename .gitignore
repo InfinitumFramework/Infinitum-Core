@@ -19,7 +19,6 @@ gen/
 # Project #
 ###########
 local.properties
-.project
 .metadata
 *.tmp
 *.bak
