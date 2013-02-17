@@ -98,7 +98,8 @@ public class JavaClassReflector implements ClassReflector {
 
 	@Override
 	public List<Constructor<?>> getAllConstructors(Class<?> clazz) {
-		return Arrays.asList(clazz.getDeclaredConstructors());
+		Constructor<?>[] constructors = clazz.getDeclaredConstructors();
+		return Arrays.asList(constructors);
 	}
 
 	@Override
