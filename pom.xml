@@ -9,6 +9,11 @@
 	<description>Infinitum core framework module</description>
 	<url>http://infinitumframework.com</url>
 
+	<organization>
+		<name>Clarion Media</name>
+		<url>http://clarionmedia.com</url>
+	</organization>
+
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
 		<artifactId>oss-parent</artifactId>
