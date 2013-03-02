@@ -37,10 +37,7 @@
       <sourceFolder url="file://$MODULE_DIR$/target/generated-sources/r" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
-      <excludeFolder url="file://$MODULE_DIR$/target/apidocs" />
       <excludeFolder url="file://$MODULE_DIR$/target/classes" />
-      <excludeFolder url="file://$MODULE_DIR$/target/javadoc-bundle-options" />
-      <excludeFolder url="file://$MODULE_DIR$/target/maven-archiver" />
       <excludeFolder url="file://$MODULE_DIR$/target/maven-status" />
       <excludeFolder url="file://$MODULE_DIR$/target/surefire" />
       <excludeFolder url="file://$MODULE_DIR$/target/surefire-reports" />
@@ -64,6 +61,7 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.android:android:1.6_r2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.khronos:opengl-api:gl1.1-android-2.1_r1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: xerces:xmlParserAPIs:2.6.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: xpp3:xpp3:1.1.4c" level="project" />
     <orderEntry type="jdk" jdkName="Android 1.6 Platform" jdkType="Android SDK" />
   </component>
 </module>

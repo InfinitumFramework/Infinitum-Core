@@ -128,13 +128,6 @@
             <artifactId>android</artifactId>
             <version>${android.version}</version>
             <scope>provided</scope>
-            <exclusions>
-                <!-- Provided by Android -->
-                <exclusion>
-                    <artifactId>xpp3</artifactId>
-                    <groupId>xpp3</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.google.android</groupId>
