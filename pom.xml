@@ -4,7 +4,7 @@
 	<artifactId>infinitum-core</artifactId>
 	<packaging>jar</packaging>
 	<name>Infinitum Core</name>
-	<version>1.0.3</version>
+	<version>1.0.4-SNAPSHOT</version>
 	<description>Infinitum core framework module</description>
 	<url>http://infinitumframework.com</url>
 
