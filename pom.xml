@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.infinitumframework</groupId>
 	<artifactId>infinitum-core</artifactId>
-	<packaging>apklib</packaging>
+	<packaging>jar</packaging>
 	<name>Infinitum Core</name>
 	<version>1.0.3-SNAPSHOT</version>
 	<description>Infinitum core framework module</description>
@@ -66,20 +66,13 @@
 		<hamcrest.version>1.3</hamcrest.version>
 		<mockito.version>1.9.0</mockito.version>
 		<robolectric.version>1.2</robolectric.version>
+
+        <test.src.dir>${project.build.testSourceDirectory}</test.src.dir>
+        <package.dir>com/clarionmedia/infinitum</package.dir>
+        <package>com.clarionmedia.infinitum</package>
 	</properties>
 
 	<dependencies>
-		<dependency>
-			<groupId>com.google.android</groupId>
-			<artifactId>android</artifactId>
-			<version>${android.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.google.android</groupId>
-			<artifactId>support-v4</artifactId>
-			<version>${android.support.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>com.google.dexmaker</groupId>
 			<artifactId>dexmaker</artifactId>
@@ -114,6 +107,17 @@
 			<version>${robolectric.version}</version>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>com.google.android</groupId>
+            <artifactId>android</artifactId>
+            <version>${android.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.android</groupId>
+            <artifactId>support-v4</artifactId>
+            <version>${android.support.version}</version>
+        </dependency>
 	</dependencies>
 
 	<build>
@@ -128,11 +132,6 @@
 					</sdk>
 				</configuration>
 				<extensions>true</extensions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -179,43 +178,73 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>1.7</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>attach-artifact</goal>
-						</goals>
-						<configuration>
-							<artifacts>
-								<artifact>
-									<type>jar</type>
-									<file>${project.build.directory}/${project.build.finalName}.jar</file>
-								</artifact>
-							</artifacts>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-gpg-plugin</artifactId>
-				<version>1.4</version>
-				<executions>
-					<execution>
-						<id>sign-artifacts</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>sign</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>generate-r</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>generate-test-sources</phase>
+                        <configuration>
+                            <tasks>
+                                <echo file="${test.src.dir}/${package.dir}/R.java"
+                                      message="package ${package};${line.separator}" />
+                                <echo file="${test.src.dir}/${package.dir}/R.java"
+                                      append="true" message="public final class R {${line.separator}" />
+                                <echo file="${test.src.dir}/${package.dir}/R.java" append="true"
+                                      message="}${line.separator}" />
+                            </tasks>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>delete-r</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>prepare-package</phase>
+                        <configuration>
+                            <tasks>
+                                <delete file="${test.src.dir}/${package.dir}/R.java" />
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 		</plugins>
 
 	</build>
+
+    <profiles>
+        <profile>
+            <id>release-sign-artifacts</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.4</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
