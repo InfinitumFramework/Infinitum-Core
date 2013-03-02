@@ -82,6 +82,22 @@
 			<groupId>org.simpleframework</groupId>
 			<artifactId>simple-xml</artifactId>
 			<version>${simplexml.version}</version>
+            <exclusions>
+                <!-- Stax is not available on Android -->
+                <exclusion>
+                    <artifactId>stax</artifactId>
+                    <groupId>stax</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>stax-api</artifactId>
+                    <groupId>stax</groupId>
+                </exclusion>
+                <!-- Provided by Android -->
+                <exclusion>
+                    <artifactId>xpp3</artifactId>
+                    <groupId>xpp3</groupId>
+                </exclusion>
+            </exclusions>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -112,6 +128,13 @@
             <artifactId>android</artifactId>
             <version>${android.version}</version>
             <scope>provided</scope>
+            <exclusions>
+                <!-- Provided by Android -->
+                <exclusion>
+                    <artifactId>xpp3</artifactId>
+                    <groupId>xpp3</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.google.android</groupId>
