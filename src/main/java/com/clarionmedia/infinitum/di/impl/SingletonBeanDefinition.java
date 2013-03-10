@@ -16,6 +16,7 @@
 
 package com.clarionmedia.infinitum.di.impl;
 
+import com.clarionmedia.infinitum.context.ContextFactory;
 import com.clarionmedia.infinitum.context.InfinitumContext;
 import com.clarionmedia.infinitum.context.impl.InfinitumContextProxy;
 import com.clarionmedia.infinitum.di.AbstractBeanDefinition;
@@ -24,65 +25,62 @@ import com.clarionmedia.infinitum.di.BeanFactory;
 import com.clarionmedia.infinitum.reflection.ClassReflector;
 
 /**
- * <p>
- * Concrete implementation of {@link AbstractBeanDefinition} which describes
- * singleton beans.
- * </p>
- * 
+ * <p> Concrete implementation of {@link AbstractBeanDefinition} which describes singleton beans. </p>
+ *
  * @author Tyler Treat
- * @version 1.0 08/04/12
+ * @version 1.0.4 03/10/13
  * @since 1.0
  */
 public class SingletonBeanDefinition extends AbstractBeanDefinition {
 
-	private Object mBean;
-	private Object mProxiedBean;
+    private Object mBean;
+    private Object mProxiedBean;
 
-	/**
-	 * Constructs a new {@code SingletonBeanDefinition}.
-	 * 
-	 * @param beanFactory
-	 *            the {@link BeanFactory} containing this bean
-	 * @param classReflector
-	 *            the {@link ClassReflector} to use
-	 */
-	public SingletonBeanDefinition(BeanFactory beanFactory, ClassReflector classReflector) {
-		super(beanFactory, classReflector);
-	}
+    /**
+     * Constructs a new {@code SingletonBeanDefinition}.
+     *
+     * @param beanFactory    the {@link BeanFactory} containing this bean
+     * @param classReflector the {@link ClassReflector} to use
+     */
+    public SingletonBeanDefinition(BeanFactory beanFactory, ClassReflector classReflector) {
+        super(beanFactory, classReflector);
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public Object getBeanInstance() {
-		if (InfinitumContext.class.isAssignableFrom(mType))
-			return new InfinitumContextProxy((Class<? extends InfinitumContext>) mType).getProxy();
-		if (mProxiedBean != null)
-			return mProxiedBean;
-		if (mBeanProxy != null) {
-			mProxiedBean = mBeanProxy.getProxy();
-			inject(AbstractProxy.getTarget(mProxiedBean));
-			return mProxiedBean;
-		}
-		if (mBean != null)
-			return mBean;
-		mBean = createBean();
-		inject(mBean);
-		setFields(mBean);
-		postConstruct(mBean);
-		return mBean;
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public Object getBeanInstance() {
+        if (InfinitumContext.class.isAssignableFrom(mType))
+            return new InfinitumContextProxy((Class<? extends InfinitumContext>) mType,
+                    ContextFactory.newInstance()).getProxy();
+        if (mProxiedBean != null)
+            return mProxiedBean;
+        if (mBeanProxy != null) {
+            mProxiedBean = mBeanProxy.getProxy();
+            inject(AbstractProxy.getTarget(mProxiedBean));
+            return mProxiedBean;
+        }
+        if (mBean != null)
+            return mBean;
+        mBean = createBean();
+        inject(mBean);
+        setFields(mBean);
+        postConstruct(mBean);
+        return mBean;
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public Object getNonProxiedBeanInstance() {
-		if (InfinitumContext.class.isAssignableFrom(mType))
-			return new InfinitumContextProxy((Class<? extends InfinitumContext>) mType).getProxy();
-		if (mBean != null)
-			return mBean;
-		mBean = createBean();
-		inject(mBean);
-		setFields(mBean);
-		postConstruct(mBean);
-		return mBean;
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public Object getNonProxiedBeanInstance() {
+        if (InfinitumContext.class.isAssignableFrom(mType))
+            return new InfinitumContextProxy((Class<? extends InfinitumContext>) mType,
+                    ContextFactory.newInstance()).getProxy();
+        if (mBean != null)
+            return mBean;
+        mBean = createBean();
+        inject(mBean);
+        setFields(mBean);
+        postConstruct(mBean);
+        return mBean;
+    }
 
 }

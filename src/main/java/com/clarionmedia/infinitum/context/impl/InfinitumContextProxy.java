@@ -16,51 +16,50 @@
 
 package com.clarionmedia.infinitum.context.impl;
 
-import java.lang.reflect.Method;
-
 import com.clarionmedia.infinitum.context.ContextFactory;
 import com.clarionmedia.infinitum.context.InfinitumContext;
 import com.clarionmedia.infinitum.di.AbstractProxy;
 import com.clarionmedia.infinitum.di.JdkDynamicProxy;
 
+import java.lang.reflect.Method;
+
 /**
- * <p>
- * {@link JdkDynamicProxy} used to proxy {@link InfinitumContext} such that the
- * context is lazily loaded. This is used by the framework as a context
- * placeholder to avoid "Infinitum context not configured" issues during
- * framework initialization.
- * </p>
- * 
+ * <p> {@link JdkDynamicProxy} used to proxy {@link InfinitumContext} such that the context is lazily loaded. This is
+ * used by the framework as a context placeholder to avoid "Infinitum context not configured" issues during framework
+ * initialization. </p>
+ *
  * @author Tyler Treat
- * @version 1.0 12/28/12
+ * @version 1.0.4 03/10/13
  * @since 1.0
  */
 public class InfinitumContextProxy extends JdkDynamicProxy {
 
-	private InfinitumContext mProxiedContext;
-	private Class<? extends InfinitumContext> mContextType;
+    private InfinitumContext mProxiedContext;
+    private Class<? extends InfinitumContext> mContextType;
+    private ContextFactory mContextFactory;
 
-	/**
-	 * Creates a new {@code InfinitumContextProxy} instance.
-	 * 
-	 * @param contextType
-	 *            the {@link InfinitumContext} type to proxy
-	 */
-	public InfinitumContextProxy(Class<? extends InfinitumContext> contextType) {
-		super(null, new Class<?>[] { contextType });
-		mContextType = contextType;
-	}
+    /**
+     * Creates a new {@code InfinitumContextProxy} instance.
+     *
+     * @param contextType    the {@link InfinitumContext} type to proxy
+     * @param contextFactory the {@link ContextFactory} to use to load the {@code InfinitumContext}
+     */
+    public InfinitumContextProxy(Class<? extends InfinitumContext> contextType, ContextFactory contextFactory) {
+        super(null, new Class<?>[]{contextType});
+        mContextType = contextType;
+        mContextFactory = contextFactory;
+    }
 
-	@Override
-	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-		if (mProxiedContext == null)
-			mProxiedContext = ContextFactory.newInstance().getContext(mContextType);
-		return method.invoke(mProxiedContext, args);
-	}
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        if (mProxiedContext == null)
+            mProxiedContext = mContextFactory.getContext(mContextType);
+        return method.invoke(mProxiedContext, args);
+    }
 
-	@Override
-	public AbstractProxy clone() {
-		throw new UnsupportedOperationException("Clone is not supported for InfinitumContextProxy!");
-	}
+    @Override
+    public AbstractProxy clone() {
+        throw new UnsupportedOperationException("Clone is not supported for InfinitumContextProxy!");
+    }
 
 }
