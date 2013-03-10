@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2013 Clarion Media, LLC
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE infinitum-configuration PUBLIC
+    "-//Infinitum/Infinitum Configuration DTD 1.0//EN"
+    "http://clarionmedia.com/infinitum/dtd/infinitum-configuration-1.0.dtd">
+
+<infinitum-configuration>
+
+    <application>
+        <property name="debug">true</property>
+        <property name="mode">annotations</property>
+        <property name="recycleCache">true</property>
+        <property name="methodCaching">true</property>
+    </application>
+
+    <sqlite>
+        <property name="dbName">test</property>
+        <property name="dbVersion">1</property>
+        <property name="generateSchema">true</property>
+        <property name="autocommit">true</property>
+    </sqlite>
+
+    <rest>
+        <property name="messageType">json</property>
+        <property name="host">http://localhost/test</property>
+        <authentication strategy="token" header="true" enabled="true">
+            <property name="tokenName">token</property>
+            <property name="token">e489e8383c0ae2b7fe4dcf178330b4ac</property>
+        </authentication>
+    </rest>
+
+    <domain>
+        <model resource="com.clarionmedia.infinitum.Foo"/>
+        <model resource="com.clarionmedia.infinitum.Bar"/>
+    </domain>
+
+    <beans>
+        <component-scan base-package="com.clarionmedia.infinitum"/>
+        <bean id="baz" src="com.clarionmedia.infinitum.Baz"/>
+        <aspect id="qux" src="com.clarionmedia.infinitum.Qux"/>
+    </beans>
+
+</infinitum-configuration>
