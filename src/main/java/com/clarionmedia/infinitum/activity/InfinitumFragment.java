@@ -28,133 +28,135 @@ import com.clarionmedia.infinitum.context.InfinitumContext;
 import com.clarionmedia.infinitum.context.exception.InfinitumConfigurationException;
 import com.clarionmedia.infinitum.di.ActivityInjector;
 import com.clarionmedia.infinitum.di.impl.ObjectInjector;
+import com.clarionmedia.infinitum.event.AbstractEvent;
 import com.clarionmedia.infinitum.event.EventPublisher;
+import com.clarionmedia.infinitum.event.EventSubscriber;
 import com.clarionmedia.infinitum.event.impl.LifecycleEvent;
 import com.clarionmedia.infinitum.event.impl.LifecycleEvent.LifecycleHook;
 import com.clarionmedia.infinitum.reflection.impl.JavaClassReflector;
 
 /**
- * <p>
- * This {@link Fragment} extension takes care of framework initialization,
- * provides support for resource injection and event binding, and exposes an
- * {@link InfinitumContext}.
- * </p>
- * 
+ * <p> This {@link Fragment} extension takes care of framework initialization, provides support for resource injection
+ * and event binding, and exposes an {@link InfinitumContext}. </p>
+ *
  * @author Tyler Treat
- * @version 1.0 12/18/12
- * @since 1.0
+ * @version 1.0.4 03/14/13
  * @see InfinitumListFragment
+ * @since 1.0
  */
-public class InfinitumFragment extends Fragment implements EventPublisher {
+public class InfinitumFragment extends Fragment implements EventPublisher, EventSubscriber {
 
-	private InfinitumContext mInfinitumContext;
-	private int mInfinitumConfigId;
-	private ContextFactory mContextFactory;
+    private InfinitumContext mInfinitumContext;
+    private int mInfinitumConfigId;
+    private ContextFactory mContextFactory;
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		mContextFactory = ContextFactory.newInstance();
-		mInfinitumContext = mInfinitumConfigId == 0 ?
-				mContextFactory.configure(getActivity()) :
-				mContextFactory.configure(getActivity(), mInfinitumConfigId);
-		final ActivityInjector injector = new ObjectInjector(mInfinitumContext, new JavaClassReflector(), this);
-		injector.inject();
-		mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_CREATE));
-		super.onCreate(savedInstanceState);
-	}
-	
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_ACTIVITY_CREATED));
-		super.onActivityCreated(savedInstanceState);
-	}
-	
-	@Override
-	public void onAttach(Activity activity) {
-		mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_ATTACH));
-		super.onAttach(activity);
-	}
-	
-	@Override
-	public void onDetach() {
-		mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_DETACH));
-		super.onDetach();
-	}
-	
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_CREATE_VIEW));
-		return super.onCreateView(inflater, container, savedInstanceState);
-	}
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        mContextFactory = ContextFactory.getInstance();
+        mInfinitumContext = mInfinitumConfigId == 0 ?
+                mContextFactory.configure(getActivity()) :
+                mContextFactory.configure(getActivity(), mInfinitumConfigId);
+        final ActivityInjector injector = new ObjectInjector(mInfinitumContext, new JavaClassReflector(), this);
+        injector.inject();
+        mInfinitumContext.subscribeForEvents(this);
+        mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_CREATE));
+        super.onCreate(savedInstanceState);
+    }
 
-	@Override
-	public void onResume() {
-		mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_RESUME));
-		super.onResume();
-	}
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_ACTIVITY_CREATED));
+        super.onActivityCreated(savedInstanceState);
+    }
 
-	@Override
-	public void onPause() {
-		mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_PAUSE));
-		super.onPause();
-	}
-	
-	@Override
-	public void onStart() {
-		mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_START));
-		super.onStart();
-	}
+    @Override
+    public void onAttach(Activity activity) {
+        mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_ATTACH));
+        super.onAttach(activity);
+    }
 
-	@Override
-	public void onStop() {
-		mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_STOP));
-		super.onStop();
-	}
+    @Override
+    public void onDetach() {
+        mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_DETACH));
+        super.onDetach();
+    }
 
-	@Override
-	public void onDestroy() {
-		mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_DESTROY));
-		super.onDestroy();
-	}
-	
-	@Override
-	public void onDestroyView() {
-		mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_DESTROY_VIEW));
-		super.onDestroyView();
-	}
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_CREATE_VIEW));
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
 
-	/**
-	 * Returns the {@link InfinitumContext} for the {@code InfinitumActivity}.
-	 * 
-	 * @return {@code InfinitumContext}
-	 */
-	protected InfinitumContext getInfinitumContext() {
-		return mInfinitumContext;
-	}
-	
-	/**
-	 * Returns the {@link InfinitumContext} of the specified type if available.
-	 * This is a convenience method which is equivalent to
-	 * {@code getInfinitumContext().getChildContext(contextType)}.
-	 * 
-	 * @param contextType
-	 *            the {@code InfinitumContext} type to retrieve
-	 * @return {@code InfinitumContext}
-	 * @throws InfinitumConfigurationException
-	 *             if the desired type is not available
-	 */
-	protected <T extends InfinitumContext> T getInfinitumContext(Class<T> contextType) {
-		return mInfinitumContext.getChildContext(contextType);
-	}
+    @Override
+    public void onResume() {
+        mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_RESUME));
+        super.onResume();
+    }
 
-	/**
-	 * Sets the resource ID of the Infinitum XML config to use.
-	 * 
-	 * @param configId
-	 *            Infinitum config ID
-	 */
-	protected void setInfinitumConfigId(int configId) {
-		mInfinitumConfigId = configId;
-	}
+    @Override
+    public void onPause() {
+        mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_PAUSE));
+        super.onPause();
+    }
+
+    @Override
+    public void onStart() {
+        mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_START));
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_STOP));
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_DESTROY));
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDestroyView() {
+        mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_DESTROY_VIEW));
+        super.onDestroyView();
+    }
+
+    /**
+     * Returns the {@link InfinitumContext} for the {@code InfinitumActivity}.
+     *
+     * @return {@code InfinitumContext}
+     */
+    protected InfinitumContext getInfinitumContext() {
+        return mInfinitumContext;
+    }
+
+    /**
+     * Returns the {@link InfinitumContext} of the specified type if available. This is a convenience method which is
+     * equivalent to {@code getInfinitumContext().getChildContext(contextType)}.
+     *
+     * @param contextType the {@code InfinitumContext} type to retrieve
+     * @return {@code InfinitumContext}
+     * @throws InfinitumConfigurationException
+     *          if the desired type is not available
+     */
+    protected <T extends InfinitumContext> T getInfinitumContext(Class<T> contextType) {
+        return mInfinitumContext.getChildContext(contextType);
+    }
+
+    /**
+     * Sets the resource ID of the Infinitum XML config to use.
+     *
+     * @param configId Infinitum config ID
+     */
+    protected void setInfinitumConfigId(int configId) {
+        mInfinitumConfigId = configId;
+    }
+
+    @Override
+    public void onEventPublished(AbstractEvent event) {
+
+    }
 
 }
