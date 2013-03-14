@@ -34,11 +34,10 @@ import java.lang.annotation.*;
 public @interface EventPayload {
 
     /**
-     * Declares the name of the payload value. Defaults to the parameter name
-     * is not specified.
+     * Declares the name of the payload value.
      *
      * @return payload value name
      */
-    String value() default "";
+    String value();
 
 }
