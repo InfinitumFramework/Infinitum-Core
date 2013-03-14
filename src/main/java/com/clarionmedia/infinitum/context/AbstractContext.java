@@ -126,6 +126,7 @@ public abstract class AbstractContext implements InfinitumContext, BeanProvider 
         xmlBeanPostProcessors.add(AutowiredBeanPostProcessor.class);
         Set<Class<BeanFactoryPostProcessor>> xmlBeanFactoryPostProcessors = new HashSet<Class<BeanFactoryPostProcessor>>();
         Set<Class<BeanProvider>> xmlBeanProviders = new HashSet<Class<BeanProvider>>();
+        Set<Class<EventSubscriber>> xmlEventSubscribers = new HashSet<Class<EventSubscriber>>();
         for (XmlBean bean : beans) {
             Class<?> clazz = mClassReflector.getClass(bean.getClassName());
             mXmlComponents.add(bean);
@@ -135,6 +136,8 @@ public abstract class AbstractContext implements InfinitumContext, BeanProvider 
                 xmlBeanFactoryPostProcessors.add((Class<BeanFactoryPostProcessor>) clazz);
             if (BeanProvider.class.isAssignableFrom(clazz))
                 xmlBeanProviders.add((Class<BeanProvider>) clazz);
+            if (EventSubscriber.class.isAssignableFrom(clazz))
+                xmlEventSubscribers.add((Class<EventSubscriber>) clazz);
         }
 
         // Scan for annotated components
@@ -143,11 +146,15 @@ public abstract class AbstractContext implements InfinitumContext, BeanProvider 
 
         // Categorize the components while filtering down the original Set
         final Set<Class<? extends BeanPostProcessor>> beanPostProcessors = getAndRemoveSpecificComponents(BeanPostProcessor.class, mScannedComponents);
-        beanPostProcessors.addAll(xmlBeanPostProcessors);
         final Set<Class<? extends BeanFactoryPostProcessor>> beanFactoryPostProcessors = getAndRemoveSpecificComponents(BeanFactoryPostProcessor.class, mScannedComponents);
-        beanFactoryPostProcessors.addAll(xmlBeanFactoryPostProcessors);
         final Set<Class<? extends BeanProvider>> beanProviders = getAndRemoveSpecificComponents(BeanProvider.class, mScannedComponents);
+        final Set<Class<? extends EventSubscriber>> eventSubscribers = getAndRemoveSpecificComponents(EventSubscriber.class, mScannedComponents);
+
+        // Join the XML components with the scanned ones
+        beanPostProcessors.addAll(xmlBeanPostProcessors);
+        beanFactoryPostProcessors.addAll(xmlBeanFactoryPostProcessors);
         beanProviders.addAll(xmlBeanProviders);
+        eventSubscribers.addAll(xmlEventSubscribers);
 
         // Register scanned bean candidates
         BeanDefinitionBuilder beanDefinitionBuilder = new GenericBeanDefinitionBuilder(mBeanFactory);
@@ -171,6 +178,12 @@ public abstract class AbstractContext implements InfinitumContext, BeanProvider 
         // Execute post processors
         executeBeanPostProcessors(beanPostProcessors);
         executeBeanFactoryPostProcessors(beanFactoryPostProcessors);
+
+        // Register EventSubscribers
+        for (Class<? extends EventSubscriber> subscriberType : eventSubscribers) {
+            EventSubscriber subscriber = (EventSubscriber) mBeanFactory.findCandidateBean(subscriberType);
+            subscribeForEvents(subscriber);
+        }
 
         // Post process child contexts
         for (InfinitumContext childContext : getChildContexts())
