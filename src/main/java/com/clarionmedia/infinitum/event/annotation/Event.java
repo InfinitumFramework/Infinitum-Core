@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2012 Clarion Media, LLC
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -28,19 +28,19 @@ import java.lang.reflect.Method;
  * Indicates that the annotated {@link Method} should be published as a
  * framework event when invoked.
  * </p>
- * 
+ *
  * @author Tyler Treat
- * @version 1.0 01/14/13
+ * @version 1.0.4 03/13/13
  * @since 1.0
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface InfinitumEvent {
+public @interface Event {
 
 	/**
 	 * Declares the name of the event.
-	 * 
+	 *
 	 * @return event name
 	 */
 	String value() default "";
