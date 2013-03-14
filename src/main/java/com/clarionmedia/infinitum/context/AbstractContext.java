@@ -129,14 +129,14 @@ public abstract class AbstractContext implements InfinitumContext, BeanProvider 
             mScannedComponents.addAll(getClasspathComponents());
 
         // Categorize the components while filtering down the original Set
-        final Set<Class<? extends BeanPostProcessor>> beanPostProcessors = getAndRemoveSpecificComponents
-                (BeanPostProcessor.class, mScannedComponents);
+        final Set<Class<? extends BeanPostProcessor>> beanPostProcessors = getSpecificComponents
+                (BeanPostProcessor.class, mScannedComponents, true);
         final Set<Class<? extends BeanFactoryPostProcessor>> beanFactoryPostProcessors =
-                getAndRemoveSpecificComponents(BeanFactoryPostProcessor.class, mScannedComponents);
-        final Set<Class<? extends BeanProvider>> beanProviders = getAndRemoveSpecificComponents(BeanProvider.class,
-                mScannedComponents);
-        final Set<Class<? extends EventSubscriber>> eventSubscribers = getAndRemoveSpecificComponents(EventSubscriber
-                .class, mScannedComponents);
+                getSpecificComponents(BeanFactoryPostProcessor.class, mScannedComponents, true);
+        final Set<Class<? extends BeanProvider>> beanProviders = getSpecificComponents(BeanProvider.class,
+                mScannedComponents, true);
+        final Set<Class<? extends EventSubscriber>> eventSubscribers = getSpecificComponents(EventSubscriber
+                .class, mScannedComponents, false);
 
         // Join the XML components with the scanned ones
         beanPostProcessors.addAll(xmlBeanPostProcessors);
@@ -251,6 +251,8 @@ public abstract class AbstractContext implements InfinitumContext, BeanProvider 
 
     @Override
     public void subscribeForEvents(EventSubscriber subscriber) {
+        if (subscriber == null)
+            return;
         mEventSubscribers.add(subscriber);
     }
 
@@ -315,14 +317,16 @@ public abstract class AbstractContext implements InfinitumContext, BeanProvider 
     }
 
     @SuppressWarnings("unchecked")
-    private <T> Set<Class<? extends T>> getAndRemoveSpecificComponents(Class<T> type, Collection<Class<?>> components) {
+    private <T> Set<Class<? extends T>> getSpecificComponents(Class<T> type, Collection<Class<?>> components,
+                                                              boolean remove) {
         Set<Class<? extends T>> specificComponents = new HashSet<Class<? extends T>>();
         Iterator<Class<?>> iter = components.iterator();
         while (iter.hasNext()) {
             Class<?> component = iter.next();
             if (type.isAssignableFrom(component)) {
                 specificComponents.add((Class<T>) component);
-                iter.remove();
+                if (remove)
+                    iter.remove();
             }
         }
         return specificComponents;
