@@ -51,7 +51,7 @@ public class SingletonBeanDefinition extends AbstractBeanDefinition {
     public Object getBeanInstance() {
         if (InfinitumContext.class.isAssignableFrom(mType))
             return new InfinitumContextProxy((Class<? extends InfinitumContext>) mType,
-                    ContextFactory.newInstance()).getProxy();
+                    ContextFactory.getInstance()).getProxy();
         if (mProxiedBean != null)
             return mProxiedBean;
         if (mBeanProxy != null) {
@@ -73,7 +73,7 @@ public class SingletonBeanDefinition extends AbstractBeanDefinition {
     public Object getNonProxiedBeanInstance() {
         if (InfinitumContext.class.isAssignableFrom(mType))
             return new InfinitumContextProxy((Class<? extends InfinitumContext>) mType,
-                    ContextFactory.newInstance()).getProxy();
+                    ContextFactory.getInstance()).getProxy();
         if (mBean != null)
             return mBean;
         mBean = createBean();

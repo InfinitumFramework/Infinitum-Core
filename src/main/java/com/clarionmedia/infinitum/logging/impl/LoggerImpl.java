@@ -42,7 +42,7 @@ public class LoggerImpl extends Logger {
 	 */
 	public LoggerImpl(String tag) {
 		mTag = tag;
-		mContextFactory = ContextFactory.newInstance();
+		mContextFactory = ContextFactory.getInstance();
 	}
 
 	@Override

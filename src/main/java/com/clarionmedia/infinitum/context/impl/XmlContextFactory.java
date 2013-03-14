@@ -37,7 +37,7 @@ import java.util.Scanner;
  * infinitum.cfg.xml} file must be created and {@link ContextFactory#configure(Context, int)} must be called before
  * accessing the {@code InfinitumContext} or an {@link InfinitumConfigurationException} will be thrown. {@link
  * XmlContextFactory} singletons should be acquired by calling the static method {@link
- * com.clarionmedia.infinitum.context.impl.XmlContextFactory#newInstance()}. </p> <p> {@code XmlContextFactory} uses the
+ * com.clarionmedia.infinitum.context.impl.XmlContextFactory#getInstance()}. </p> <p> {@code XmlContextFactory} uses the
  * Simple XML framework to read {@code infinitum.cfg.xml} and create the {@code InfinitumContext}. </p>
  *
  * @author Tyler Treat
@@ -69,9 +69,9 @@ public class XmlContextFactory extends ContextFactory {
     public InfinitumContext configure(Context context) throws InfinitumConfigurationException {
         if (mInfinitumContext != null)
             return mInfinitumContext;
-        mContext = context.getApplicationContext();
-        Resources res = mContext.getResources();
-        int id = res.getIdentifier("infinitum", "raw", mContext.getPackageName());
+        sContext = context.getApplicationContext();
+        Resources res = sContext.getResources();
+        int id = res.getIdentifier("infinitum", "raw", sContext.getPackageName());
         if (id == 0)
             throw new InfinitumConfigurationException("Configuration infinitum.cfg.xml could not be found.");
         mInfinitumContext = configureFromXml(id);
@@ -82,7 +82,7 @@ public class XmlContextFactory extends ContextFactory {
     public InfinitumContext configure(Context context, int configId) throws InfinitumConfigurationException {
         if (mInfinitumContext != null)
             return mInfinitumContext;
-        mContext = context.getApplicationContext();
+        sContext = context.getApplicationContext();
         mInfinitumContext = configureFromXml(configId);
         return mInfinitumContext;
     }
@@ -111,7 +111,7 @@ public class XmlContextFactory extends ContextFactory {
 
     private XmlApplicationContext configureFromXml(int configId) {
         long start = Calendar.getInstance().getTimeInMillis();
-        Resources resources = mContext.getResources();
+        Resources resources = sContext.getResources();
         try {
             InputStream stream = resources.openRawResource(configId);
             String xml = new Scanner(stream).useDelimiter("\\A").next();
@@ -119,7 +119,7 @@ public class XmlContextFactory extends ContextFactory {
             if (ret == null)
                 throw new InfinitumConfigurationException("Unable to initialize Infinitum configuration.");
             addChildContexts(ret);
-            ret.postProcess(mContext);
+            ret.postProcess(sContext);
             return ret;
         } catch (Exception e) {
             throw new InfinitumConfigurationException("Unable to initialize Infinitum configuration.", e);
