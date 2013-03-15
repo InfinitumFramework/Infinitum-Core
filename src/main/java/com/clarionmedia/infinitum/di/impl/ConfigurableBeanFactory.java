@@ -16,17 +16,18 @@
 
 package com.clarionmedia.infinitum.di.impl;
 
+import com.clarionmedia.infinitum.context.InfinitumContext;
+import com.clarionmedia.infinitum.context.exception.InfinitumConfigurationException;
+import com.clarionmedia.infinitum.di.AbstractBeanDefinition;
+import com.clarionmedia.infinitum.di.AbstractProxy;
+import com.clarionmedia.infinitum.di.BeanFactory;
+import com.clarionmedia.infinitum.di.XmlBean;
+import com.clarionmedia.infinitum.reflection.ClassReflector;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import com.clarionmedia.infinitum.context.InfinitumContext;
-import com.clarionmedia.infinitum.context.exception.InfinitumConfigurationException;
-import com.clarionmedia.infinitum.di.AbstractBeanDefinition;
-import com.clarionmedia.infinitum.di.BeanFactory;
-import com.clarionmedia.infinitum.di.XmlBean;
-import com.clarionmedia.infinitum.reflection.ClassReflector;
 
 /**
  * <p>
@@ -69,8 +70,8 @@ public class ConfigurableBeanFactory implements BeanFactory {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T loadBean(String name, Class<T> clazz) throws InfinitumConfigurationException {
-		Object bean = loadBean(name);
-		if (!clazz.isInstance(bean))
+		Object bean = AbstractProxy.getTarget(loadBean(name));
+        if (!clazz.isInstance(bean))
 			throw new InfinitumConfigurationException("Bean '" + name + "' was not of type '" + clazz.getName() + "'.");
 		return (T) bean;
 	}
