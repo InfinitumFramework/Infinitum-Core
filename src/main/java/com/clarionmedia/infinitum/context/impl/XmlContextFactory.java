@@ -36,9 +36,9 @@ import java.util.Scanner;
  * <p> Provides access to an {@link InfinitumContext} singleton. In order for this class to function properly, an {@code
  * infinitum.cfg.xml} file must be created and {@link ContextFactory#configure(Context, int)} must be called before
  * accessing the {@code InfinitumContext} or an {@link InfinitumConfigurationException} will be thrown. {@link
- * XmlContextFactory} singletons should be acquired by calling the static method {@link
- * com.clarionmedia.infinitum.context.impl.XmlContextFactory#getInstance()}. </p> <p> {@code XmlContextFactory} uses the
- * Simple XML framework to read {@code infinitum.cfg.xml} and create the {@code InfinitumContext}. </p>
+ * XmlContextFactory} singletons should be acquired by calling the static method {@link ContextFactory#getInstance()} .
+ * </p> <p> {@code XmlContextFactory} uses the Simple XML framework to read {@code infinitum.cfg.xml} and create the
+ * {@code InfinitumContext}. </p>
  *
  * @author Tyler Treat
  * @version 1.0.4 03/10/13
@@ -46,8 +46,9 @@ import java.util.Scanner;
  */
 public class XmlContextFactory extends ContextFactory {
 
+    private static XmlApplicationContext sInfinitumContext;
+
     private Serializer mSerializer;
-    private XmlApplicationContext mInfinitumContext;
 
     /**
      * Constructs a new {@code XmlContextFactory}.
@@ -67,46 +68,53 @@ public class XmlContextFactory extends ContextFactory {
 
     @Override
     public InfinitumContext configure(Context context) throws InfinitumConfigurationException {
-        if (mInfinitumContext != null)
-            return mInfinitumContext;
+        if (sInfinitumContext != null)
+            return sInfinitumContext;
         sContext = context.getApplicationContext();
         Resources res = sContext.getResources();
         int id = res.getIdentifier("infinitum", "raw", sContext.getPackageName());
         if (id == 0)
             throw new InfinitumConfigurationException("Configuration infinitum.cfg.xml could not be found.");
-        mInfinitumContext = configureFromXml(id);
-        return mInfinitumContext;
+        sInfinitumContext = configureFromXml(id);
+        return sInfinitumContext;
     }
 
     @Override
     public InfinitumContext configure(Context context, int configId) throws InfinitumConfigurationException {
-        if (mInfinitumContext != null)
-            return mInfinitumContext;
+        if (sInfinitumContext != null)
+            return sInfinitumContext;
         sContext = context.getApplicationContext();
-        mInfinitumContext = configureFromXml(configId);
-        return mInfinitumContext;
+        sInfinitumContext = configureFromXml(configId);
+        return sInfinitumContext;
     }
 
     @Override
     public InfinitumContext getContext() throws InfinitumConfigurationException {
-        if (mInfinitumContext == null)
+        if (sInfinitumContext == null)
             throw new InfinitumConfigurationException("Infinitum context not configured!");
-        return mInfinitumContext;
+        return sInfinitumContext;
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T extends InfinitumContext> T getContext(Class<T> contextType) throws InfinitumConfigurationException {
-        if (mInfinitumContext == null)
+        if (sInfinitumContext == null)
             throw new InfinitumConfigurationException("Infinitum context not configured!");
         if (contextType == XmlApplicationContext.class)
-            return (T) mInfinitumContext;
-        for (InfinitumContext context : mInfinitumContext.getChildContexts()) {
+            return (T) sInfinitumContext;
+        for (InfinitumContext context : sInfinitumContext.getChildContexts()) {
             if (contextType.isAssignableFrom(context.getClass()))
                 return (T) context;
         }
         throw new InfinitumConfigurationException("Configuration of type '" + contextType.getClass().getName() + "' " +
                 "could not be found.");
+    }
+
+    /**
+     * Clears any configured {@link InfinitumContext}.
+     */
+    public void clearConfiguration() {
+        sInfinitumContext = null;
     }
 
     private XmlApplicationContext configureFromXml(int configId) {

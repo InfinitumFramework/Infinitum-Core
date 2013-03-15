@@ -77,6 +77,7 @@ public class XmlContextFactoryTest {
 
     @After
     public void tearDown() {
+        contextFactory.clearConfiguration();
         try {
             inputStream.close();
         } catch (IOException e) {
