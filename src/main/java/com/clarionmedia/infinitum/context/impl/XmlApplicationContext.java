@@ -16,27 +16,18 @@
 
 package com.clarionmedia.infinitum.context.impl;
 
-import static java.lang.Boolean.parseBoolean;
-import static java.util.Arrays.asList;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
-import org.simpleframework.xml.ElementList;
-import org.simpleframework.xml.ElementMap;
-import org.simpleframework.xml.Root;
-
 import com.clarionmedia.infinitum.context.AbstractContext;
 import com.clarionmedia.infinitum.context.InfinitumContext;
 import com.clarionmedia.infinitum.di.AbstractBeanDefinition;
 import com.clarionmedia.infinitum.di.XmlBean;
 import com.clarionmedia.infinitum.di.impl.ConfigurableBeanFactory;
 import com.clarionmedia.infinitum.reflection.impl.JavaClassReflector;
+import org.simpleframework.xml.*;
+
+import java.util.*;
+
+import static java.lang.Boolean.parseBoolean;
+import static java.util.Arrays.asList;
 
 /**
  * <p>
@@ -58,7 +49,7 @@ public class XmlApplicationContext extends AbstractContext {
 	@ElementMap(name = "sqlite", entry = "property", key = "name", attribute = true, required = false)
 	protected Map<String, String> mSqliteConfig;
 
-	@ElementList(name = "domain")
+	@ElementList(name = "domain", required = false)
 	protected List<Model> mModels;
 
 	@Element(name = "rest", required = false, type = XmlRestfulContext.class)
