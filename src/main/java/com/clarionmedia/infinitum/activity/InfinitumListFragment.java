@@ -48,17 +48,22 @@ public class InfinitumListFragment extends ListFragment implements EventPublishe
 
     private InfinitumContext mInfinitumContext;
     private int mInfinitumConfigId;
-    private ContextFactory mContextFactory;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        mContextFactory = ContextFactory.getInstance();
+    public void onAttach(Activity activity) {
+        ContextFactory contextFactory = ContextFactory.getInstance();
         mInfinitumContext = mInfinitumConfigId == 0 ?
-                mContextFactory.configure(getActivity()) :
-                mContextFactory.configure(getActivity(), mInfinitumConfigId);
+                contextFactory.configure(getActivity()) :
+                contextFactory.configure(getActivity(), mInfinitumConfigId);
         final ActivityInjector injector = new ObjectInjector(mInfinitumContext, new JavaClassReflector(), this);
         injector.inject();
         mInfinitumContext.subscribeForEvents(this);
+        mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_ATTACH));
+        super.onAttach(activity);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
         mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_CREATE));
         super.onCreate(savedInstanceState);
     }
@@ -67,12 +72,6 @@ public class InfinitumListFragment extends ListFragment implements EventPublishe
     public void onActivityCreated(Bundle savedInstanceState) {
         mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_ACTIVITY_CREATED));
         super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        mInfinitumContext.publishEvent(new LifecycleEvent(this, LifecycleHook.ON_ATTACH));
-        super.onAttach(activity);
     }
 
     @Override
