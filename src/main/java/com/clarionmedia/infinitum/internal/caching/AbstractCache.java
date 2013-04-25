@@ -1,5 +1,11 @@
 package com.clarionmedia.infinitum.internal.caching;
 
+import android.content.Context;
+import android.os.Environment;
+import android.util.Log;
+import com.clarionmedia.infinitum.logging.Logger;
+import com.clarionmedia.infinitum.logging.impl.SmartLogger;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -8,12 +14,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
-import android.content.Context;
-import android.os.Environment;
-import android.util.Log;
-
-import com.clarionmedia.infinitum.logging.Logger;
 
 /**
  * <p>
@@ -91,7 +91,7 @@ public abstract class AbstractCache<K, V> implements Map<K, V> {
 		mDefaultExpirationTimeout = defaultExpiration;
 		mCache = new ExpirableCache<K, V>(mDefaultExpirationTimeout);
 		mDiskTimeoutCache = new ConcurrentHashMap<String, Long>();
-		mLogger = Logger.getInstance(getClass().getSimpleName());
+		mLogger = new SmartLogger(getClass().getSimpleName());
 	}
 
 	/**
