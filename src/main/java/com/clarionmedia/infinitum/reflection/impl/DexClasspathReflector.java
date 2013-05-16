@@ -16,18 +16,17 @@
 
 package com.clarionmedia.infinitum.reflection.impl;
 
+import android.content.Context;
+import com.clarionmedia.infinitum.logging.Logger;
+import com.clarionmedia.infinitum.logging.impl.SmartLogger;
+import com.clarionmedia.infinitum.reflection.ClasspathReflector;
+import dalvik.system.DexFile;
+
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
-
-import android.content.Context;
-
-import com.clarionmedia.infinitum.logging.Logger;
-import com.clarionmedia.infinitum.reflection.ClasspathReflector;
-
-import dalvik.system.DexFile;
 
 /**
  * <p>
@@ -47,7 +46,7 @@ public class DexClasspathReflector implements ClasspathReflector {
 	 * Creates a new {@code DexClasspathReflector} instance.
 	 */
 	public DexClasspathReflector() {
-		mLogger = Logger.getInstance(getClass().getSimpleName());
+        mLogger = new SmartLogger(getClass().getSimpleName());
 	}
 
 	@Override
