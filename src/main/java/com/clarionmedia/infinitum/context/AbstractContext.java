@@ -29,6 +29,7 @@ import com.clarionmedia.infinitum.event.AbstractEvent;
 import com.clarionmedia.infinitum.event.EventSubscriber;
 import com.clarionmedia.infinitum.exception.InfinitumRuntimeException;
 import com.clarionmedia.infinitum.internal.StringUtil;
+import com.clarionmedia.infinitum.logging.impl.SmartLogger;
 import com.clarionmedia.infinitum.reflection.ClassReflector;
 import com.clarionmedia.infinitum.reflection.ClasspathReflector;
 import com.clarionmedia.infinitum.reflection.impl.DexClasspathReflector;
@@ -238,6 +239,8 @@ public abstract class AbstractContext implements InfinitumContext, BeanProvider 
                 (JavaClassReflector.class).build());
         beans.add(beanDefinitionBuilder.setName("_" + DexClasspathReflector.class.getSimpleName()).setType
                 (DexClasspathReflector.class)
+                .build());
+        beans.add(beanDefinitionBuilder.setName("_" + SmartLogger.class.getSimpleName()).setType(SmartLogger.class)
                 .build());
         return beans;
     }
