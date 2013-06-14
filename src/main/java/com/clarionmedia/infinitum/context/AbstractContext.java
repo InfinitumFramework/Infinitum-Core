@@ -36,6 +36,7 @@ import com.clarionmedia.infinitum.reflection.impl.DexClasspathReflector;
 import com.clarionmedia.infinitum.reflection.impl.JavaClassReflector;
 
 import java.lang.annotation.Annotation;
+import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -43,7 +44,7 @@ import java.util.Map.Entry;
  * <p> Abstract implementation of {@link InfinitumContext} representing a root "parent" context. </p>
  *
  * @author Tyler Treat
- * @version 1.1.0 05/16/13
+ * @version 1.1.0 06/14/13
  * @since 1.0
  */
 public abstract class AbstractContext implements InfinitumContext, BeanProvider {
@@ -56,7 +57,7 @@ public abstract class AbstractContext implements InfinitumContext, BeanProvider 
     protected InfinitumContext mParentContext;
     protected Set<Class<?>> mScannedComponents;
     protected Set<XmlBean> mXmlComponents;
-    protected List<EventSubscriber> mEventSubscribers;
+    protected List<WeakReference<EventSubscriber>> mEventSubscribers;
 
     /**
      * Returns a {@link List} of {@link XmlBean} instances that were registered with the context through the Infinitum
@@ -89,7 +90,7 @@ public abstract class AbstractContext implements InfinitumContext, BeanProvider 
         mXmlComponents = new HashSet<XmlBean>();
         mClasspathReflector = new DexClasspathReflector();
         mClassReflector = new JavaClassReflector();
-        mEventSubscribers = new ArrayList<EventSubscriber>();
+        mEventSubscribers = new ArrayList<WeakReference<EventSubscriber>>();
     }
 
     @Override
@@ -247,16 +248,20 @@ public abstract class AbstractContext implements InfinitumContext, BeanProvider 
 
     @Override
     public void publishEvent(AbstractEvent event) {
-        for (EventSubscriber subscriber : mEventSubscribers) {
-            subscriber.onEventPublished(event);
+        for (WeakReference<EventSubscriber> subscriberRef : mEventSubscribers) {
+            EventSubscriber subscriber = subscriberRef.get();
+            if (subscriber != null) {
+                subscriber.onEventPublished(event);
+            }
         }
     }
 
     @Override
     public void subscribeForEvents(EventSubscriber subscriber) {
-        if (subscriber == null)
+        if (subscriber == null) {
             return;
-        mEventSubscribers.add(subscriber);
+        }
+        mEventSubscribers.add(new WeakReference<EventSubscriber>(subscriber));
     }
 
     public Set<Class<?>> getScannedComponents() {
