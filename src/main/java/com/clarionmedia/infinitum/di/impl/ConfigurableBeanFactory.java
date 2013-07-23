@@ -19,6 +19,7 @@ package com.clarionmedia.infinitum.di.impl;
 import com.clarionmedia.infinitum.context.InfinitumContext;
 import com.clarionmedia.infinitum.context.exception.InfinitumConfigurationException;
 import com.clarionmedia.infinitum.di.AbstractBeanDefinition;
+import com.clarionmedia.infinitum.di.AbstractProxy;
 import com.clarionmedia.infinitum.di.BeanFactory;
 import com.clarionmedia.infinitum.di.XmlBean;
 import com.clarionmedia.infinitum.reflection.ClassReflector;
@@ -66,7 +67,7 @@ public class ConfigurableBeanFactory implements BeanFactory {
     @Override
     public <T> T loadBean(String name, Class<T> clazz) throws InfinitumConfigurationException {
         Object bean = loadBean(name);
-        if (!clazz.isInstance(bean))
+        if (!clazz.isAssignableFrom(AbstractProxy.getTarget(bean).getClass()))
             throw new InfinitumConfigurationException("Bean '" + name + "' was not of type '" + clazz.getName() + "'.");
         return (T) bean;
     }
