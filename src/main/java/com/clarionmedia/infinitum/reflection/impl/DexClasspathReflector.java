@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Clarion Media, LLC
+ * Copyright (C) 2013 Clarion Media, LLC
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,56 +29,55 @@ import java.util.Locale;
 import java.util.Set;
 
 /**
- * <p>
- * Implementation of {@link ClasspathReflector} which relies on Dalvik's
- * {@code classes.dex} exposed through {@link DexFile}.
- * </p>
- * 
+ * <p> Implementation of {@link ClasspathReflector} which relies on Dalvik's {@code classes.dex} exposed through {@link
+ * DexFile}. </p>
+ *
  * @author Tyler Treat
- * @version 1.0 02/14/12
+ * @version 1.1.1 07/29/13
  * @since 1.0
  */
 public class DexClasspathReflector implements ClasspathReflector {
 
-	private Logger mLogger;
+    private Logger mLogger;
 
-	/**
-	 * Creates a new {@code DexClasspathReflector} instance.
-	 */
-	public DexClasspathReflector() {
+    /**
+     * Creates a new {@code DexClasspathReflector} instance.
+     */
+    public DexClasspathReflector() {
         mLogger = new SmartLogger(getClass().getSimpleName());
-	}
+    }
 
-	@Override
-	public synchronized Set<Class<?>> getPackageClasses(Context context, String... packageNames) {
-		Set<Class<?>> classes = new HashSet<Class<?>>();
-		try {
-			DexFile dex = new DexFile(context.getApplicationInfo().sourceDir);
-			Enumeration<String> entries = dex.entries();
-			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-			Locale locale = Locale.getDefault();
-			while (entries.hasMoreElements()) {
-				String entry = entries.nextElement();
-				for (String packageName : packageNames) {
-					if (entry.toLowerCase(locale).startsWith(packageName.toLowerCase(locale))) {
-						addClass(classes, entry, classLoader);
-						break;
-					}
-				}
-			}
-			return classes;
-		} catch (IOException e) {
-			mLogger.error("Component scanning is not supported in this environment.", e);
-			return classes;
-		}
-	}
+    @Override
+    public synchronized Set<Class<?>> getPackageClasses(Context context, String... packageNames) {
+        Set<Class<?>> classes = new HashSet<Class<?>>();
+        try {
+            DexFile dex = new DexFile(context.getApplicationInfo().sourceDir);
+            Enumeration<String> entries = dex.entries();
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            Locale locale = Locale.getDefault();
+            while (entries.hasMoreElements()) {
+                String entry = entries.nextElement();
+                for (String packageName : packageNames) {
+                    if (entry.toLowerCase(locale).startsWith(packageName.toLowerCase(locale))) {
+                        addClass(classes, entry, classLoader);
+                        break;
+                    }
+                }
+            }
+            dex.close();
+            return classes;
+        } catch (IOException e) {
+            mLogger.error("Component scanning is not supported in this environment.", e);
+            return classes;
+        }
+    }
 
-	private void addClass(Set<Class<?>> classes, String name, ClassLoader classLoader) {
-		try {
-			classes.add(classLoader.loadClass(name));
-		} catch (ClassNotFoundException e) {
-			mLogger.error("Failed to load class '" + name + "'.", e);
-		}
-	}
+    private void addClass(Set<Class<?>> classes, String name, ClassLoader classLoader) {
+        try {
+            classes.add(classLoader.loadClass(name));
+        } catch (ClassNotFoundException e) {
+            mLogger.error("Failed to load class '" + name + "'.", e);
+        }
+    }
 
 }
