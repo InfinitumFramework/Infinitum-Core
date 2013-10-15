@@ -29,13 +29,20 @@ import com.clarionmedia.infinitum.logging.Logger;
  * configurations, meaning it will not log in "production" environments. </p>
  *
  * @author Tyler Treat
- * @version 1.1.0 04/25/13
+ * @version 1.1.1 08/15/13
  * @since 1.0
  */
 public class SmartLogger extends Logger {
 
     private String mTag;
     private InfinitumContext mContext;
+
+    /**
+     * Constructs a new {@code SmartLogger} using a default tag.
+     */
+    public SmartLogger() {
+        this(SmartLogger.class.getSimpleName());
+    }
 
     /**
      * Constructs a new {@code SmartLogger} with the given tag.
